@@ -39,6 +39,8 @@
     <Compile Include="PairBase.cs" />
     <Compile Include="Pairing.cs" />
     <Compile Include="PairTarget.cs" />
+    <Compile Include="Patches\ChunkedMeshEventStartPrefix.cs" />
+    <Compile Include="Patches\DecoInitializePostfix.cs" />
     <Compile Include="Patches\ParkEventFixedStart.cs" />
     <Compile Include="Patches\ParkEventStartPostfix.cs" />
     <Compile Include="Patches\ParkInitializePostfix.cs" />

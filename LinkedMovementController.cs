@@ -59,10 +59,6 @@ namespace LinkedMovement {
             selectionHandler.enabled = false;
         }
 
-        //private void Start() {
-        //    //
-        //}
-
         private void OnDisable() {
             disableSelectionHandler();
         }
@@ -179,16 +175,6 @@ namespace LinkedMovement {
 
         public void joinObjects() {
             LinkedMovement.Log("JOIN!");
-
-            // If ChunkedMesh, it's a built-in object and we need to handle it
-            var targetChunkedMesh = targetObject.GetComponent<ChunkedMesh>();
-
-            if (targetChunkedMesh != null) {
-                LinkedMovement.Log("Target is built-in deco object, enable movement");
-                targetChunkedMesh.enabled = false;
-                var targetMeshRenderer = targetObject.GetComponent<MeshRenderer>();
-                targetMeshRenderer.enabled = true;
-            }
 
             var pairing = new Pairing(baseObject.gameObject, targetObject.gameObject);
             pairings.Add(pairing);

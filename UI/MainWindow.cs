@@ -4,7 +4,9 @@ using UnityEngine;
 namespace LinkedMovement.AltUI {
     class MainWindow : BaseWindow {
         // TODO: Get this from elsewhere
-        private string[] selectionModes = {"Individual", "Box"};
+        //private string[] selectionModes = {"Individual", "Box"};
+        private string[] selectionModeNames = {Selection.Mode.Individual.ToString(), Selection.Mode.Box.ToString()};
+        private Selection.Mode[] selectionModes = {Selection.Mode.Individual, Selection.Mode.Box};
         private int selectedSelectionMode = 0;
         private Vector2 targetsScrollPosition;
 
@@ -35,12 +37,12 @@ namespace LinkedMovement.AltUI {
             GUILayout.BeginHorizontal();
             GUILayout.Label("Targets:");
             if (GUILayout.Button("Select", GUILayout.Width(65)))
-                controller.pickTargetObject(selectedSelectionMode);
+                controller.pickTargetObject(selectionModes[selectedSelectionMode]);
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
             GUILayout.Label("Selection mode:");
-            selectedSelectionMode = GUILayout.Toolbar(selectedSelectionMode, selectionModes);
+            selectedSelectionMode = GUILayout.Toolbar(selectedSelectionMode, selectionModeNames);
             GUILayout.EndHorizontal();
 
             targetsScrollPosition = GUILayout.BeginScrollView(targetsScrollPosition);

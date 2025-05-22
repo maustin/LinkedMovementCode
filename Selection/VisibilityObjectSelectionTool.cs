@@ -9,7 +9,7 @@ using static GameController;
 namespace LinkedMovement.Selection {
     internal delegate void OnAddedSelectedObjectHandler(BuildableObject selectedObject);
     internal delegate void OnRemovedSelectedObjectHandler(BuildableObject selectedObject);
-    internal enum Mode {
+    public enum Mode {
         None,
         Individual,
         Box,
@@ -343,6 +343,8 @@ namespace LinkedMovement.Selection {
                     OnRemove(o);
                     break;
             }
+            // Don't like the deep linking but.. eh
+            LinkedMovement.Controller.endSelection();
         }
         private bool HandleChangeSelectedHiddenObject() {
             if (NumberOfHiddenObjects > 1) {
@@ -683,6 +685,8 @@ namespace LinkedMovement.Selection {
             Vector3 max = bounds.max;
             max.y -= 0.005f;
             bounds.max = max;
+            var thing = MouseCollisions.Instance.boxcastAll(bounds);
+            LinkedMovement.Log("Box tool hit #: " + thing.Length.ToString());
             foreach (MouseCollider.HitInfo hitInfo in MouseCollisions.Instance.boxcastAll(bounds)) {
                 var o = hitInfo.hitObject.GetComponentInParent<BuildableObject>();
                 if (o != null) {
@@ -695,6 +699,8 @@ namespace LinkedMovement.Selection {
                 }
             }
             endPositionOffset = Vector3.zero;
+            // Don't like the deep linking but.. eh
+            LinkedMovement.Controller.endSelection();
         }
 
         private void RectangleSelectionStart(Vector3 startPosition) {

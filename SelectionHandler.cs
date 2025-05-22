@@ -29,10 +29,10 @@ namespace LinkedMovement {
 
         private void OnEnable() {
             LinkedMovement.Log("SelectionHandler OnEnable");
-            foreach (var o in tool.GetSelectedObjects()) {
-                LinkedMovement.Log("SelectionHandler OnEnable ADD EXISTING");
-                OnAddedSelectedObject(o);
-            }
+            //foreach (var o in tool.GetSelectedObjects()) {
+            //    LinkedMovement.Log("SelectionHandler OnEnable ADD EXISTING");
+            //    OnAddedSelectedObject(o);
+            //}
             Injector.Instance.Apply(calc.BuildableObjectVisibility);
             tool.CalcIndividualVisibility = calc.BuildableObjectVisibility;
             tool.CalcBoxAction = calc.BoxAction;
@@ -51,14 +51,15 @@ namespace LinkedMovement {
 
         private void OnDisable() {
             LinkedMovement.Log("SelectionHandler OnDisable");
+            //LinkedMovement.Log(System.Environment.StackTrace);
             GameController.Instance.removeMouseTool(tool);
 
             tool.CalcIndividualVisibility = IndividualSelectionTool.DefaultVisibility;
             tool.CalcBoxAction = BoxSelectionTool.DefaultAction;
             Injector.Instance.Remove();
-            foreach (var o in tool.GetSelectedObjects()) {
-                OnRemovedSelectedObject(o);
-            }
+            //foreach (var o in tool.GetSelectedObjects()) {
+            //    OnRemovedSelectedObject(o);
+            //}
             DeselectAll();
         }
 
@@ -146,7 +147,7 @@ namespace LinkedMovement {
 
             LinkedMovement.Log($"OnAdd: {o.GetType().Name} -- {o.getName()}");
             controller.setSelectedBuildableObject(o);
-            DeselectAll();
+            //DeselectAll();
             //return;
 
             //o.retrieveObjectsBelongingToThis(selectedObjectBuffer);
@@ -170,6 +171,7 @@ namespace LinkedMovement {
         }
         public void DeselectAll() {
             LinkedMovement.Log("SelectionHandler DeselectAll");
+            //LinkedMovement.Log(System.Environment.StackTrace);
             tool.DeselectAll();
         }
 

@@ -14,7 +14,7 @@
         public float offsetZ = 0;
 
         public PairTarget() {
-            LinkedMovement.Log("PairTarget DEFAULT CONSTRUCTOR: " + pairId);
+            //LinkedMovement.Log("PairTarget DEFAULT CONSTRUCTOR: " + pairId);
             LinkedMovement.GetController().addPairTarget(this);
         }
 

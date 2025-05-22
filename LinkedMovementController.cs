@@ -126,11 +126,11 @@ namespace LinkedMovement {
             }
         }
 
-        public void pickTargetObject(int selectionMode) {
+        public void pickTargetObject(Selection.Mode newMode) {
             LinkedMovement.Log("pickTargetObject");
             // TODO: Box select
 
-            var newMode = Selection.Mode.Individual;
+            //var newMode = Selection.Mode.Individual;
             var options = selectionHandler.Options;
             if (options.Mode == newMode) {
                 LinkedMovement.Log("Set target select none");
@@ -139,7 +139,7 @@ namespace LinkedMovement {
                 disableSelectionHandler();
             }
             else {
-                LinkedMovement.Log("Set target select individual");
+                LinkedMovement.Log("Set target select mode " + newMode.ToString());
                 isSettingBase = false;
                 isSettingTarget = true;
                 options.Mode = newMode;
@@ -153,11 +153,11 @@ namespace LinkedMovement {
             
             if (isSettingBase) {
                 baseObject = bo;
-                isSettingBase = false;
+                //isSettingBase = false;
             }
             else if (isSettingTarget) {
                 targetObjects.Add(bo);
-                isSettingTarget = false;
+                //isSettingTarget = false;
             } else {
                 LinkedMovement.Log("setSelectedBuildableObject while NOT SELECTING");
                 return;
@@ -166,10 +166,22 @@ namespace LinkedMovement {
             LinkedMovement.Log("Selected BO position:");
             LinkedMovement.Log(bo.gameObject.transform.position.ToString());
 
+            //var options = selectionHandler.Options;
+            //options.Mode = Selection.Mode.None;
+            //disableSelectionHandler();
+            //clearSelection();
+        }
+
+        public void endSelection() {
+            LinkedMovement.Log("Controller endSelection");
+
+            isSettingBase = false;
+            isSettingTarget = false;
+
             var options = selectionHandler.Options;
             options.Mode = Selection.Mode.None;
             disableSelectionHandler();
-            clearSelection();
+            //clearSelection();
         }
 
         public void clearBaseObject() {
@@ -204,7 +216,6 @@ namespace LinkedMovement {
             }
 
             baseObject = null;
-            //targetObject = null;
             targetObjects.Clear();
 
             clearSelection();

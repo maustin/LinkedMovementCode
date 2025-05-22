@@ -70,6 +70,17 @@ namespace LinkedMovement {
             get; private set;
         }
 
+        public Vector3 basePositionOffset { get; private set; }
+        public void setBasePositionOffset(Vector3 value) {
+            basePositionOffset = value;
+            tryToCreateBlueprintBuilder();
+        }
+        public Vector3 baseRotationOffset { get; private set; }
+        public void setBaseRotationOffset(Vector3 value) {
+            baseRotationOffset = value;
+            tryToCreateBlueprintBuilder();
+        }
+
         public bool catchCreatedObjects { get; private set; }
         private List<GameObject> blueprintCreatedObjects = new List<GameObject>();
         public void addBlueprintCreatedObject(GameObject go) {
@@ -267,7 +278,7 @@ namespace LinkedMovement {
                     LinkedMovement.Log("Got # created objects: " + blueprintCreatedObjects.Count);
 
                     var pairing = new Pairing(baseObject.gameObject, blueprintCreatedObjects);
-                    pairing.setCustomData(true);
+                    pairing.setCustomData(true, basePositionOffset, baseRotationOffset);
                     pairing.connect();
 
                     clearAllSelections();
@@ -284,6 +295,7 @@ namespace LinkedMovement {
             }
 
             var pairing = new Pairing(baseObject.gameObject, targetGOs);
+            // TODO: Preview single objects & use offsets
             pairing.setCustomData();
             pairing.connect();
 

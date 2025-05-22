@@ -14,6 +14,9 @@ namespace LinkedMovement.BLERGUI.InGame {
         private Vector2 targetsScrollPosition;
         private string selectedBlueprintName;
 
+        private Vector3 basePositionOffset;
+        private Vector3 baseRotationOffset;
+
         static private string[] GetBlueprintNames(List<BlueprintFile> blueprints) {
             var names = new List<string>();
             foreach (BlueprintFile blueprint in blueprints) {
@@ -43,6 +46,14 @@ namespace LinkedMovement.BLERGUI.InGame {
                 LinkedMovement.Log("NO CONTROLLER SET!");
                 return;
             }
+
+            if (!LinkedMovement.GetController().basePositionOffset.Equals(basePositionOffset)) {
+                LinkedMovement.GetController().setBasePositionOffset(basePositionOffset);
+            }
+            if (!LinkedMovement.GetController().baseRotationOffset.Equals(baseRotationOffset)) {
+                LinkedMovement.GetController().setBaseRotationOffset(baseRotationOffset);
+            }
+
             using (Scope.Vertical()) {
                 Space(10f);
                 ShowBaseSelect();
@@ -60,6 +71,16 @@ namespace LinkedMovement.BLERGUI.InGame {
                     if (Button("Select", Width(65))) {
                         controller.pickBaseObject();
                     }
+                }
+
+                using (Scope.Horizontal()) {
+                    Label("Position offset");
+                    basePositionOffset = RGUI.Field(basePositionOffset);
+                }
+
+                using (Scope.Horizontal()) {
+                    Label("Rotatoin offset");
+                    baseRotationOffset = RGUI.Field(baseRotationOffset);
                 }
 
                 var baseObject = controller.baseObject;
@@ -127,6 +148,8 @@ namespace LinkedMovement.BLERGUI.InGame {
                 using (Scope.GuiEnabled(showJoin)) {
                     if (Button("Join Objects!")) {
                         selectedBlueprintName = null;
+                        basePositionOffset = Vector3.zero;
+                        baseRotationOffset = Vector3.zero;
                         controller.joinObjects();
                     }
                 }
@@ -134,6 +157,8 @@ namespace LinkedMovement.BLERGUI.InGame {
                 using (Scope.GuiEnabled(showClearAll)) {
                     if (Button("Clear All")) {
                         selectedBlueprintName = null;
+                        basePositionOffset = Vector3.zero;
+                        baseRotationOffset = Vector3.zero;
                         controller.clearAllSelections();
                     }
                 }

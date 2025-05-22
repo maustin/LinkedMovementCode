@@ -25,7 +25,7 @@ class BlueprintBuilderInstantiateBuildableObjectPreviewPostfix {
         
         if (___ghost != null) {
             LinkedMovement.LinkedMovement.Log("GOT GHOST!");
-            ___ghost.transform.position = LinkedMovement.LinkedMovement.GetController().baseObject.transform.position;
+            ___ghost.transform.position = LinkedMovement.LinkedMovement.GetController().baseObject.transform.position + LinkedMovement.LinkedMovement.GetController().basePositionOffset;
             ___ghost.transform.SetParent(LinkedMovement.LinkedMovement.GetController().baseObject.transform);
             LinkedMovement.LinkedMovement.Log(___ghost.transform.position.ToString());
         }

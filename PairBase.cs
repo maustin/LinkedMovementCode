@@ -4,12 +4,8 @@
         [Serialized]
         public string pairId;
 
-        public bool IsBase {
-            get => true;
-        }
-
         public PairBase() {
-            LinkedMovement.Log("PairBase DEFAULT CONTRUCTOR: " + pairId + ", IsBase: " + IsBase);
+            LinkedMovement.Log("PairBase DEFAULT CONTRUCTOR: " + pairId);
             LinkedMovement.GetController().addPairBase(this);
         }
 

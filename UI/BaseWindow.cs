@@ -7,7 +7,7 @@ namespace LinkedMovement.AltUI {
 
         protected LinkedMovementController controller;
         protected string windowName = "LMWindow";
-        protected Rect baseDimensionsRect = new Rect(20f, 20f, 200f, 200f);
+        protected Rect baseDimensionsRect = new Rect(20f, 20f, 400f, 400f);
         protected Rect windowRect = new Rect();
 
         public bool isOpen;

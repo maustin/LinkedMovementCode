@@ -1,5 +1,6 @@
 ﻿using HarmonyLib;
 using LinkedMovement;
+using System.Collections.Generic;
 using System.Reflection;
 using UnityEngine;
 
@@ -30,32 +31,36 @@ class ParkEventFixedStartPostfix {
             so.tryGetCustomData(out pairBase);
             if (pairBase != null) {
                 LinkedMovement.LinkedMovement.Log("Found pairBase");
-                SerializedMonoBehaviour smb = FindPairTargetSO(pairBase);
-                if (smb != null) {
-                    LinkedMovement.LinkedMovement.Log("Creating Pairing");
-                    Pairing pair = new Pairing(so.gameObject, smb.gameObject, pairBase.pairId);
+
+                var pairTargets = FindPairTargetSOs(pairBase);
+                if (pairTargets.Count > 0) {
+                    var pairTargetGOs = new List<GameObject>();
+                    foreach (var pairTarget in pairTargets) {
+                        pairTargetGOs.Add(pairTarget.gameObject);
+                    }
+                    LinkedMovement.LinkedMovement.Log($"Creating Pairing with {pairTargetGOs.Count} targets");
+                    var pair = new Pairing(so.gameObject, pairTargetGOs, pairBase.pairId);
                     LinkedMovement.LinkedMovement.GetController().addPairing(pair);
-                }
-                else {
+                } else {
                     LinkedMovement.LinkedMovement.Log("No pair matches found");
                 }
             }
         }
     }
 
-    static SerializedMonoBehaviour FindPairTargetSO(PairBase pairBase) {
+    static private List<SerializedMonoBehaviour> FindPairTargetSOs(PairBase pairBase) {
+        var targets = new List<SerializedMonoBehaviour>();
         var sos = GameController.Instance.getSerializedObjects();
         foreach (var so in sos) {
             PairTarget pairTarget;
             so.tryGetCustomData(out pairTarget);
             if (pairTarget != null) {
-                LinkedMovement.LinkedMovement.Log("Found PairTarget");
                 if (pairTarget.pairId == pairBase.pairId) {
                     LinkedMovement.LinkedMovement.Log("Same pairId!");
-                    return so;
+                    targets.Add(so);
                 }
             }
         }
-        return null;
+        return targets;
     }
 }

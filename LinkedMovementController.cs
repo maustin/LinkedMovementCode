@@ -19,14 +19,15 @@ namespace LinkedMovement {
                 if (childName.Contains("[Platform]")) {
                     foundPlatform = true;
                     baseTransform = child;
-                    LinkedMovement.Log("Using Platform");
+                    //LinkedMovement.Log("Using Platform");
                     break;
                 }
             }
+            // TODO: Not sure about this case
             if (!foundPlatform && baseChildrenCount > 0) {
                 // Take child at 0
                 baseTransform = baseTransform.GetChild(0);
-                LinkedMovement.Log("Using child 0");
+                //LinkedMovement.Log("Using child 0");
             }
 
             targetObject.SetParent(baseTransform);
@@ -44,8 +45,8 @@ namespace LinkedMovement {
         private bool isSettingBase = false;
         private bool isSettingTarget = false;
 
-        public BuildableObject baseObject;
-        public BuildableObject targetObject;
+        public BuildableObject baseObject { get; private set; }
+        public List<BuildableObject> targetObjects { get; private set; }
 
         public List<PairBase> pairBases = new List<PairBase>();
         public List<PairTarget> pairTargets = new List<PairTarget>();
@@ -53,6 +54,7 @@ namespace LinkedMovement {
 
         private void Awake() {
             LinkedMovement.Log("LinkedMovementController Awake");
+            targetObjects = new List<BuildableObject>();
             mainWindow = new MainWindow(this);
             selectionHandler = gameObject.AddComponent<SelectionHandler>();
             selectionHandler.controller = this;
@@ -69,7 +71,11 @@ namespace LinkedMovement {
                 GameObject.Destroy(selectionHandler);
                 selectionHandler = null;
             }
-            // TODO: Clear lists
+            baseObject = null;
+            targetObjects.Clear();
+            pairBases.Clear();
+            pairTargets.Clear();
+            pairings.Clear();
         }
 
         private void Update() {
@@ -120,8 +126,9 @@ namespace LinkedMovement {
             }
         }
 
-        public void pickTargetObject() {
+        public void pickTargetObject(int selectionMode) {
             LinkedMovement.Log("pickTargetObject");
+            // TODO: Box select
 
             var newMode = Selection.Mode.Individual;
             var options = selectionHandler.Options;
@@ -149,7 +156,7 @@ namespace LinkedMovement {
                 isSettingBase = false;
             }
             else if (isSettingTarget) {
-                targetObject = bo;
+                targetObjects.Add(bo);
                 isSettingTarget = false;
             } else {
                 LinkedMovement.Log("setSelectedBuildableObject while NOT SELECTING");
@@ -169,21 +176,36 @@ namespace LinkedMovement {
             baseObject = null;
         }
 
-        public void clearTargetObject() {
-            targetObject = null;
+        public void clearTargetObject(BuildableObject target) {
+            targetObjects.Remove(target);
+        }
+
+        public void clearTargetObjects() {
+            targetObjects.Clear();
         }
 
         public void joinObjects() {
             LinkedMovement.Log("JOIN!");
 
-            var pairing = new Pairing(baseObject.gameObject, targetObject.gameObject);
+            List<GameObject> targetGOs = new List<GameObject>();
+            foreach (var bo in targetObjects) {
+                targetGOs.Add(bo.gameObject);
+            }
+
+            var pairing = new Pairing(baseObject.gameObject, targetGOs);
             pairings.Add(pairing);
 
             baseObject.addCustomData(pairing.getPairBase());
-            targetObject.addCustomData(pairing.getPairTarget());
+
+            // Hate we iterate twice
+            foreach (var bo in targetObjects) {
+                // TODO: Offsets
+                bo.addCustomData(pairing.getPairTarget());
+            }
 
             baseObject = null;
-            targetObject = null;
+            //targetObject = null;
+            targetObjects.Clear();
 
             clearSelection();
         }

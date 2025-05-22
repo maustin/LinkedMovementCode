@@ -1,6 +1,7 @@
 ﻿// ATTRIB: HideScenery (very partial)
 //using LinkedMovement.AltUI;
 using LinkedMovement.UI.InGame;
+using Parkitect;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -45,7 +46,6 @@ namespace LinkedMovement {
             return list;
         }
 
-        //private BaseWindow mainWindow;
         private MainWindow mainWindow;
 
         private SelectionHandler selectionHandler;
@@ -65,12 +65,44 @@ namespace LinkedMovement {
         public List<PairTarget> pairTargets = new List<PairTarget>();
         private List<Pairing> pairings = new List<Pairing>();
 
-        public string selectedBlueprintName;
+        public BlueprintBuilder selectedBlueprintBuilder { get; private set; }
+
+        public BlueprintFile selectedBlueprint {
+            get; private set;
+        }
+
+        public void setSelectedBlueprint(BlueprintFile blueprint) {
+            LinkedMovement.Log("setSelectedBlueprint " + blueprint.getName());
+            
+            selectedBlueprint = blueprint;
+            tryToCreateBlueprintBuilder();
+        }
+
+        private void tryToDestroyExistingBlueprintBuilder() {
+            LinkedMovement.Log("try destroy existing blueprint builder");
+            if (selectedBlueprintBuilder != null) {
+                GameObject.Destroy(selectedBlueprintBuilder.gameObject);
+                selectedBlueprintBuilder = null;
+            }
+        }
+
+        private void tryToCreateBlueprintBuilder() {
+            tryToDestroyExistingBlueprintBuilder();
+            if (baseObject == null || selectedBlueprint == null) {
+                LinkedMovement.Log("Cannot create blueprint builder, missing component");
+                return;
+            }
+
+            LinkedMovement.Log("Create new builder");
+            // Create new builder
+            selectedBlueprintBuilder = UnityEngine.Object.Instantiate<BlueprintBuilder>(ScriptableSingleton<AssetManager>.Instance.blueprintBuilderGO);
+            selectedBlueprintBuilder.skipDeco = false; // TODO: ????
+            selectedBlueprintBuilder.filePath = selectedBlueprint.path;
+        }
 
         private void Awake() {
             LinkedMovement.Log("LinkedMovementController Awake");
             targetObjects = new List<BuildableObject>();
-            //mainWindow = new MainWindow(this);
             mainWindow = new MainWindow(this);
             selectionHandler = gameObject.AddComponent<SelectionHandler>();
             selectionHandler.controller = this;
@@ -169,6 +201,7 @@ namespace LinkedMovement {
             
             if (isSettingBase) {
                 baseObject = bo;
+                tryToCreateBlueprintBuilder();
             }
             else if (isSettingTarget) {
                 targetObjects.Add(bo);
@@ -205,8 +238,17 @@ namespace LinkedMovement {
             targetObjects.Clear();
         }
 
+        public void clearAllSelections() {
+            clearBaseObject();
+            clearTargetObjects();
+            tryToDestroyExistingBlueprintBuilder();
+            selectedBlueprint = null;
+        }
+
         public void joinObjects() {
             LinkedMovement.Log("JOIN!");
+
+            tryToDestroyExistingBlueprintBuilder();
 
             // Attempt to reset base to starting animation position
             var baseAnimator = baseObject.GetComponent<Animator>();
@@ -220,10 +262,9 @@ namespace LinkedMovement {
                 LinkedMovement.Log("Couldn't find Animator");
             }
 
-            if (selectedBlueprintName != null) {
+            if (selectedBlueprint != null) {
                 LinkedMovement.Log("TODO: blueprints");
             }
-            return;
 
             List<GameObject> targetGOs = new List<GameObject>();
             foreach (var bo in targetObjects) {
@@ -241,9 +282,7 @@ namespace LinkedMovement {
                 bo.addCustomData(pairing.getPairTarget());
             }
 
-            baseObject = null;
-            targetObjects.Clear();
-            selectedBlueprintName = null;
+            clearAllSelections();
 
             clearSelection();
         }

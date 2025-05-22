@@ -46,8 +46,15 @@
     <Compile Include="PairBase.cs" />
     <Compile Include="Pairing.cs" />
     <Compile Include="PairTarget.cs" />
+    <Compile Include="Patches\BlueprintBuildCommandInstantiateBuilderImplementationPostfix.cs" />
+    <Compile Include="Patches\BlueprintBuilderInstantiateBuildableObjectPreviewPostfix.cs" />
+    <Compile Include="Patches\BlueprintBuilderOnEnablePostfix.cs" />
+    <Compile Include="Patches\BlueprintBuildingPanelInstantiateBuilderPostfix.cs" />
+    <Compile Include="Patches\BuilderUpdatePrefix.cs" />
     <Compile Include="Patches\ChunkedMeshEventStartPrefix.cs" />
     <Compile Include="Patches\DecoInitializePostfix.cs" />
+    <Compile Include="Patches\EventManagerRaiseOnBlueprintBuildStartedPostfix.cs" />
+    <Compile Include="Patches\EventManagerRaiseOnBlueprintBuiltPostfix.cs" />
     <Compile Include="Patches\ParkEventFixedStart.cs" />
     <Compile Include="Patches\ParkEventStartPostfix.cs" />
     <Compile Include="Patches\ParkInitializePostfix.cs" />

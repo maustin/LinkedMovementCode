@@ -23,9 +23,20 @@ namespace LinkedMovement.BLERGUI.InGame {
             return names.ToArray();
         }
 
+        static private BlueprintFile GetBlueprintWithName(List<BlueprintFile> blueprints, string blueprintName) {
+            foreach (BlueprintFile blueprint in blueprints) {
+                if (blueprint.getName().Equals(blueprintName))
+                    return blueprint;
+            }
+            LinkedMovement.Log("ERROR: MainContent.GetBlueprint failed to find blueprint with name " + blueprintName);
+            return null;
+        }
+
         public MainContent(LinkedMovementController controller) {
             this.controller = controller;
         }
+
+        // TODO: Possibly should call controller methods after UI update has completed (e.g. call later)
 
         public void DoGUI() {
             if (controller == null) {
@@ -33,9 +44,11 @@ namespace LinkedMovement.BLERGUI.InGame {
                 return;
             }
             using (Scope.Vertical()) {
-                ShowBaseSelect();
                 Space(10f);
+                ShowBaseSelect();
+                Space(20f);
                 ShowTargetsSelect();
+                Space(20f);
                 ShowJoin();
             }
         }
@@ -61,17 +74,22 @@ namespace LinkedMovement.BLERGUI.InGame {
         }
 
         private void ShowTargetsSelect() {
+            bool hasSelectedBlueprint = selectedBlueprintName != null;
             using (Scope.Vertical()) {
                 using (Scope.Horizontal()) {
                     Label("Targets");
-                    if (Button("Select", Width(65))) {
-                        controller.pickTargetObject(selectionModes[selectedSelectionMode]);
+                    using (Scope.GuiEnabled(!hasSelectedBlueprint)) {
+                        if (Button("Select", Width(65))) {
+                            controller.pickTargetObject(selectionModes[selectedSelectionMode]);
+                        }
                     }
                 }
 
                 using (Scope.Horizontal()) {
-                    Label("Selection mode");
-                    selectedSelectionMode = Toolbar(selectedSelectionMode, selectionModeNames);
+                    using (Scope.GuiEnabled(!hasSelectedBlueprint)) {
+                        Label("Selection mode");
+                        selectedSelectionMode = Toolbar(selectedSelectionMode, selectionModeNames);
+                    }
                 }
 
                 // TODO: Calculate less often
@@ -83,13 +101,12 @@ namespace LinkedMovement.BLERGUI.InGame {
                 //LinkedMovement.Log("# deco print names: " + decoPrintNames.Length);
 
                 using (Scope.Horizontal()) {
-                    if (selectedBlueprintName != null && controller.selectedBlueprintName != selectedBlueprintName) {
-                        controller.selectedBlueprintName = selectedBlueprintName;
+                    if (hasSelectedBlueprint && controller.selectedBlueprint?.getName() != selectedBlueprintName) {
+                        controller.setSelectedBlueprint(GetBlueprintWithName(decoPrints, selectedBlueprintName));
                         selectedBlueprintName = null;
                     }
                     Label("Blueprint");
-                    //selectedBlueprintName = RGUI.SelectionPopup(selectedBlueprintName, decoPrintNames);
-                    selectedBlueprintName = RGUI.SelectionPopup(controller.selectedBlueprintName, decoPrintNames);
+                    selectedBlueprintName = RGUI.SelectionPopup(controller.selectedBlueprint?.getName(), decoPrintNames);
                 }
 
                 var targetObjects = controller.targetObjects;
@@ -106,10 +123,23 @@ namespace LinkedMovement.BLERGUI.InGame {
         }
 
         private void ShowJoin() {
-            if (controller.baseObject != null && (controller.targetObjects.Count > 0 || controller.selectedBlueprintName != null)) {
-                Space(10f);
-                if (Button("Join Objects!"))
-                    controller.joinObjects();
+            using (Scope.Vertical()) {
+                var showJoin = controller.baseObject != null && (controller.targetObjects.Count > 0 || controller.selectedBlueprint != null);
+                var showClearAll = controller.baseObject != null || controller.targetObjects.Count > 0 || controller.selectedBlueprint != null;
+
+                using (Scope.GuiEnabled(showJoin)) {
+                    if (Button("Join Objects!")) {
+                        selectedBlueprintName = null;
+                        controller.joinObjects();
+                    }
+                }
+                
+                using (Scope.GuiEnabled(showClearAll)) {
+                    if (Button("Clear All")) {
+                        selectedBlueprintName = null;
+                        controller.clearAllSelections();
+                    }
+                }
             }
         }
     }

@@ -18,6 +18,9 @@ namespace LinkedMovement.UI.InGame {
         private Vector3 basePositionOffset;
         private Vector3 baseRotationOffset;
 
+        private List<BlueprintFile> decoPrints;
+        private string[] decoPrintNames;
+
         static private string[] GetBlueprintNames(List<BlueprintFile> blueprints) {
             var names = new List<string>();
             foreach (BlueprintFile blueprint in blueprints) {
@@ -38,12 +41,16 @@ namespace LinkedMovement.UI.InGame {
 
         public MainContent() {
             controller = LinkedMovement.GetController();
+
+            var prints = BlueprintManager.Instance.getAllBlueprints();
+            decoPrints = LinkedMovementController.FindDecoBlueprints(prints);
+            decoPrintNames = GetBlueprintNames(decoPrints);
         }
 
         // TODO: Possibly should call controller methods after UI update has completed (e.g. call later)
 
         public void DoGUI() {
-            LinkedMovement.Log("MainContent DoGUI");
+            //LinkedMovement.Log("MainContent DoGUI");
             if (controller == null) {
                 LinkedMovement.Log("NO CONTROLLER SET!");
                 return;
@@ -59,7 +66,10 @@ namespace LinkedMovement.UI.InGame {
             using (Scope.Vertical()) {
                 Space(10f);
                 ShowBaseSelect();
-                Space(20f);
+                //Space(30f);
+                Space(10f);
+                GUILayout.Box("", GUILayout.ExpandWidth(true), GUILayout.Height(0.1f));
+                Space(10f);
                 ShowTargetsSelect();
                 Space(20f);
                 ShowJoin();
@@ -75,22 +85,35 @@ namespace LinkedMovement.UI.InGame {
                     }
                 }
 
-                using (Scope.Horizontal()) {
-                    Label("Position offset");
-                    basePositionOffset = RGUI.Field(basePositionOffset);
-                }
-
-                using (Scope.Horizontal()) {
-                    Label("Rotatoin offset");
-                    baseRotationOffset = RGUI.Field(baseRotationOffset);
-                }
-
                 var baseObject = controller.baseObject;
                 if (baseObject != null) {
                     using (Scope.Horizontal()) {
                         Label(baseObject.getName());
                         if (Button("Clear", Width(65)))
                             controller.clearBaseObject();
+                    }
+                    using (Scope.Horizontal()) {
+                        var triggerable = controller.getBaseIsTriggerable();
+                        if (triggerable) {
+                            Label("Triggerable!");
+                        } else {
+                            Label("Not triggerable");
+                        }
+                    }
+                }
+
+                var hasBaseObject = controller.baseObject != null;
+                using (Scope.Horizontal()) {
+                    using (Scope.GuiEnabled(hasBaseObject)) {
+                        Label("Position offset");
+                        basePositionOffset = RGUI.Field(basePositionOffset);
+                    }
+                }
+
+                using (Scope.Horizontal()) {
+                    using (Scope.GuiEnabled(hasBaseObject)) {
+                        Label("Rotatoin offset");
+                        baseRotationOffset = RGUI.Field(baseRotationOffset);
                     }
                 }
             }
@@ -114,11 +137,6 @@ namespace LinkedMovement.UI.InGame {
                         selectedSelectionMode = Toolbar(selectedSelectionMode, selectionModeNames);
                     }
                 }
-
-                // TODO: Calculate less often
-                var prints = BlueprintManager.Instance.getAllBlueprints();
-                var decoPrints = LinkedMovementController.FindDecoBlueprints(prints);
-                var decoPrintNames = GetBlueprintNames(decoPrints);
 
                 using (Scope.Horizontal()) {
                     if (hasSelectedBlueprint && controller.selectedBlueprint?.getName() != selectedBlueprintName) {

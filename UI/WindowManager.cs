@@ -50,7 +50,7 @@ namespace LinkedMovement.UI {
         public void OnGUI()
         {
             if (mainWindow != null) {
-                LinkedMovement.Log("WindowManager OnGUI");
+                //LinkedMovement.Log("WindowManager OnGUI");
                 mainWindow.DoGUI();
             }
             if (infoWindow != null) {

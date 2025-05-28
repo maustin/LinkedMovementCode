@@ -1,5 +1,4 @@
 ﻿// ATTRIB: HideScenery (very partial)
-//using LinkedMovement.AltUI;
 using LinkedMovement.UI;
 using LinkedMovement.UI.InGame;
 using Parkitect;
@@ -59,6 +58,7 @@ namespace LinkedMovement {
         // TODO: Make better
         private bool isSettingBase = false;
         private bool isSettingTarget = false;
+        private bool baseIsTriggerable = false;
 
         public BuildableObject baseObject { get; private set; }
         public List<BuildableObject> targetObjects { get; private set; }
@@ -155,7 +155,7 @@ namespace LinkedMovement {
         }
 
         private void OnGUI() {
-            LinkedMovement.Log("Controller OnGUI -----");
+            //LinkedMovement.Log("Controller OnGUI -----");
             windowManager.OnGUI();
         }
 
@@ -213,7 +213,9 @@ namespace LinkedMovement {
                     return;
                 }
 
+                clearBaseObject();
                 baseObject = bo;
+                setupBaseObject();
                 tryToCreateBlueprintBuilder();
             }
             else if (isSettingTarget) {
@@ -228,6 +230,10 @@ namespace LinkedMovement {
             LinkedMovement.Log("Local: " + bo.gameObject.transform.localPosition.ToString());
         }
 
+        public bool getBaseIsTriggerable() {
+            return baseIsTriggerable;
+        }
+
         public void endSelection() {
             LinkedMovement.Log("Controller endSelection");
 
@@ -240,6 +246,7 @@ namespace LinkedMovement {
         }
 
         public void clearBaseObject() {
+            resetBaseObject();
             baseObject = null;
         }
 
@@ -260,18 +267,6 @@ namespace LinkedMovement {
 
         public void joinObjects() {
             LinkedMovement.Log("JOIN!");
-
-            // Attempt to reset base to starting animation position
-            var baseAnimator = baseObject.GetComponent<Animator>();
-            if (baseAnimator != null) {
-                LinkedMovement.Log("Found Animator, reset time");
-                //anim_gun.Play("idle", -1, 0f);
-                baseAnimator.Rebind();
-                baseAnimator.Update(0f);
-            }
-            else {
-                LinkedMovement.Log("Couldn't find Animator");
-            }
 
             if (selectedBlueprint != null) {
                 LinkedMovement.Log("Create blueprint");
@@ -323,6 +318,41 @@ namespace LinkedMovement {
 
         private void clearSelection() {
             selectionHandler.DeselectAll();
+        }
+
+        private void resetBaseObject() {
+            if (baseObject == null) return;
+
+            LinkedMovement.Log("resetBaseObject");
+
+            // There should always be an Animator on selected base objects
+            var baseAnimator = baseObject.GetComponent<Animator>();
+            baseAnimator.Rebind();
+            baseAnimator.Update(0f);
+
+            if (!baseIsTriggerable) {
+                baseAnimator.StartPlayback();
+                baseAnimator.speed = 1f;
+                baseIsTriggerable = false;
+            }
+        }
+
+        private void setupBaseObject() {
+            LinkedMovement.Log("setupBaseObject");
+
+            var baseAnimator = baseObject.GetComponent<Animator>();
+            baseAnimator.Rebind();
+            baseAnimator.Update(0f);
+            baseAnimator.StopPlayback();
+
+            var modTriggerable = baseObject.GetComponent<ModAnimationTrigger>();
+            if (modTriggerable != null) {
+                LinkedMovement.Log("Is triggerable");
+                baseIsTriggerable = true;
+            } else {
+                LinkedMovement.Log("Not triggerable, stop animation");
+                baseAnimator.speed = 0f;
+            }
         }
     }
 }

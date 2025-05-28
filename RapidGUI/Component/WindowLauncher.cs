@@ -39,7 +39,7 @@ namespace RapidGUI
 
         public void DoGUI()
         {
-            Debug.Log("WindowLauncher isEnable: " + isEnable.ToString() + ", isOpen: " + isOpen.ToString());
+            //Debug.Log("WindowLauncher isEnable: " + isEnable.ToString() + ", isOpen: " + isOpen.ToString());
             if (isEnable)
             {
                 bool changed = false;
@@ -76,7 +76,7 @@ namespace RapidGUI
 
         public void DoGUIWindow()
         {
-            Debug.Log("WindowLauncher DoGUIWindow open: " + isOpen.ToString() + ", enable: " + isEnable.ToString());
+            //Debug.Log("WindowLauncher DoGUIWindow open: " + isOpen.ToString() + ", enable: " + isEnable.ToString());
             if (isOpen && isEnable)
             {
                 var pos = rect.position;

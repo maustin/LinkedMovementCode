@@ -1,16 +1,16 @@
-﻿using LinkedMovement.BLERGUI.InGame;
-using LinkedMovement.BLERGUI.Utils;
+﻿using LinkedMovement.UI.InGame;
+using LinkedMovement.UI.Utils;
 using RapidGUI;
 using UnityEngine;
 
 namespace LinkedMovement.UI.InGame {
-    internal sealed class MainWindow {
+    internal sealed class __MainWindow {
         public bool isOpen;
         private readonly MainContent content;
         private readonly CollapsibleWindow window;
 
-        public MainWindow(LinkedMovementController controller) {
-            content = new MainContent(controller);
+        public __MainWindow() {
+            content = new MainContent();
 
             const float width = 400.0f;
             window = new CollapsibleWindow("Link Objects") {

@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.Experimental.Animations;
-
 
 namespace RapidGUI
 {
@@ -44,12 +42,12 @@ namespace RapidGUI
             Debug.Log("WindowLauncher isEnable: " + isEnable.ToString() + ", isOpen: " + isOpen.ToString());
             if (isEnable)
             {
-                bool changed;
-                using (new GUILayout.HorizontalScope())
-                {
-                    changed = isOpen != GUILayout.Toggle(isOpen, "❏ " + name, Style.toggle);
-                    titleAction?.Invoke();
-                }
+                bool changed = false;
+                //using (new GUILayout.HorizontalScope())
+                //{
+                //    changed = isOpen != GUILayout.Toggle(isOpen, "❏ " + name, Style.toggle);
+                //    titleAction?.Invoke();
+                //}
 
                 if (changed)
                 {

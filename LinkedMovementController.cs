@@ -1,5 +1,6 @@
 ﻿// ATTRIB: HideScenery (very partial)
 //using LinkedMovement.AltUI;
+using LinkedMovement.UI;
 using LinkedMovement.UI.InGame;
 using Parkitect;
 using System;
@@ -47,7 +48,7 @@ namespace LinkedMovement {
             return list;
         }
 
-        private MainWindow mainWindow;
+        private WindowManager windowManager;
 
         private SelectionHandler selectionHandler;
         private bool selectionHandlerEnabled {
@@ -120,7 +121,7 @@ namespace LinkedMovement {
         private void Awake() {
             LinkedMovement.Log("LinkedMovementController Awake");
             targetObjects = new List<BuildableObject>();
-            mainWindow = new MainWindow(this);
+            windowManager = new WindowManager();
             selectionHandler = gameObject.AddComponent<SelectionHandler>();
             selectionHandler.controller = this;
             selectionHandler.enabled = false;
@@ -146,16 +147,16 @@ namespace LinkedMovement {
                 return;
             }
 
-            if (InputManager.getKeyDown("LM_toggleGUI")) {
+            //if (InputManager.getKeyDown("LM_toggleGUI")) {
+            if (InputManager.getKeyUp("LM_toggleGUI")) {
                 LinkedMovement.Log("Toggle GUI");
-                mainWindow.isOpen = !mainWindow.isOpen;
+                windowManager.showMainWindow();
             }
         }
 
         private void OnGUI() {
-            if (mainWindow.isOpen) {
-                mainWindow.Show();
-            }
+            LinkedMovement.Log("Controller OnGUI -----");
+            windowManager.OnGUI();
         }
 
         public void addPairing(Pairing pairing) {
@@ -205,6 +206,13 @@ namespace LinkedMovement {
                 return;
             
             if (isSettingBase) {
+                var baseAnimator = bo.GetComponent<Animator>();
+                if (baseAnimator == null)
+                {
+                    windowManager.showInfoWindow("Selected base object has no animation.");
+                    return;
+                }
+
                 baseObject = bo;
                 tryToCreateBlueprintBuilder();
             }

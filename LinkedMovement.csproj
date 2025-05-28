@@ -34,13 +34,13 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="BLERGUI\InGame\MainContent.cs" />
-    <Compile Include="BLERGUI\InGame\MainWindow.cs" />
-    <Compile Include="BLERGUI\Utils\CollapsibleWindow.cs" />
-    <Compile Include="BLERGUI\Utils\Controls.cs" />
-    <Compile Include="BLERGUI\Utils\Scope.cs" />
-    <Compile Include="BLERGUI\Utils\Styles.cs" />
-    <Compile Include="BLERGUI\Utils\Tooltip.cs" />
+    <Compile Include="UI\InGame\MainContent.cs" />
+    <Compile Include="UI\InGame\MainWindow.cs" />
+    <Compile Include="UI\Utils\CollapsibleWindow.cs" />
+    <Compile Include="UI\Utils\Controls.cs" />
+    <Compile Include="UI\Utils\Scope.cs" />
+    <Compile Include="UI\Utils\Styles.cs" />
+    <Compile Include="UI\Utils\Tooltip.cs" />
     <Compile Include="InParkHarmonyInjector.cs" />
     <Compile Include="Options.cs" />
     <Compile Include="PairBase.cs" />
@@ -60,11 +60,11 @@
     <Compile Include="Patches\ParkEventStartPostfix.cs" />
     <Compile Include="Patches\ParkInitializePostfix.cs" />
     <Compile Include="Patches\ParkOnDestroyPrefix.cs" />
-    <Compile Include="UI\BaseWindow.cs" />
-    <Compile Include="UI\Indicator.cs" />
-    <Compile Include="UI\MainWindow.cs" />
-    <Compile Include="UI\Tooltip.cs" />
-    <Compile Include="UI\WindowIDManager.cs" />
+    <Compile Include="AltUI\BaseWindow.cs" />
+    <Compile Include="AltUI\Indicator.cs" />
+    <Compile Include="AltUI\MainWindow.cs" />
+    <Compile Include="AltUI\Tooltip.cs" />
+    <Compile Include="AltUI\WindowIDManager.cs" />
     <Compile Include="Calc.cs" />
     <Compile Include="KeybindManager.cs" />
     <Compile Include="LinkedMovement.cs" />
@@ -120,9 +120,10 @@
     <Compile Include="SelectionHandler.cs" />
     <Compile Include="Selection\HitUtility.cs" />
     <Compile Include="Selection\VisibilityObjectSelectionTool.cs" />
-    <Compile Include="BLERGUI\__FieldsWindow.cs" />
-    <Compile Include="BLERGUI\__SelectWindow.cs" />
-    <Compile Include="BLERGUI\__WindowBase.cs" />
+    <Compile Include="UI\WindowManager.cs" />
+    <Compile Include="UI\__FieldsWindow.cs" />
+    <Compile Include="UI\__SelectWindow.cs" />
+    <Compile Include="UI\__WindowBase.cs" />
     <Compile Include="Utils\Block.cs" />
     <Compile Include="Utils\BoundsExtensions.cs" />
   </ItemGroup>

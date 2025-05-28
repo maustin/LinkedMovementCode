@@ -3,7 +3,7 @@ using RapidGUI;
 using UnityEngine;
 using static RapidGUI.RGUI;
 
-namespace LinkedMovement.BLERGUI.Utils {
+namespace LinkedMovement.UI.Utils {
     internal static class Controls {
         internal struct ValidationTextFieldResult<T> {
             public bool Valid;

@@ -3,7 +3,7 @@ using RapidGUI;
 using UnityEngine;
 using static UnityEngine.GUI;
 
-namespace LinkedMovement.BLERGUI.Utils {
+namespace LinkedMovement.UI.Utils {
     //todo: don't show when `Esc` Menu
     internal sealed class CollapsibleWindow : TitleContent<CollapsibleWindow>, IDoGUIWindow {
         public CollapsibleWindow(string name) : base(name) { }

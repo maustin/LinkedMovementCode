@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace LinkedMovement.BLERGUI.Utils {
+namespace LinkedMovement.UI.Utils {
     public sealed class Scope : IDisposable {
         private static readonly Scope horizontal = new(GUILayout.EndHorizontal);
         public static Scope Horizontal() {

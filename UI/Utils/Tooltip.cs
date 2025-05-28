@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace LinkedMovement.BLERGUI.Utils {
+namespace LinkedMovement.UI.Utils {
     public static class Tooltip {
         private static readonly Vector2 Offset = new Vector2(10.0f, 13.0f);
 

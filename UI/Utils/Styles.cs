@@ -1,7 +1,7 @@
 ﻿using RapidGUI;
 using UnityEngine;
 
-namespace LinkedMovement.BLERGUI.Utils {
+namespace LinkedMovement.UI.Utils {
     public static class Styles {
         public static GUIStyle DarkWindowTitleBarStyle;
         private static void InitializeDarkWindowTitleBarStyle() {

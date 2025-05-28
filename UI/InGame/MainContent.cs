@@ -1,13 +1,14 @@
-﻿using LinkedMovement.BLERGUI.Utils;
+﻿using LinkedMovement.UI.Utils;
 using RapidGUI;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
 using static UnityEngine.GUILayout;
 
-namespace LinkedMovement.BLERGUI.InGame {
+namespace LinkedMovement.UI.InGame {
     internal sealed class MainContent : IDoGUI {
         private LinkedMovementController controller;
+
         private string[] selectionModeNames = { Selection.Mode.Individual.ToString(), Selection.Mode.Box.ToString() };
         private Selection.Mode[] selectionModes = { Selection.Mode.Individual, Selection.Mode.Box };
         private int selectedSelectionMode = 0;
@@ -35,13 +36,14 @@ namespace LinkedMovement.BLERGUI.InGame {
             return null;
         }
 
-        public MainContent(LinkedMovementController controller) {
-            this.controller = controller;
+        public MainContent() {
+            controller = LinkedMovement.GetController();
         }
 
         // TODO: Possibly should call controller methods after UI update has completed (e.g. call later)
 
         public void DoGUI() {
+            LinkedMovement.Log("MainContent DoGUI");
             if (controller == null) {
                 LinkedMovement.Log("NO CONTROLLER SET!");
                 return;
@@ -128,7 +130,7 @@ namespace LinkedMovement.BLERGUI.InGame {
                 }
 
                 var targetObjects = controller.targetObjects;
-                targetsScrollPosition = BeginScrollView(targetsScrollPosition);
+                targetsScrollPosition = BeginScrollView(targetsScrollPosition, GUILayout.Height(300f));
                 foreach (var targetObject in targetObjects) {
                     using (Scope.Horizontal()) {
                         Label(targetObject.getName());

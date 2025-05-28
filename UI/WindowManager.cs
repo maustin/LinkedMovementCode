@@ -61,7 +61,7 @@ namespace LinkedMovement.UI {
                 var width = 400f;
                 existingLinks = new WindowLauncher("Existing Links", width);
                 existingLinks.SetHeight(500f);
-                existingLinks.rect.position = new Vector2(Screen.width * 0.5f - width * 0.5f, Screen.height * 0.5f);
+                existingLinks.rect.position = new Vector2(Screen.width * 0.5f - width * 0.5f, Screen.height * 0.5f - 250f);
                 var existingPairsContent = new ExistingLinksContent();
                 existingLinks.Add(existingPairsContent.DoGUI);
                 existingLinks.Open();
@@ -69,7 +69,7 @@ namespace LinkedMovement.UI {
             }
         }
 
-        public void OnGUI()
+        public void DoGUI()
         {
             //LinkedMovement.Log("WindowManager.OnGUI start");
             if (mainWindow != null) {

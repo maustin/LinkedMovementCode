@@ -174,7 +174,7 @@ namespace LinkedMovement {
         }
 
         private void OnGUI() {
-            windowManager.OnGUI();
+            windowManager.DoGUI();
         }
 
         public void addPairing(Pairing pairing) {

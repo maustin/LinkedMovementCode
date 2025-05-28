@@ -63,35 +63,18 @@ namespace LinkedMovement.UI.InGame {
                 LinkedMovement.GetController().setBaseRotationOffset(baseRotationOffset);
             }
 
-            //LinkedMovement.Log("MainContent.DoGUI");
-            //LinkedMovement.Log(Environment.StackTrace);
-
-            //LinkedMovement.Log("Begin");
-            //LinkedMovement.Log(Event.current.type.ToString());
-
-            //if (Event.current.type == EventType.Repaint) {
-            //    LinkedMovement.Log("Skip Repaint");
-            //    return;
-            //}
-            //LinkedMovement.Log("Draw");
-
             using (Scope.Vertical()) {
-                //Space(10f);
+                Space(10f);
                 ShowExistingButton();
                 Space(10f);
                 ShowBaseSelect();
-                //Space(30f);
-                Space(15f);
-                //GUILayout.Box("", GUILayout.ExpandWidth(true), GUILayout.Height(0.1f));
-                Space(15f);
+                Space(30f);
                 ShowTargetsSelect();
                 Space(15f);
                 ShowPairName();
                 Space(5f);
                 ShowJoin();
             }
-
-            //LinkedMovement.Log("End MainContent");
         }
 
         private void ShowExistingButton() {

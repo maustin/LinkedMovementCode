@@ -31,7 +31,10 @@ namespace LinkedMovement.UI.InGame {
                 }
                 using (Scope.Horizontal()) {
                     GUILayout.Space(10f);
-                    GUILayout.Label(pairing.baseGO.name);
+                    if (GUILayout.Button(pairing.baseGO.name, RGUIStyle.flatButtonLeft)) {
+                        LinkedMovement.Log("Focus base " + pairing.baseGO.name);
+                        GameController.Instance.cameraController.focusOn(pairing.baseGO.transform.position);
+                    }
                 }
                 foreach (var target in pairing.targetGOs) {
                     using (Scope.Horizontal()) {

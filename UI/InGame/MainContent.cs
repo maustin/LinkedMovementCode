@@ -64,8 +64,13 @@ namespace LinkedMovement.UI.InGame {
                 Space(10f);
                 ShowExistingButton();
                 Space(10f);
+                GUILayout.Box("", new GUIStyle(GUI.skin.box), GUILayout.Height(1), GUILayout.ExpandWidth(true));
+                Space(10f);
                 ShowBaseSelect();
-                Space(30f);
+                //Space(30f);
+                Space(20f);
+                GUILayout.Box("", new GUIStyle(GUI.skin.box), GUILayout.Height(5), GUILayout.ExpandWidth(true));
+                Space(10f);
                 ShowTargetsSelect();
                 Space(15f);
                 ShowPairName();
@@ -87,7 +92,7 @@ namespace LinkedMovement.UI.InGame {
         private void ShowBaseSelect() {
             using (Scope.Vertical()) {
                 using (Scope.Horizontal()) {
-                    Label("Base");
+                    Label("Base Object");
                     if (Button("Select", Width(65))) {
                         controller.pickBaseObject();
                     }
@@ -131,7 +136,7 @@ namespace LinkedMovement.UI.InGame {
             bool hasSelectedBlueprint = selectedBlueprintName != null;
             using (Scope.Vertical()) {
                 using (Scope.Horizontal()) {
-                    Label("Targets");
+                    Label("Target Objects");
                     using (Scope.GuiEnabled(!hasSelectedBlueprint)) {
                         if (Button("Select", Width(65))) {
                             controller.pickTargetObject(selectionModes[selectedSelectionMode]);

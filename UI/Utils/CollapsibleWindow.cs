@@ -82,6 +82,8 @@ namespace LinkedMovement.UI.Utils {
                 return;
             }
 
+            Debug.Log("CollapsibleWindow DoGUIWindow~");
+
             ApplyCustomSize();
 
             if (Minimized) {

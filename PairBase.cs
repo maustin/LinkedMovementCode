@@ -38,10 +38,7 @@
         [Serialized]
         public float rotOffsetZ;
 
-        public PairBase() {
-            //LinkedMovement.Log("PairBase DEFAULT CONTRUCTOR: " + pairId);
-            //LinkedMovement.GetController().addPairBase(this);
-        }
+        public PairBase() {}
 
         public PairBase(string pId, string pName, float positionOffsetX = 0f, float positionOffsetY = 0f, float positionOffsetZ = 0f, float rotationOffsetX = 0f, float rotationOffsetY = 0f, float rotationOffsetZ = 0f) {
             pairId = pId;

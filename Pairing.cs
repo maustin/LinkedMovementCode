@@ -59,6 +59,8 @@ namespace LinkedMovement
                 return;
             }
 
+            LinkedMovement.GetController().removeAnimatedBuildableObject(baseBO);
+
             LinkedMovement.Log("iterate targetGOs");
             foreach (GameObject targetGO in targetGOs) {
                 // If ChunkedMesh, it's a built-in object and we need to handle it
@@ -94,8 +96,20 @@ namespace LinkedMovement
                     return;
                 }
 
-                targetGO.transform.position = baseGO.transform.position + new Vector3(pairTarget.offsetX, pairTarget.offsetY, pairTarget.offsetZ) + new Vector3(pairBase.posOffsetX, pairBase.posOffsetY, pairBase.posOffsetZ);
-                LinkedMovement.Log($"TP x: {targetGO.transform.position.x}, y: {targetGO.transform.position.y}, z: {targetGO.transform.position.z}");
+                LinkedMovement.GetController().removeAnimatedBuildableObject(targetBO);
+
+                targetGO.transform.localPosition = Vector3.zero;
+
+                var pairTargetOffset = new Vector3(pairTarget.offsetX, pairTarget.offsetY, pairTarget.offsetZ);
+                var pairBaseOffset = new Vector3(pairBase.posOffsetX, pairBase.posOffsetY, pairBase.posOffsetZ);
+
+                LinkedMovement.Log("Base pos: " + baseGO.transform.position.ToString());
+                LinkedMovement.Log("PairTargetOffset: " + pairTargetOffset.ToString());
+                LinkedMovement.Log("PairBaseOffset: " + pairBaseOffset.ToString());
+
+                targetGO.transform.position = baseGO.transform.position + pairTargetOffset + pairBaseOffset;
+                LinkedMovement.Log($"World x: {targetGO.transform.position.x}, y: {targetGO.transform.position.y}, z: {targetGO.transform.position.z}");
+                LinkedMovement.Log($"Local x: {targetGO.transform.localPosition.x}, y: {targetGO.transform.localPosition.y}, z: {targetGO.transform.localPosition.z}");
                 TAUtils.AttachTargetToBase(baseGO.transform, targetGO.transform);
             }
 
@@ -121,17 +135,16 @@ namespace LinkedMovement
             var baseBO = baseGO.GetComponent<BuildableObject>();
             baseBO.addCustomData(getPairBase(basePositionOffset.x, basePositionOffset.y, basePositionOffset.z, baseRotationOffset.x, baseRotationOffset.y, baseRotationOffset.z));
 
+            LinkedMovement.Log("setCustomData basePositionOffset: " + basePositionOffset.ToString());
+
             foreach (GameObject targetGO in targetGOs) {
                 var offset = Vector3.zero;
                 if (useTargetPositionOffset) {
-                    var baseP = baseGO.transform.position;
-                    var targetP = targetGO.transform.position;
-                    offset = targetP;
-                    //LinkedMovement.Log($"Base pos x: {baseP.x}, y: {baseP.y}, z: {baseP.z}");
-                    //LinkedMovement.Log($"Targ pos x: {targetP.x}, y: {targetP.y}, z: {targetP.z}");
-                    //LinkedMovement.Log($"Offs pos x: {offset.x}, y: {offset.y}, z: {offset.z}");
-                    //LinkedMovement.Log("---");
+                    offset = targetGO.transform.position;
                 }
+                
+                LinkedMovement.Log("offset: " + offset.ToString());
+
                 var targetBO = targetGO.GetComponent<BuildableObject>();
                 targetBO.addCustomData(getPairTarget(offset.x, offset.y, offset.z));
             }

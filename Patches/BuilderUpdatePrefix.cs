@@ -1,13 +1,9 @@
 ﻿using HarmonyLib;
-using LinkedMovement;
-using System;
 using System.Reflection;
-using UnityEngine;
 
 #nullable disable
 [HarmonyPatch]
 class BuilderUpdatePrefix {
-    [HarmonyTargetMethod]
     static MethodBase TargetMethod() {
         MethodBase methodBase = (MethodBase)AccessTools.Method(typeof(Builder), "Update");
         if (methodBase != null) {

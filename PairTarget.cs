@@ -34,10 +34,7 @@
         [Serialized]
         public float offsetZ = 0;
 
-        public PairTarget() {
-            //LinkedMovement.Log("PairTarget DEFAULT CONSTRUCTOR: " + pairId);
-            //LinkedMovement.GetController().addPairTarget(this);
-        }
+        public PairTarget() {}
 
         public PairTarget(string pId, float offX = 0, float offY = 0, float offZ = 0) {
             pairId = pId;

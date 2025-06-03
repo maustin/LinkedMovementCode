@@ -23,6 +23,14 @@ namespace LinkedMovement {
         public BuildableObject baseObject { get; private set; }
         public List<BuildableObject> targetObjects { get; private set; }
 
+        public List<BuildableObject> animatedBuildableObjects { get; private set; }
+        public void addAnimatedBuildableObject(BuildableObject bo) {
+            animatedBuildableObjects.Add(bo);
+        }
+        public void removeAnimatedBuildableObject(BuildableObject bo) {
+            animatedBuildableObjects.Remove(bo);
+        }
+
         private List<Pairing> pairings = new List<Pairing>();
 
         public BlueprintBuilder selectedBlueprintBuilder { get; private set; }
@@ -34,13 +42,11 @@ namespace LinkedMovement {
         public Vector3 basePositionOffset { get; private set; }
         public void setBasePositionOffset(Vector3 value) {
             basePositionOffset = value;
-            //tryToCreateBlueprintBuilder();
             tryUpdateTargetsTransform();
         }
         public Vector3 baseRotationOffset { get; private set; }
         public void setBaseRotationOffset(Vector3 value) {
             baseRotationOffset = value;
-            //tryToCreateBlueprintBuilder();
             tryUpdateTargetsTransform();
         }
 
@@ -57,7 +63,6 @@ namespace LinkedMovement {
             LinkedMovement.Log("setSelectedBlueprint " + blueprint.getName());
             
             selectedBlueprint = blueprint;
-            //tryToCreateBlueprintBuilder();
             tryUpdateTargetsTransform();
         }
 
@@ -97,16 +102,24 @@ namespace LinkedMovement {
             // Set transforms for single targets if present
             foreach (var targetBO in targetObjects) {
                 LinkedMovement.Log("LMController tryUpdateTargetsTransform for target " + targetBO.name);
-                // TODO: Save original parent & pos?
-                //targetGO.transform.position = baseGO.transform.position + new Vector3(pairTarget.offsetX, pairTarget.offsetY, pairTarget.offsetZ) + new Vector3(pairBase.posOffsetX, pairBase.posOffsetY, pairBase.posOffsetZ);
+
+                LinkedMovement.Log("Target BO PRE position:");
+                LinkedMovement.Log("World: " + targetBO.transform.position.ToString());
+                LinkedMovement.Log("Local: " + targetBO.transform.localPosition.ToString());
+                
                 targetBO.transform.position = baseObject.transform.position + new Vector3(basePositionOffset.x, basePositionOffset.y, basePositionOffset.z);
                 targetBO.transform.SetParent(baseObject.transform);
+
+                LinkedMovement.Log("Target BO POST position:");
+                LinkedMovement.Log("World: " + targetBO.transform.position.ToString());
+                LinkedMovement.Log("Local: " + targetBO.transform.localPosition.ToString());
             }
         }
 
         private void Awake() {
             LinkedMovement.Log("LinkedMovementController Awake");
             targetObjects = new List<BuildableObject>();
+            animatedBuildableObjects = new List<BuildableObject>();
             windowManager = new WindowManager();
             selectionHandler = gameObject.AddComponent<SelectionHandler>();
             selectionHandler.controller = this;
@@ -147,6 +160,10 @@ namespace LinkedMovement {
 
             var mouseTool = GameController.Instance.getActiveMouseTool();
             if (mouseTool == null) return;
+
+            foreach (var bo in animatedBuildableObjects) {
+                TAUtils.UpdateMouseColliders(bo);
+            }
 
             foreach (var pairing in pairings) {
                 pairing.update();
@@ -231,7 +248,6 @@ namespace LinkedMovement {
                 clearBaseObject();
                 baseObject = bo;
                 setupBaseObject();
-                //tryToCreateBlueprintBuilder();
             }
             else if (isSettingTarget) {
                 targetObjects.Add(bo);
@@ -313,11 +329,10 @@ namespace LinkedMovement {
             foreach (var bo in targetObjects) {
                 targetGOs.Add(bo.gameObject);
             }
+            LinkedMovement.Log("Join # single targets: " + targetGOs.Count);
 
             var pairing = new Pairing(baseObject.gameObject, targetGOs, null, pairName);
-            // TODO: Preview single objects & use offsets
-            pairing.setCustomData(true, basePositionOffset, baseRotationOffset);
-            //pairing.setCustomData();
+            pairing.setCustomData(false, basePositionOffset, baseRotationOffset);
             pairing.connect();
 
             clearAllSelections();

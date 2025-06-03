@@ -20,6 +20,8 @@ class SerializedMonoBehaviourOnDestroyPostfix {
         var bo = __instance as BuildableObject;
         if (bo == null) return;
 
+        LinkedMovement.LinkedMovement.GetController().removeAnimatedBuildableObject(bo);
+
         PairBase pairBase;
         bo.tryGetCustomData(out pairBase);
 

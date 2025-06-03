@@ -1,5 +1,6 @@
 ﻿// ATTRIB: HideScenery (very partial)
 using LinkedMovement.UI;
+using Parkitect.UI;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -34,7 +35,7 @@ namespace LinkedMovement {
             targetObject.SetParent(baseTransform);
         }
 
-        // TODO: Move this too to utils
+        // TODO: Move this to to utils
         static public List<BlueprintFile> FindDecoBlueprints(IList<BlueprintFile> blueprints) {
             var list = new List<BlueprintFile>();
             foreach (var blueprint in blueprints) {
@@ -62,14 +63,6 @@ namespace LinkedMovement {
         public List<BuildableObject> targetObjects { get; private set; }
 
         private List<Pairing> pairings = new List<Pairing>();
-
-        private List<BuildableObject> platformObjects = new List<BuildableObject>();
-        public void addPlatformObject(BuildableObject bo) {
-            platformObjects.Add(bo);
-        }
-        public void removePlatformObject(BuildableObject bo) {
-            platformObjects.Remove(bo);
-        }
 
         public BlueprintBuilder selectedBlueprintBuilder { get; private set; }
 
@@ -167,22 +160,37 @@ namespace LinkedMovement {
                 windowManager.showMainWindow();
             }
 
-            // TODO: This might be CPU taxing!
-            foreach (var bo in platformObjects) {
-                MouseCollisions.Instance.addColliders(bo);
+            var mouseTool = GameController.Instance.getActiveMouseTool();
+            if (mouseTool == null) return;
+
+            foreach (var pairing in pairings) {
+                pairing.update();
             }
         }
 
         private void OnGUI() {
+            if (OptionsMenu.instance != null) return;
+
             windowManager.DoGUI();
+        }
+
+        public List<Pairing> getPairings() {
+            return pairings;
+        }
+
+        public Pairing findPairingByID(string id) {
+            foreach (var pairing in pairings) {
+                if (pairing.pairingId == id) return pairing;
+            }
+            return null;
         }
 
         public void addPairing(Pairing pairing) {
             pairings.Add(pairing);
         }
 
-        public List<Pairing> getPairings() {
-            return pairings;
+        public bool removePairing(Pairing pairing) {
+            return pairings.Remove(pairing);
         }
 
         public void pickBaseObject() {
@@ -299,7 +307,6 @@ namespace LinkedMovement {
                 catchCreatedObjects = true;
                 blueprintCreatedObjects.Clear();
                 selectedBlueprintBuilder.OnBuildTriggered += (Builder.OnBuildTriggeredHandler)(() => {
-                    // TODO: This might need to be a delayed call?
                     LinkedMovement.Log("OnBuildTriggered");
                     catchCreatedObjects = false;
                     
@@ -309,7 +316,6 @@ namespace LinkedMovement {
                     pairing.setCustomData(true, basePositionOffset, baseRotationOffset);
                     pairing.connect();
 
-                    // TODO: Eliminate duplicate code
                     clearAllSelections();
                     clearSelection();
                 });

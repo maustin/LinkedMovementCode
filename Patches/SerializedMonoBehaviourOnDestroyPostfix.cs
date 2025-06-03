@@ -7,7 +7,6 @@ using UnityEngine;
 #nullable disable
 [HarmonyPatch]
 class SerializedMonoBehaviourOnDestroyPostfix {
-    [HarmonyTargetMethod]
     static MethodBase TargetMethod() {
         MethodBase methodBase = (MethodBase)AccessTools.Method(typeof(SerializedMonoBehaviour), "OnDestroy");
         if (methodBase != null) {
@@ -21,23 +20,22 @@ class SerializedMonoBehaviourOnDestroyPostfix {
     [HarmonyPostfix]
     static void OnDestroy(SerializedMonoBehaviour __instance) {
         var bo = __instance as BuildableObject;
-        if (bo != null) {
-            var baseTransform = bo.transform;
-            bool foundPlatform = false;
+        if (bo == null) return;
 
-            var baseChildrenCount = baseTransform.childCount;
-            for (var i = 0; i < baseChildrenCount; i++) {
-                var child = baseTransform.GetChild(i);
-                var childName = child.gameObject.name;
-                if (childName.Contains("[Platform]")) {
-                    foundPlatform = true;
-                    break;
-                }
-            }
-            if (foundPlatform) {
-                LinkedMovement.LinkedMovement.Log("Found Platform, OnDestroy");
-                LinkedMovement.LinkedMovement.GetController().removePlatformObject(bo);
-            }
+        PairBase pairBase;
+        bo.tryGetCustomData(out pairBase);
+
+        if (pairBase != null) {
+            LinkedMovement.LinkedMovement.Log("SerializedMonoBehaviour.OnDestroy destroy PairBase");
+            PairBase.Destroy(bo, pairBase);
+        }
+
+        PairTarget pairTarget;
+        bo.tryGetCustomData(out pairTarget);
+
+        if (pairTarget != null) {
+            LinkedMovement.LinkedMovement.Log("SerializedMonoBehaviour.OnDestroy destroy PairTarget");
+            PairTarget.Destroy(bo, pairTarget);
         }
     }
 }

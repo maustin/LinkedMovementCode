@@ -6,9 +6,30 @@ namespace LinkedMovement
 {
     public class Pairing {
         public GameObject baseGO;
+        // TODO: add getter/setter?
         public List<GameObject> targetGOs = new List<GameObject>();
         public string pairingId;
         public string pairingName;
+
+        private bool connected = false;
+
+        // TODO: Move to utils
+        public void UpdateMouseColliders(BuildableObject bo) {
+            if (bo.mouseColliders != null) {
+                foreach (MouseCollider mouseCollider in bo.mouseColliders)
+                    mouseCollider.updatePosition();
+            }
+        }
+
+        // TODO: Move to utils
+        public void Destroy(Pairing pairing) {
+            // This pairing has been cleared
+            LinkedMovement.Log("Destroy Pairing " + pairing.getPairingName());
+            var didRemove = LinkedMovement.GetController().removePairing(pairing);
+            if (!didRemove) {
+                LinkedMovement.Log("ERROR! Failed to find Pairing");
+            }
+        }
 
         public Pairing() {
             LinkedMovement.Log("Pairing DEFAULT CONTSTRUCTOR");
@@ -40,6 +61,12 @@ namespace LinkedMovement
                 return;
             }
 
+            var baseBO = baseGO.GetComponent<BuildableObject>();
+            if (baseBO == null) {
+                LinkedMovement.Log("MISSING BASE BO!");
+                return;
+            }
+
             LinkedMovement.Log("iterate targetGOs");
             foreach (GameObject targetGO in targetGOs) {
                 // If ChunkedMesh, it's a built-in object and we need to handle it
@@ -56,11 +83,6 @@ namespace LinkedMovement
                     }
                 }
 
-                var baseBO = baseGO.GetComponent<BuildableObject>();
-                if (baseBO == null) {
-                    LinkedMovement.Log("MISSING BASE BO!");
-                    return;
-                }
                 PairBase pairBase;
                 baseBO.tryGetCustomData(out pairBase);
                 if (pairBase == null) {
@@ -83,6 +105,22 @@ namespace LinkedMovement
                 targetGO.transform.position = baseGO.transform.position + new Vector3(pairTarget.offsetX, pairTarget.offsetY, pairTarget.offsetZ) + new Vector3(pairBase.posOffsetX, pairBase.posOffsetY, pairBase.posOffsetZ);
                 LinkedMovement.Log($"TP x: {targetGO.transform.position.x}, y: {targetGO.transform.position.y}, z: {targetGO.transform.position.z}");
                 LinkedMovementController.AttachTargetToBase(baseGO.transform, targetGO.transform);
+            }
+
+            connected = true;
+        }
+
+        public void update() {
+            if (!connected) return;
+
+            UpdateMouseColliders(baseGO.GetComponent<BuildableObject>());
+
+            foreach (GameObject targetGO in targetGOs) {
+                var targetBO = targetGO.GetComponent<BuildableObject>();
+                if (targetBO == null) {
+                    continue;
+                }
+                UpdateMouseColliders(targetBO);
             }
         }
 
@@ -115,5 +153,27 @@ namespace LinkedMovement
             return new PairTarget(pairingId, offsetX, offsetY, offsetZ);
         }
 
+        public void removePairTarget(GameObject targetGO) {
+            var didRemove = targetGOs.Remove(targetGO);
+            if (!didRemove) {
+                LinkedMovement.Log("ERROR! Pairing.removePairTarget failed to find target!!");
+            }
+
+            if (targetGOs.Count == 0) {
+                LinkedMovement.Log("Pairing has no more children, destroy");
+                Destroy(this);
+            }
+        }
+
+        public void removePairTargets() {
+            var cloneTargetGOs = new List<GameObject>(targetGOs);
+            foreach (var targetGO in cloneTargetGOs) {
+                removePairTarget(targetGO);
+            }
+        }
+
+        public string getPairingName() {
+            return pairingName != "" ? pairingName : pairingId;
+        }
     }
 }

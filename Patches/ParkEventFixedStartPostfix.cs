@@ -38,11 +38,13 @@ class ParkEventFixedStartPostfix {
                     foreach (var pairTarget in pairTargets) {
                         pairTargetGOs.Add(pairTarget.gameObject);
                     }
+
                     LinkedMovement.LinkedMovement.Log($"Creating Pairing with {pairTargetGOs.Count} targets");
                     var pairing = new Pairing(so.gameObject, pairTargetGOs, pairBase.pairId, pairBase.pairName);
                     pairing.connect();
                 } else {
-                    LinkedMovement.LinkedMovement.Log("No pair matches found");
+                    LinkedMovement.LinkedMovement.Log("No pair matches found, remove PairBase");
+                    so.removeCustomData<PairBase>();
                 }
             }
         }

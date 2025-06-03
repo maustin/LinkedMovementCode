@@ -34,7 +34,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Patches\SerializedMonoBehaviourInitializePostfix.cs" />
     <Compile Include="Patches\SerializedMonoBehaviourOnDestroyPostfix.cs" />
     <Compile Include="UI\InGame\ExistingLinksContent.cs" />
     <Compile Include="UI\InGame\MainContent.cs" />

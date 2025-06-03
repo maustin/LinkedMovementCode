@@ -25,7 +25,7 @@ namespace LinkedMovement.UI.InGame {
 
         private void buildPairingUI(Pairing pairing) {
             using (Scope.Vertical()) {
-                var name = pairing.pairingName != "" ? pairing.pairingName : pairing.pairingId;
+                var name = pairing.getPairingName();
                 using (Scope.Horizontal()) {
                     GUILayout.Label(name);
                 }

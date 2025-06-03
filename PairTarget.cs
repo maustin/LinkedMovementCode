@@ -1,6 +1,27 @@
 ﻿namespace LinkedMovement
 {
     public class PairTarget : SerializedRawObject {
+        // TODO: Move to utils?
+        public static void Destroy(BuildableObject bo, PairTarget pairTarget) {
+            PairBase pairBase;
+            bo.tryGetCustomData(out pairBase);
+
+            if (pairBase != null) {
+                PairBase.Destroy(bo, pairBase);
+            }
+
+            // destroy target
+            var pairing = LinkedMovement.GetController().findPairingByID(pairTarget.pairId);
+            if (pairing != null) {
+                pairing.removePairTarget(bo.gameObject);
+            } else {
+                // Shouldn't happen!
+                LinkedMovement.Log("ERROR! PairTarget.Destroy failed to find Pairing!! " + bo.name);
+            }
+
+            bo.removeCustomData<PairTarget>();
+        }
+
         [Serialized]
         public string pairId;
 

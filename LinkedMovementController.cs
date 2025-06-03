@@ -22,6 +22,7 @@ namespace LinkedMovement {
 
         public BuildableObject baseObject { get; private set; }
         public List<BuildableObject> targetObjects { get; private set; }
+        public Dictionary<BuildableObject, Vector3> targetOriginTransformPositions { get; private set; }
 
         public List<BuildableObject> animatedBuildableObjects { get; private set; }
         public void addAnimatedBuildableObject(BuildableObject bo) {
@@ -119,6 +120,7 @@ namespace LinkedMovement {
         private void Awake() {
             LinkedMovement.Log("LinkedMovementController Awake");
             targetObjects = new List<BuildableObject>();
+            targetOriginTransformPositions = new Dictionary<BuildableObject, Vector3>();
             animatedBuildableObjects = new List<BuildableObject>();
             windowManager = new WindowManager();
             selectionHandler = gameObject.AddComponent<SelectionHandler>();
@@ -251,6 +253,9 @@ namespace LinkedMovement {
             }
             else if (isSettingTarget) {
                 targetObjects.Add(bo);
+                var p = bo.transform.position;
+                var tarPosition = new Vector3(p.x, p.y, p.z);
+                targetOriginTransformPositions.Add(bo, tarPosition);
             } else {
                 LinkedMovement.Log("setSelectedBuildableObject while NOT SELECTING");
                 return;
@@ -284,6 +289,17 @@ namespace LinkedMovement {
         }
 
         public void clearTargetObject(BuildableObject target) {
+            LinkedMovement.Log("Controller clearTargetObject");
+            target.transform.SetParent(null);
+            Vector3 priorTargetPosition;
+            targetOriginTransformPositions.TryGetValue(target, out priorTargetPosition);
+            if (priorTargetPosition != null) {
+                LinkedMovement.Log("clearTargetObject found prior and resetting");
+                target.transform.position = priorTargetPosition;
+            } else {
+                LinkedMovement.Log("clearTargetObject failed to find prior!");
+            }
+            targetOriginTransformPositions.Remove(target);
             targetObjects.Remove(target);
         }
 
@@ -293,6 +309,7 @@ namespace LinkedMovement {
 
         public void clearAllSelections() {
             pairName = "";
+            targetOriginTransformPositions.Clear();
             clearBaseObject();
             clearTargetObjects();
             tryToDestroyExistingBlueprintBuilder();

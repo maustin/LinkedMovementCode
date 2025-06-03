@@ -50,12 +50,7 @@
     <Compile Include="Patches\BlueprintBuildCommandInstantiateBuilderImplementationPostfix.cs" />
     <Compile Include="Patches\BlueprintBuilderImplementationOnAfterBuildPostfix.cs" />
     <Compile Include="Patches\BlueprintBuilderInstantiateBuildableObjectPreviewPostfix.cs" />
-    <Compile Include="Patches\BlueprintBuilderOnEnablePostfix.cs" />
-    <Compile Include="Patches\BlueprintBuildingPanelInstantiateBuilderPostfix.cs" />
-    <Compile Include="Patches\BuilderUpdatePrefix.cs" />
     <Compile Include="Patches\ChunkedMeshEventStartPrefix.cs" />
-    <Compile Include="Patches\EventManagerRaiseOnBlueprintBuildStartedPostfix.cs" />
-    <Compile Include="Patches\EventManagerRaiseOnBlueprintBuiltPostfix.cs" />
     <Compile Include="Patches\ParkEventFixedStartPostfix.cs" />
     <Compile Include="Patches\ParkInitializePostfix.cs" />
     <Compile Include="AltUI\BaseWindow.cs" />

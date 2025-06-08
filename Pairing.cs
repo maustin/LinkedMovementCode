@@ -165,6 +165,11 @@ namespace LinkedMovement
         public void updatePairingBaseOffset(Vector3 newPositionOffset) {
             LinkedMovement.Log("Pairing.updatePairingBaseOffset");
             var baseBO = TAUtils.GetBuildableObjectFromGameObject(baseGO);
+
+            var baseAnimator = baseBO.GetComponent<Animator>();
+            baseAnimator.Rebind();
+            baseAnimator.Update(0f);
+
             var pairBase = TAUtils.GetPairBaseFromSerializedMonoBehaviour(baseBO);
             pairBase.setPositionOffset(newPositionOffset);
 

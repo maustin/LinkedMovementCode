@@ -47,10 +47,27 @@ namespace LinkedMovement.Utils {
         }
 
         static public string GetGameObjectBuildableName(GameObject go) {
-            var buildableObject = go.GetComponent<BuildableObject>();
+            var buildableObject = GetBuildableObjectFromGameObject(go);
             if (buildableObject != null)
                 return buildableObject.getName();
             return go.name;
+        }
+
+        static public BuildableObject GetBuildableObjectFromGameObject(GameObject go) {
+            var buildableObject = go.GetComponent<BuildableObject>();
+            return buildableObject;
+        }
+
+        static public PairBase GetPairBaseFromSerializedMonoBehaviour(SerializedMonoBehaviour smb) {
+            PairBase pairBase;
+            smb.tryGetCustomData(out pairBase);
+            return pairBase;
+        }
+
+        static public PairTarget GetPairTargetFromSerializedMonoBehaviour(SerializedMonoBehaviour smb) {
+            PairTarget pairTarget;
+            smb.tryGetCustomData(out pairTarget);
+            return pairTarget;
         }
     }
 }

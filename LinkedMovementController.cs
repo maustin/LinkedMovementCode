@@ -104,16 +104,8 @@ namespace LinkedMovement {
             foreach (var targetBO in targetObjects) {
                 LinkedMovement.Log("LMController tryUpdateTargetsTransform for target " + targetBO.name);
 
-                LinkedMovement.Log("Target BO PRE position:");
-                LinkedMovement.Log("World: " + targetBO.transform.position.ToString());
-                LinkedMovement.Log("Local: " + targetBO.transform.localPosition.ToString());
-                
                 targetBO.transform.position = baseObject.transform.position + new Vector3(basePositionOffset.x, basePositionOffset.y, basePositionOffset.z);
                 targetBO.transform.SetParent(baseObject.transform);
-
-                LinkedMovement.Log("Target BO POST position:");
-                LinkedMovement.Log("World: " + targetBO.transform.position.ToString());
-                LinkedMovement.Log("Local: " + targetBO.transform.localPosition.ToString());
             }
         }
 

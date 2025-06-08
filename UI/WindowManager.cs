@@ -29,7 +29,7 @@ namespace LinkedMovement.UI {
             {
                 LinkedMovement.Log("WindowManager Show Main Window");
                 var width = 400f;
-                mainWindow = new WindowLauncher("Anitect - Link Objects", width);
+                mainWindow = new WindowLauncher("Animatect - Link Objects", width);
                 mainWindow.rect.position = new Vector2(Screen.width - 200.0f - width, 75.0f);
                 var mainContent = new MainContent();
                 mainWindow.Add(mainContent.DoGUI);
@@ -48,7 +48,7 @@ namespace LinkedMovement.UI {
             }
 
             var width = 300f;
-            infoWindow = new WindowLauncher("Anitect - Info", width);
+            infoWindow = new WindowLauncher("Animatect - Info", width);
             infoWindow.rect.position = new Vector2(Screen.width * 0.5f - width * 0.5f, Screen.height * 0.5f);
             infoWindow.Add(() => GUILayout.Label(message));
             infoWindow.Open();
@@ -59,7 +59,7 @@ namespace LinkedMovement.UI {
             if (existingLinks == null) {
                 LinkedMovement.Log("WindowManager Show existing links");
                 var width = 400f;
-                existingLinks = new WindowLauncher("Anitect - Existing Links", width);
+                existingLinks = new WindowLauncher("Animatect - Existing Links", width);
                 existingLinks.SetHeight(500f);
                 existingLinks.rect.position = new Vector2(Screen.width * 0.5f - width * 0.5f, Screen.height * 0.5f - 250f);
                 var existingPairsContent = new ExistingLinksContent();

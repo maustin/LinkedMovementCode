@@ -12,10 +12,12 @@ namespace LinkedMovement.UI.InGame {
         private Vector2 scrollPosition;
 
         private Dictionary<Pairing, string> selectedPairingsAndNames;
+        private Dictionary<Pairing, Vector3> selectedPairingsBaseOffset;
 
         public ExistingLinksContent() {
             controller = LinkedMovement.GetController();
             selectedPairingsAndNames = new Dictionary<Pairing, string>();
+            selectedPairingsBaseOffset = new Dictionary<Pairing, Vector3>();
         }
 
         public void DoGUI() {
@@ -30,13 +32,18 @@ namespace LinkedMovement.UI.InGame {
         private void buildPairingUI(Pairing pairing) {
             using (Scope.Vertical()) {
                 var name = pairing.getPairingName();
+                var pairBase = pairing.getExistingPairBase();
                 using (Scope.Horizontal()) {
                     if (Button(name, RGUIStyle.flatButtonLeft)) {
                         var alreadyHasPairingNameField = selectedPairingsAndNames.ContainsKey(pairing);
                         if (alreadyHasPairingNameField == true) {
+                            // TODO: Make single method?
                             selectedPairingsAndNames.Remove(pairing);
+                            selectedPairingsBaseOffset.Remove(pairing);
                         } else {
+                            // TODO: Make single method?
                             selectedPairingsAndNames.Add(pairing, name);
+                            selectedPairingsBaseOffset.Add(pairing, pairBase.getPositionOffset());
                         }
                     }
                     if (Button("Delete", Width(65))) {
@@ -49,17 +56,27 @@ namespace LinkedMovement.UI.InGame {
                         var origPairName = selectedPairingsAndNames[pairing];
                         var newPairName = RGUI.Field(origPairName, "Pair Name: ");
                         if (newPairName != origPairName) {
-                            LinkedMovement.Log("Update pair name: " + newPairName);
+                            LinkedMovement.Log("ExistingLinksContent Update pair name: " + newPairName);
                             selectedPairingsAndNames[pairing] = newPairName;
 
                             pairing.updatePairingName(newPairName);
                         }
                     }
                     using (Scope.Horizontal()) {
+                        Label("Position offset");
+                        var existingPositionOffset = selectedPairingsBaseOffset[pairing];
+                        var newBasePositionOffset = RGUI.Field(existingPositionOffset);
+                        if (!existingPositionOffset.Equals(newBasePositionOffset)) {
+                            LinkedMovement.Log("ExistingLinksContent Update base offset");
+                            selectedPairingsBaseOffset[pairing] = newBasePositionOffset;
+                            pairing.updatePairingBaseOffset(newBasePositionOffset);
+                        }
+                    }
+                    using (Scope.Horizontal()) {
                         Space(10f);
                         var baseName = TAUtils.GetGameObjectBuildableName(pairing.baseGO);
                         if (Button(baseName, RGUIStyle.flatButtonLeft)) {
-                            LinkedMovement.Log("Focus base " + baseName);
+                            LinkedMovement.Log("ExistingLinksContent Focus base " + baseName);
                             GameController.Instance.cameraController.focusOn(pairing.baseGO.transform.position);
                         }
                     }

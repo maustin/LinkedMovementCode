@@ -45,13 +45,11 @@ namespace LinkedMovement
                 return;
             }
 
-            var baseBO = baseGO.GetComponent<BuildableObject>();
-            if (baseBO == null) {
-                LinkedMovement.Log("connect MISSING BASE BO!");
-                return;
-            }
+            var baseBO = TAUtils.GetBuildableObjectFromGameObject(baseGO);
 
             LinkedMovement.GetController().removeAnimatedBuildableObject(baseBO);
+
+            PairBase pairBase = TAUtils.GetPairBaseFromSerializedMonoBehaviour(baseBO);
 
             LinkedMovement.Log("connect iterate targetGOs");
             foreach (GameObject targetGO in targetGOs) {
@@ -69,24 +67,8 @@ namespace LinkedMovement
                     }
                 }
 
-                PairBase pairBase;
-                baseBO.tryGetCustomData(out pairBase);
-                if (pairBase == null) {
-                    LinkedMovement.Log("connect MISSING PAIRBASE!");
-                    return;
-                }
-
-                var targetBO = targetGO.GetComponent<BuildableObject>();
-                if (targetBO == null) {
-                    LinkedMovement.Log("connect MISSING TARGET BO!");
-                    return;
-                }
-                PairTarget pairTarget;
-                targetBO.tryGetCustomData(out pairTarget);
-                if (pairTarget == null) {
-                    LinkedMovement.Log("connect MISSING PAIRTARGET!");
-                    return;
-                }
+                var targetBO = TAUtils.GetBuildableObjectFromGameObject(targetGO);
+                PairTarget pairTarget = TAUtils.GetPairTargetFromSerializedMonoBehaviour(targetBO);
 
                 LinkedMovement.GetController().removeAnimatedBuildableObject(targetBO);
 
@@ -111,20 +93,17 @@ namespace LinkedMovement
         public void update() {
             if (!connected) return;
 
-            TAUtils.UpdateMouseColliders(baseGO.GetComponent<BuildableObject>());
+            var bo = TAUtils.GetBuildableObjectFromGameObject(baseGO);
+            TAUtils.UpdateMouseColliders(bo);
 
             foreach (GameObject targetGO in targetGOs) {
-                var targetBO = targetGO.GetComponent<BuildableObject>();
-                if (targetBO == null) {
-                    continue;
-                }
+                var targetBO = TAUtils.GetBuildableObjectFromGameObject(targetGO);
                 TAUtils.UpdateMouseColliders(targetBO);
             }
         }
 
         public void setCustomData(bool useTargetPositionOffset = false, Vector3 basePositionOffset = new Vector3(), Vector3 baseRotationOffset = new Vector3()) {
-            //LinkedMovement.Log("Pairing.setCustomData useOffset: " + useTargetPositionOffset);
-            var baseBO = baseGO.GetComponent<BuildableObject>();
+            var baseBO = TAUtils.GetBuildableObjectFromGameObject(baseGO);
             baseBO.addCustomData(getPairBase(basePositionOffset.x, basePositionOffset.y, basePositionOffset.z, baseRotationOffset.x, baseRotationOffset.y, baseRotationOffset.z));
 
             LinkedMovement.Log("setCustomData basePositionOffset: " + basePositionOffset.ToString());
@@ -137,13 +116,26 @@ namespace LinkedMovement
                 
                 LinkedMovement.Log("offset: " + offset.ToString());
 
-                var targetBO = targetGO.GetComponent<BuildableObject>();
+                var targetBO = TAUtils.GetBuildableObjectFromGameObject(targetGO);
                 targetBO.addCustomData(getPairTarget(offset.x, offset.y, offset.z));
             }
         }
 
         public PairBase getPairBase(float posOffsetX, float posOffsetY, float posOffsetZ, float rotOffsetX, float rotOffsetY, float rotOffsetZ) {
             return new PairBase(pairingId, pairingName, posOffsetX, posOffsetY, posOffsetZ, rotOffsetX, rotOffsetY, rotOffsetZ);
+        }
+
+        // TODO: Better name? Should this be a static? Theoretically this should never be null.
+        public PairBase getExistingPairBase() {
+            if (baseGO == null) {
+                LinkedMovement.Log("ERROR: getExistingPairBase has no existing baseGO");
+                return null;
+            }
+
+            var baseBO = TAUtils.GetBuildableObjectFromGameObject(baseGO);
+            PairBase pairBase = TAUtils.GetPairBaseFromSerializedMonoBehaviour(baseBO);
+
+            return pairBase;
         }
 
         public PairTarget getPairTarget(float offsetX, float offsetY, float offsetZ) {
@@ -164,20 +156,27 @@ namespace LinkedMovement
         public void updatePairingName(string newPairingName) {
             pairingName = newPairingName;
 
-            var baseBO = baseGO.GetComponent<BuildableObject>();
-            if (baseBO == null) {
-                LinkedMovement.Log("updatePairingName MISSING BASE BO!");
-                return;
-            }
-
-            PairBase pairBase;
-            baseBO.tryGetCustomData(out pairBase);
-            if (pairBase == null) {
-                LinkedMovement.Log("updatePairingName MISSING PAIRBASE!");
-                return;
-            }
+            var baseBO = TAUtils.GetBuildableObjectFromGameObject(baseGO);
+            PairBase pairBase = TAUtils.GetPairBaseFromSerializedMonoBehaviour(baseBO);
 
             pairBase.pairName = newPairingName;
+        }
+
+        public void updatePairingBaseOffset(Vector3 newPositionOffset) {
+            LinkedMovement.Log("Pairing.updatePairingBaseOffset");
+            var baseBO = TAUtils.GetBuildableObjectFromGameObject(baseGO);
+            var pairBase = TAUtils.GetPairBaseFromSerializedMonoBehaviour(baseBO);
+            pairBase.setPositionOffset(newPositionOffset);
+
+            foreach (var targetGO in targetGOs) {
+                var targetBO = TAUtils.GetBuildableObjectFromGameObject(targetGO);
+                if (targetBO == null) continue;
+
+                LinkedMovement.Log("Pairing.updatePairingBaseOffset update target position");
+
+                targetBO.transform.position = baseGO.transform.position + newPositionOffset;
+                //targetBO.transform.SetParent(baseGO.transform);
+            }
         }
 
         public void destroy() {

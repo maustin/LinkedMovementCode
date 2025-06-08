@@ -1,5 +1,6 @@
 ﻿using HarmonyLib;
 using LinkedMovement;
+using LinkedMovement.Utils;
 using System.Reflection;
 
 #nullable disable
@@ -28,8 +29,7 @@ class ChunkedMeshEventStartPrefix {
         if (deco == null) {
             return true;
         }
-        PairTarget pairTarget;
-        deco.tryGetCustomData(out pairTarget);
+        PairTarget pairTarget = TAUtils.GetPairTargetFromSerializedMonoBehaviour(deco);
         if (pairTarget != null) {
             return false;
         }

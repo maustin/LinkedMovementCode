@@ -68,7 +68,6 @@ namespace LinkedMovement.UI.InGame {
                 HorizontalLine.DrawHorizontalLine(Color.white);
                 Space(10f);
                 ShowBaseSelect();
-                //Space(30f);
                 Space(20f);
                 HorizontalLine.DrawHorizontalLine(Color.white);
                 Space(10f);

@@ -1,5 +1,6 @@
 ﻿using HarmonyLib;
 using LinkedMovement;
+using LinkedMovement.Utils;
 using System.Collections.Generic;
 using System.Reflection;
 using UnityEngine;
@@ -26,8 +27,7 @@ class ParkEventFixedStartPostfix {
         LinkedMovement.LinkedMovement.Log("SerializedObjects count: " + sos.Count);
 
         foreach (var so in sos) {
-            PairBase pairBase;
-            so.tryGetCustomData(out pairBase);
+            PairBase pairBase = TAUtils.GetPairBaseFromSerializedMonoBehaviour(so);
             if (pairBase != null) {
                 LinkedMovement.LinkedMovement.Log("Found pairBase");
 
@@ -53,8 +53,7 @@ class ParkEventFixedStartPostfix {
         var targets = new List<SerializedMonoBehaviour>();
         var sos = GameController.Instance.getSerializedObjects();
         foreach (var so in sos) {
-            PairTarget pairTarget;
-            so.tryGetCustomData(out pairTarget);
+            PairTarget pairTarget = TAUtils.GetPairTargetFromSerializedMonoBehaviour(so);
             if (pairTarget != null) {
                 if (pairTarget.pairId == pairBase.pairId) {
                     LinkedMovement.LinkedMovement.Log("Same pairId!");

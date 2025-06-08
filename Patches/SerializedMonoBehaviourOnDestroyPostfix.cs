@@ -1,5 +1,6 @@
 ﻿using HarmonyLib;
 using LinkedMovement;
+using LinkedMovement.Utils;
 using System.Reflection;
 
 #nullable disable
@@ -22,16 +23,14 @@ class SerializedMonoBehaviourOnDestroyPostfix {
 
         LinkedMovement.LinkedMovement.GetController().removeAnimatedBuildableObject(bo);
 
-        PairBase pairBase;
-        bo.tryGetCustomData(out pairBase);
+        PairBase pairBase = TAUtils.GetPairBaseFromSerializedMonoBehaviour(bo);
 
         if (pairBase != null) {
             LinkedMovement.LinkedMovement.Log("SerializedMonoBehaviour.OnDestroy destroy PairBase");
             PairBase.Destroy(bo, pairBase);
         }
 
-        PairTarget pairTarget;
-        bo.tryGetCustomData(out pairTarget);
+        PairTarget pairTarget = TAUtils.GetPairTargetFromSerializedMonoBehaviour(bo);
 
         if (pairTarget != null) {
             LinkedMovement.LinkedMovement.Log("SerializedMonoBehaviour.OnDestroy destroy PairTarget");

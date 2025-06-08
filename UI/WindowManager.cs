@@ -50,7 +50,8 @@ namespace LinkedMovement.UI {
             var width = 300f;
             infoWindow = new WindowLauncher("Animatect - Info", width);
             infoWindow.rect.position = new Vector2(Screen.width * 0.5f - width * 0.5f, Screen.height * 0.5f);
-            infoWindow.Add(() => GUILayout.Label(message));
+            var infoContent = new InfoContent(message);
+            infoWindow.Add(infoContent.DoGUI);
             infoWindow.Open();
             infoWindow.onClose += (WindowLauncher launcher) => infoWindow = null;
         }

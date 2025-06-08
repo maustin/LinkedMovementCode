@@ -39,6 +39,7 @@
     <Compile Include="Patches\SerializedMonoBehaviourOnDestroyPostfix.cs" />
     <Compile Include="UI\Components\HorizontalLine.cs" />
     <Compile Include="UI\InGame\ExistingLinksContent.cs" />
+    <Compile Include="UI\InGame\InfoContent.cs" />
     <Compile Include="UI\InGame\MainContent.cs" />
     <Compile Include="UI\Utils\CollapsibleWindow.cs" />
     <Compile Include="UI\Utils\Controls.cs" />

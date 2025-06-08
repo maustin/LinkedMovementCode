@@ -197,6 +197,10 @@ namespace LinkedMovement {
             return pairings.Remove(pairing);
         }
 
+        public bool hasPairing(Pairing pairing) {
+            return pairings.Contains(pairing);
+        }
+
         public void pickBaseObject() {
             LinkedMovement.Log("pickBaseObject");
 
@@ -358,6 +362,41 @@ namespace LinkedMovement {
 
         public void showExistingLinks() {
             windowManager.showExistingLinks();
+        }
+
+        public void tryToDeletePairing(Pairing pairing) {
+            LinkedMovement.Log("tryToDeletePairing " + pairing.getPairingName());
+
+            var found = hasPairing(pairing);
+            if (!found) {
+                LinkedMovement.Log("Pairing already removed from controller");
+                return;
+            }
+
+            var hasBase = pairing.baseGO != null;
+            var hasTargets = pairing.targetGOs.Count > 0;
+
+            if (hasBase && hasTargets) {
+                LinkedMovement.Log("Pairing still valid, don't delete");
+                return;
+            }
+
+            // Remove the pairing now so we don't try to destroy things multiple times
+            removePairing(pairing);
+
+            if (hasBase) {
+                LinkedMovement.Log("Destroy base object");
+                GameObject.Destroy(pairing.baseGO);
+                pairing.baseGO = null;
+            }
+            if (hasTargets) {
+                LinkedMovement.Log("Destroy target objects");
+                var cloneTargetGOs = new List<GameObject>(pairing.targetGOs);
+                foreach (var targetGO in cloneTargetGOs) {
+                    GameObject.Destroy(targetGO);
+                }
+                pairing.targetGOs.Clear();
+            }
         }
 
         private void enableSelectionHandler() {

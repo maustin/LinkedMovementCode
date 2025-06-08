@@ -106,30 +106,37 @@ namespace LinkedMovement.UI.InGame {
                         if (Button("Clear", Width(65)))
                             controller.clearBaseObject();
                     }
+                    //using (Scope.Horizontal()) {
+                    //    var triggerable = controller.getBaseIsTriggerable();
+                    //    if (triggerable) {
+                    //        Label("Triggerable!");
+                    //    } else {
+                    //        Label("Not triggerable");
+                    //    }
+                    //}
                     using (Scope.Horizontal()) {
-                        var triggerable = controller.getBaseIsTriggerable();
-                        if (triggerable) {
-                            Label("Triggerable!");
-                        } else {
-                            Label("Not triggerable");
-                        }
-                    }
-                }
-
-                var hasBaseObject = controller.baseObject != null;
-                using (Scope.Horizontal()) {
-                    using (Scope.GuiEnabled(hasBaseObject)) {
                         Label("Position offset");
                         basePositionOffset = RGUI.Field(basePositionOffset);
                     }
-                }
-
-                using (Scope.Horizontal()) {
-                    using (Scope.GuiEnabled(hasBaseObject)) {
-                        Label("Rotatoin offset");
-                        baseRotationOffset = RGUI.Field(baseRotationOffset);
+                    using (Scope.Horizontal()) {
+                        //Label("Rotation offset");
+                        //baseRotationOffset = RGUI.Field(baseRotationOffset);
                     }
                 }
+
+                //using (Scope.Horizontal()) {
+                //    using (Scope.GuiEnabled(hasBaseObject)) {
+                //        Label("Position offset");
+                //        basePositionOffset = RGUI.Field(basePositionOffset);
+                //    }
+                //}
+
+                //using (Scope.Horizontal()) {
+                //    using (Scope.GuiEnabled(hasBaseObject)) {
+                //        Label("Rotation offset");
+                //        baseRotationOffset = RGUI.Field(baseRotationOffset);
+                //    }
+                //}
             }
         }
 

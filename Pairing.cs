@@ -11,17 +11,9 @@ namespace LinkedMovement
         public List<GameObject> targetGOs = new List<GameObject>();
         public string pairingId;
         public string pairingName;
+        // TODO: Show original blueprint name
 
         private bool connected = false;
-                
-        public void Destroy(Pairing pairing) {
-            // This pairing has been cleared
-            LinkedMovement.Log("Pairing.Destroy Pairing: " + pairing.getPairingName());
-            var didRemove = LinkedMovement.GetController().removePairing(pairing);
-            if (!didRemove) {
-                LinkedMovement.Log("ERROR! Failed to find Pairing");
-            }
-        }
 
         public Pairing() {
             LinkedMovement.Log("Pairing DEFAULT CONTSTRUCTOR");
@@ -163,18 +155,6 @@ namespace LinkedMovement
             if (!didRemove) {
                 LinkedMovement.Log("ERROR! Pairing.removePairTarget failed to find target!!");
             }
-
-            if (targetGOs.Count == 0) {
-                LinkedMovement.Log("Pairing has no more children, destroy");
-                Destroy(this);
-            }
-        }
-
-        public void removePairTargets() {
-            var cloneTargetGOs = new List<GameObject>(targetGOs);
-            foreach (var targetGO in cloneTargetGOs) {
-                removePairTarget(targetGO);
-            }
         }
 
         public string getPairingName() {
@@ -198,6 +178,15 @@ namespace LinkedMovement
             }
 
             pairBase.pairName = newPairingName;
+        }
+
+        public void destroy() {
+            LinkedMovement.Log("Pairing.Destroy Pairing: " + getPairingName());
+
+            // Guess the easiest is to just delete the base and let the various handlers do the rest
+            if (baseGO != null) {
+                GameObject.Destroy(baseGO);
+            }
         }
     }
 }

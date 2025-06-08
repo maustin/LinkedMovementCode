@@ -3,23 +3,22 @@
     public class PairTarget : SerializedRawObject {
         public static void Destroy(BuildableObject bo, PairTarget pairTarget) {
             LinkedMovement.Log("PairTarget.Destroy");
-            PairBase pairBase;
-            bo.tryGetCustomData(out pairBase);
-
-            if (pairBase != null) {
-                PairBase.Destroy(bo, pairBase);
-            }
-
-            // destroy target
-            var pairing = LinkedMovement.GetController().findPairingByID(pairTarget.pairId);
-            if (pairing != null) {
-                pairing.removePairTarget(bo.gameObject);
-            } else {
-                // Pairing has already been removed
-                LinkedMovement.Log("PairTarget.Destroy already destroyed pairing " + bo.name);
+            if (bo == null) {
+                LinkedMovement.Log("ERROR: BuildableObject is null");
+                return;
             }
 
             bo.removeCustomData<PairTarget>();
+
+            var pairing = LinkedMovement.GetController().findPairingByID(pairTarget.pairId);
+            if (pairing == null) {
+                LinkedMovement.Log("Couldn't find pairing with ID: " + pairTarget.pairId + ", likely already removing");
+                return;
+            }
+
+            pairing.removePairTarget(bo.gameObject);
+
+            LinkedMovement.GetController().tryToDeletePairing(pairing);
         }
 
         [Serialized]

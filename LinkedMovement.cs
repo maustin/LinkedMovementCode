@@ -10,6 +10,7 @@ namespace LinkedMovement {
     public class LinkedMovement : AbstractMod {
         public const string VERSION_NUMBER = "1.0";
         //public override string getIdentifier() => "artex.linkedMovement";
+        //public override string getIdentifier() => "com.themeparkitect.LinkedMovement";
         public override string getIdentifier() => "com.themeparkitect.LinkedMovementCode";
         public override string getName() => "Linked Movement";
         public override string getDescription() => "move things";
@@ -50,8 +51,7 @@ namespace LinkedMovement {
         }
 
         public LinkedMovement() {
-            registerHotkeys();
-            Log("Done register hotkeys");
+            Log("Constructor");
         }
 
         public override void onEnabled() {
@@ -63,6 +63,9 @@ namespace LinkedMovement {
             Log("Patching...");
             Harmony.PatchAll();
             Log("Patching complete");
+
+            registerHotkeys();
+            Log("Done register hotkeys");
 
             Log("Attempt to load assets");
 
@@ -79,15 +82,8 @@ namespace LinkedMovement {
                 Log("failed to get type");
             } else {
                 Log("got type");
-                //Log(type.AssemblyQualifiedName);
-                //Log(type.Attributes.ToString());
-                //Log(type.ToString());
-                //Log(type.FullDescription());
-                //Log(type.BaseType.FullName);
-                
-                //var ctor = type.GetConstructor(BindingFlags.Instance | BindingFlags.NonPublic, null, Type.EmptyTypes, null);
+
                 Type[] parameterTypes = new Type[] {typeof(string)};
-                //types[0] = typeof(string);
                 var ctor = type.GetConstructor(BindingFlags.Instance | BindingFlags.Public, null, parameterTypes, null);
                 if (ctor == null) {
                     Log("failed to get constructor");
@@ -99,34 +95,20 @@ namespace LinkedMovement {
                     Log($"folder path: {folderPath}, order: {orderPriority}");
                     var modEntry = ModManager.Instance.addMod(instance, folderPath, AbstractGameContent.ContentSource.USER_CREATED, orderPriority);
                     if (modEntry != null) {
-                        Log("Added mod");
+                        Log("Added mod, enabling");
+                        Log("Is enabled: " + modEntry.isEnabled);
+                        Log("Is active: " + modEntry.isActive());
+                        var existingModEntry = ScriptableSingleton<AssetManager>.Instance.modContext;
+                        
+                        modEntry.setActive(true);
+
+                        ScriptableSingleton<AssetManager>.Instance.modContext = existingModEntry;
+                        ScriptableSingleton<InputManager>.Instance.modContext = existingModEntry;
                     } else {
                         Log("Failed to add mod");
                     }
                 }
             }
-
-            //var modEntry = new ModManager.ModEntry()
-
-            //AssetPackM
-
-            ////
-            //AssetPack assetPack = JsonUtility.FromJson<AssetPack>(File.ReadAllText(System.IO.Path.Combine(currentModDirectory, "LinkedMovement.assetProject")));
-            //// Remove?
-            //Log(System.IO.Path.Combine(currentModDirectory, "assetPack"));
-            //// Why this?
-            //System.IO.Path.Combine(currentModDirectory, "LinkedMovement");
-            ////
-            //assetBundle = AssetBundle.LoadFromFile(System.IO.Path.Combine(currentModDirectory, "assetPack"));
-            //if (assetBundle == null) {
-            //    throw new Exception("LinkedMovement: Failed to load AssetBundle!");
-            //}
-            //var allAssetsArr = assetBundle.GetAllAssetNames();
-            //var allAssetsStr = string.Join(", ", allAssetsArr);
-            //Log("Assets: " + allAssetsStr);
-            ////
-            //assetBundle.Unload(false);
-            ////
 
             Log("Assets load complete");
             Log("Startup complete");
@@ -143,7 +125,7 @@ namespace LinkedMovement {
             Harmony = null;
         }
 
-        public void destroyController() {
+        private void destroyController() {
             Log("destroyController");
             if (Controller != null) {
                 GameObject.Destroy(Controller.gameObject);

@@ -1,4 +1,6 @@
-﻿namespace LinkedMovement
+﻿using UnityEngine;
+
+namespace LinkedMovement
 {
     public class PairTarget : SerializedRawObject {
         public static void Destroy(BuildableObject bo, PairTarget pairTarget) {
@@ -25,21 +27,16 @@
         public string pairId;
 
         [Serialized]
-        public float offsetX = 0;
+        public Vector3 positionOffset;
 
-        [Serialized]
-        public float offsetY = 0;
+        public PairTarget() {
+            LinkedMovement.Log("PairTarget constructor");
+        }
 
-        [Serialized]
-        public float offsetZ = 0;
-
-        public PairTarget() {}
-
-        public PairTarget(string pId, float offX = 0, float offY = 0, float offZ = 0) {
+        public PairTarget(string pId, Vector3 positionOffset) {
+            LinkedMovement.Log("PairTarget constructor w/ params");
             pairId = pId;
-            offsetX = offX;
-            offsetY = offY;
-            offsetZ = offZ;
+            this.positionOffset = positionOffset;
         }
     }
 }

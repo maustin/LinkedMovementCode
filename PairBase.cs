@@ -30,44 +30,37 @@ namespace LinkedMovement
         public string pairName;
 
         [Serialized]
-        public float posOffsetX;
+        public Vector3 positionOffset;
 
         [Serialized]
-        public float posOffsetY;
+        public Vector3 rotationOffset;
 
         [Serialized]
-        public float posOffsetZ;
+        public BaseAnimationParams animParams;
 
-        [Serialized]
-        public float rotOffsetX;
+        public PairBase() {
+            LinkedMovement.Log("PairBase constructor");
+        }
 
-        [Serialized]
-        public float rotOffsetY;
-
-        [Serialized]
-        public float rotOffsetZ;
-
-        public PairBase() { }
-
-        public PairBase(string pId, string pName, float positionOffsetX = 0f, float positionOffsetY = 0f, float positionOffsetZ = 0f, float rotationOffsetX = 0f, float rotationOffsetY = 0f, float rotationOffsetZ = 0f) {
+        public PairBase(string pId, string pName, Vector3 positionOffset, Vector3 rotationOffset, BaseAnimationParams animParams = null) {
+            LinkedMovement.Log("PairBase constructor w/ params");
             pairId = pId;
             pairName = pName;
-            posOffsetX = positionOffsetX;
-            posOffsetY = positionOffsetY;
-            posOffsetZ = positionOffsetZ;
-            rotOffsetX = rotationOffsetX;
-            rotOffsetY = rotationOffsetY;
-            rotOffsetZ = rotationOffsetZ;
+            this.positionOffset = positionOffset;
+            this.rotationOffset = rotationOffset;
+            this.animParams = animParams;
+            if (animParams != null) {
+                LinkedMovement.Log("Has animParams");
+                LinkedMovement.Log("Target Pos: " + animParams.targetPosition.ToString());
+            }
         }
 
         public Vector3 getPositionOffset() {
-            return new Vector3(posOffsetX, posOffsetY, posOffsetZ);
+            return positionOffset;
         }
 
         public void setPositionOffset(Vector3 positionOffset) {
-            posOffsetX = positionOffset.x;
-            posOffsetY = positionOffset.y;
-            posOffsetZ = positionOffset.z;
+            this.positionOffset = positionOffset;
         }
     }
 }

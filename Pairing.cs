@@ -51,6 +51,12 @@ namespace LinkedMovement
 
             PairBase pairBase = TAUtils.GetPairBaseFromSerializedMonoBehaviour(baseBO);
 
+            var baseAnimParams = pairBase.animParams;
+            LinkedMovement.Log("Has baseAnimParams: " + (baseAnimParams != null));
+            if (baseAnimParams != null) {
+                LinkedMovement.Log("Base target pos: " + baseAnimParams.targetPosition.ToString());
+            }
+
             LinkedMovement.Log("connect iterate targetGOs");
             foreach (GameObject targetGO in targetGOs) {
                 // If ChunkedMesh, it's a built-in object and we need to handle it
@@ -74,8 +80,8 @@ namespace LinkedMovement
 
                 targetGO.transform.localPosition = Vector3.zero;
 
-                var pairTargetOffset = new Vector3(pairTarget.offsetX, pairTarget.offsetY, pairTarget.offsetZ);
-                var pairBaseOffset = new Vector3(pairBase.posOffsetX, pairBase.posOffsetY, pairBase.posOffsetZ);
+                var pairTargetOffset = pairTarget.positionOffset;
+                var pairBaseOffset = pairBase.positionOffset;
 
                 LinkedMovement.Log("Base pos: " + baseGO.transform.position.ToString());
                 LinkedMovement.Log("PairTargetOffset: " + pairTargetOffset.ToString());
@@ -102,9 +108,9 @@ namespace LinkedMovement
             }
         }
 
-        public void setCustomData(bool useTargetPositionOffset = false, Vector3 basePositionOffset = new Vector3(), Vector3 baseRotationOffset = new Vector3()) {
+        public void setCustomData(bool useTargetPositionOffset = false, Vector3 basePositionOffset = new Vector3(), Vector3 baseRotationOffset = new Vector3(), BaseAnimationParams baseAnimationParams = null) {
             var baseBO = TAUtils.GetBuildableObjectFromGameObject(baseGO);
-            baseBO.addCustomData(getPairBase(basePositionOffset.x, basePositionOffset.y, basePositionOffset.z, baseRotationOffset.x, baseRotationOffset.y, baseRotationOffset.z));
+            baseBO.addCustomData(getPairBase(basePositionOffset, baseRotationOffset, baseAnimationParams));
 
             LinkedMovement.Log("setCustomData basePositionOffset: " + basePositionOffset.ToString());
 
@@ -117,16 +123,18 @@ namespace LinkedMovement
                 LinkedMovement.Log("offset: " + offset.ToString());
 
                 var targetBO = TAUtils.GetBuildableObjectFromGameObject(targetGO);
-                targetBO.addCustomData(getPairTarget(offset.x, offset.y, offset.z));
+                targetBO.addCustomData(getPairTarget(offset));
             }
         }
 
-        public PairBase getPairBase(float posOffsetX, float posOffsetY, float posOffsetZ, float rotOffsetX, float rotOffsetY, float rotOffsetZ) {
-            return new PairBase(pairingId, pairingName, posOffsetX, posOffsetY, posOffsetZ, rotOffsetX, rotOffsetY, rotOffsetZ);
+        public PairBase getPairBase(Vector3 positionOffset, Vector3 rotationOffset, BaseAnimationParams baseAnimationParams) {
+            LinkedMovement.Log("Pairing getPairBase");
+            return new PairBase(pairingId, pairingName, positionOffset, rotationOffset, baseAnimationParams);
         }
 
         // TODO: Better name? Should this be a static? Theoretically this should never be null.
         public PairBase getExistingPairBase() {
+            LinkedMovement.Log("Pairing getExistingPairBase");
             if (baseGO == null) {
                 LinkedMovement.Log("ERROR: getExistingPairBase has no existing baseGO");
                 return null;
@@ -138,8 +146,9 @@ namespace LinkedMovement
             return pairBase;
         }
 
-        public PairTarget getPairTarget(float offsetX, float offsetY, float offsetZ) {
-            return new PairTarget(pairingId, offsetX, offsetY, offsetZ);
+        public PairTarget getPairTarget(Vector3 offset) {
+            LinkedMovement.Log("Pairing getPairTarget");
+            return new PairTarget(pairingId, offset);
         }
 
         public void removePairTarget(GameObject targetGO) {

@@ -21,6 +21,8 @@ namespace LinkedMovement {
         private bool baseIsTriggerable = false;
 
         public BuildableObject baseObject { get; private set; }
+        // TODO: Getter setter useful here?
+        public BaseAnimationParams baseAnimationParams;
         public List<BuildableObject> targetObjects { get; private set; }
         public Dictionary<BuildableObject, Vector3> targetOriginTransformPositions { get; private set; }
 
@@ -331,7 +333,7 @@ namespace LinkedMovement {
                     LinkedMovement.Log("Got # created objects: " + blueprintCreatedObjects.Count);
 
                     var pairing = new Pairing(baseObject.gameObject, blueprintCreatedObjects, null, pairName);
-                    pairing.setCustomData(true, basePositionOffset, baseRotationOffset);
+                    pairing.setCustomData(true, basePositionOffset, baseRotationOffset, baseAnimationParams);
                     pairing.connect();
 
                     clearAllSelections();
@@ -349,7 +351,7 @@ namespace LinkedMovement {
             LinkedMovement.Log("Join # single targets: " + targetGOs.Count);
 
             var pairing = new Pairing(baseObject.gameObject, targetGOs, null, pairName);
-            pairing.setCustomData(false, basePositionOffset, baseRotationOffset);
+            pairing.setCustomData(false, basePositionOffset, baseRotationOffset, baseAnimationParams);
             pairing.connect();
 
             clearAllSelections();
@@ -416,6 +418,7 @@ namespace LinkedMovement {
 
             // There should always be an Animator on selected base objects
             var baseAnimator = baseObject.GetComponent<Animator>();
+            if (baseAnimator == null) return;
             baseAnimator.Rebind();
             baseAnimator.Update(0f);
 

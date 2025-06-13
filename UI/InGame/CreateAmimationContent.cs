@@ -14,18 +14,20 @@ namespace LinkedMovement.UI.InGame {
 
         private BuildableObject baseBO;
 
-        private Vector3 startingPosition;
-        private Vector3 targetPosition = Vector3.zero;
-        //private Vector3 startingRotation;
-        //private Vector3 targetRotation = Vector3.zero;
+        //private Vector3 startingPosition;
+        //private Vector3 targetPosition = Vector3.zero;
+        ////private Vector3 startingRotation;
+        ////private Vector3 targetRotation = Vector3.zero;
 
-        private bool isTriggerable = false;
-        private float toDuration = 1f;
-        private string toEase = "";
-        private float fromDelay = 0f;
-        private float fromDuration = 1f;
-        private string fromEase = "";
-        private float restartDelay = 0f;
+        //private bool isTriggerable = false;
+        //private float toDuration = 1f;
+        //private string toEase = "";
+        //private float fromDelay = 0f;
+        //private float fromDuration = 1f;
+        //private string fromEase = "";
+        //private float restartDelay = 0f;
+
+        private BaseAnimationParams baseAnimationParams;
 
         private Sequence sequence;
 
@@ -34,7 +36,8 @@ namespace LinkedMovement.UI.InGame {
         public CreateAmimationContent(WindowLauncher launcher) {
             controller = LinkedMovement.GetController();
             baseBO = controller.baseObject;
-            startingPosition = baseBO.transform.position;
+            //startingPosition = baseBO.transform.position;
+            baseAnimationParams = new BaseAnimationParams(baseBO.transform.position);
             this.launcher = launcher;
         }
 
@@ -45,18 +48,18 @@ namespace LinkedMovement.UI.InGame {
 
                 using (Scope.Horizontal()) {
                     GUILayout.Label("Is Triggerable?");
-                    var newIsTriggerable = RGUI.Field(isTriggerable);
-                    if (newIsTriggerable != isTriggerable) {
-                        isTriggerable = newIsTriggerable;
+                    var newIsTriggerable = RGUI.Field(baseAnimationParams.isTriggerable);
+                    if (newIsTriggerable != baseAnimationParams.isTriggerable) {
+                        baseAnimationParams.isTriggerable = newIsTriggerable;
                         rebuildSequence();
                     }
                 }
 
                 using (Scope.Horizontal()) {
                     GUILayout.Label("Target Position");
-                    var newTargetPosition = RGUI.Field(targetPosition);
-                    if (newTargetPosition != targetPosition) {
-                        targetPosition = newTargetPosition;
+                    var newTargetPosition = RGUI.Field(baseAnimationParams.targetPosition);
+                    if (newTargetPosition != baseAnimationParams.targetPosition) {
+                        baseAnimationParams.targetPosition = newTargetPosition;
                         rebuildSequence();
                     }
                 }
@@ -92,11 +95,13 @@ namespace LinkedMovement.UI.InGame {
 
                 using (Scope.Horizontal()) {
                     if (Button("Save", Width(65f))) {
+                        controller.baseAnimationParams = baseAnimationParams;
                         killSequence();
-                        // TODO
+                        launcher.CloseWindow();
                     }
                     GUILayout.FlexibleSpace();
                     if (Button("Cancel", Width(65f))) {
+                        controller.baseAnimationParams = null;
                         killSequence();
                         launcher.CloseWindow();
                     }
@@ -108,24 +113,30 @@ namespace LinkedMovement.UI.InGame {
             if (sequence != null) {
                 LinkedMovement.Log("kill existing seq");
                 sequence.Kill();
-                baseBO.transform.position = startingPosition;
+                baseBO.transform.position = baseAnimationParams.startingPosition;
                 sequence = null;
             }
         }
 
-        private void rebuildSequence() {
+        private void rebuildSequence(bool isSaving = false) {
             LinkedMovement.Log("rebuildSequence");
             killSequence();
 
             sequence = DOTween.Sequence();
-            //var toTween = baseBO.transform.DOMove(targetPosition, toDuration);
-            var toTween = DOTween.To(() => baseBO.transform.position, x => baseBO.transform.position = x, startingPosition + targetPosition, toDuration);
+            var toTween = DOTween.To(() => baseBO.transform.position, x => baseBO.transform.position = x, baseAnimationParams.startingPosition + baseAnimationParams.targetPosition, baseAnimationParams.toDuration);
             //toTween.SetEase()
-            //var fromTween = baseBO.transform.DOMove(startingPosition, fromDuration);
-            var fromTween = DOTween.To(() => baseBO.transform.position, x => baseBO.transform.position = x, startingPosition, fromDuration);
+            // delay
+            var fromTween = DOTween.To(() => baseBO.transform.position, x => baseBO.transform.position = x, baseAnimationParams.startingPosition, baseAnimationParams.fromDuration);
+            //fromTween.SetEase()
+            // delay
             sequence.Append(toTween);
             sequence.Append(fromTween);
-            sequence.SetLoops(-1);
+            if (isSaving && baseAnimationParams.isTriggerable) {
+                sequence.SetLoops(0);
+                sequence.Pause();
+            } else {
+                sequence.SetLoops(-1);
+            }
         }
     }
 }

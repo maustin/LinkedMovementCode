@@ -78,7 +78,7 @@ namespace LinkedMovement.UI {
             createAnimationWindow = new WindowLauncher("Animatronitect - Create Animation", width);
             createAnimationWindow.SetHeight(500f);
             createAnimationWindow.rect.position = new Vector2(Screen.width - 400.0f - width, 175.0f);
-            var createAnimationContent = new CreateAmimationContent();
+            var createAnimationContent = new CreateAmimationContent(createAnimationWindow);
             createAnimationWindow.Add(createAnimationContent.DoGUI);
             createAnimationWindow.Open();
             createAnimationWindow.onClose += (WindowLauncher launcher) => createAnimationWindow = null;
@@ -86,17 +86,20 @@ namespace LinkedMovement.UI {
 
         public void DoGUI()
         {
-            if (mainWindow != null) {
-                mainWindow.DoGUI();
-            }
             if (infoWindow != null) {
                 infoWindow.DoGUI();
+                return;
             }
             if (existingLinksWindow != null) {
                 existingLinksWindow.DoGUI();
+                return;
             }
             if (createAnimationWindow != null) {
                 createAnimationWindow.DoGUI();
+                return;
+            }
+            if (mainWindow != null) {
+                mainWindow.DoGUI();
             }
         }
     }

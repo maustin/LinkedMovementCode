@@ -5,12 +5,10 @@ using UnityEngine;
 namespace LinkedMovement.UI {
     class WindowManager {
         // For now, just direct references to windows
-        // Main / selector window
-        // Existing pairings
-        // Info popup
         WindowLauncher mainWindow;
         WindowLauncher infoWindow;
-        WindowLauncher existingLinks;
+        WindowLauncher existingLinksWindow;
+        WindowLauncher createAnimationWindow;
 
         public WindowManager() {
             LinkedMovement.Log("Create WindowManager");
@@ -20,7 +18,7 @@ namespace LinkedMovement.UI {
             LinkedMovement.Log("Destroy WindowManager");
             mainWindow = null;
             infoWindow = null;
-            existingLinks = null;
+            existingLinksWindow = null;
         }
 
         public void showMainWindow()
@@ -29,7 +27,7 @@ namespace LinkedMovement.UI {
             {
                 LinkedMovement.Log("WindowManager Show Main Window");
                 var width = 400f;
-                mainWindow = new WindowLauncher("Animatect - Link Objects", width);
+                mainWindow = new WindowLauncher("Animatronitect - Link Objects", width);
                 mainWindow.rect.position = new Vector2(Screen.width - 200.0f - width, 75.0f);
                 var mainContent = new MainContent();
                 mainWindow.Add(mainContent.DoGUI);
@@ -48,7 +46,7 @@ namespace LinkedMovement.UI {
             }
 
             var width = 300f;
-            infoWindow = new WindowLauncher("Animatect - Info", width);
+            infoWindow = new WindowLauncher("Animatronitect - Info", width);
             infoWindow.rect.position = new Vector2(Screen.width * 0.5f - width * 0.5f, Screen.height * 0.5f);
             var infoContent = new InfoContent(message);
             infoWindow.Add(infoContent.DoGUI);
@@ -56,18 +54,34 @@ namespace LinkedMovement.UI {
             infoWindow.onClose += (WindowLauncher launcher) => infoWindow = null;
         }
 
-        public void showExistingLinks() {
-            if (existingLinks == null) {
+        public void showExistingLinksWindow() {
+            if (existingLinksWindow == null) {
                 LinkedMovement.Log("WindowManager Show existing links");
                 var width = 400f;
-                existingLinks = new WindowLauncher("Animatect - Existing Links", width);
-                existingLinks.SetHeight(500f);
-                existingLinks.rect.position = new Vector2(Screen.width - 400.0f - width, 175.0f);
+                existingLinksWindow = new WindowLauncher("Animatronitect - Existing Links", width);
+                existingLinksWindow.SetHeight(500f);
+                existingLinksWindow.rect.position = new Vector2(Screen.width - 400.0f - width, 175.0f);
                 var existingPairsContent = new ExistingLinksContent();
-                existingLinks.Add(existingPairsContent.DoGUI);
-                existingLinks.Open();
-                existingLinks.onClose += (WindowLauncher launcher) => existingLinks = null;
+                existingLinksWindow.Add(existingPairsContent.DoGUI);
+                existingLinksWindow.Open();
+                existingLinksWindow.onClose += (WindowLauncher launcher) => existingLinksWindow = null;
             }
+        }
+
+        public void showCreateAnimationWindow() {
+            LinkedMovement.Log("WindowManagwer Show create animation");
+            if (createAnimationWindow != null) {
+                createAnimationWindow.Close();
+            }
+
+            var width = 400f;
+            createAnimationWindow = new WindowLauncher("Animatronitect - Create Animation", width);
+            createAnimationWindow.SetHeight(500f);
+            createAnimationWindow.rect.position = new Vector2(Screen.width - 400.0f - width, 175.0f);
+            var createAnimationContent = new CreateAmimationContent();
+            createAnimationWindow.Add(createAnimationContent.DoGUI);
+            createAnimationWindow.Open();
+            createAnimationWindow.onClose += (WindowLauncher launcher) => createAnimationWindow = null;
         }
 
         public void DoGUI()
@@ -78,8 +92,11 @@ namespace LinkedMovement.UI {
             if (infoWindow != null) {
                 infoWindow.DoGUI();
             }
-            if (existingLinks != null) {
-                existingLinks.DoGUI();
+            if (existingLinksWindow != null) {
+                existingLinksWindow.DoGUI();
+            }
+            if (createAnimationWindow != null) {
+                createAnimationWindow.DoGUI();
             }
         }
     }

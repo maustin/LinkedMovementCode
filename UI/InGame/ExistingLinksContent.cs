@@ -24,7 +24,7 @@ namespace LinkedMovement.UI.InGame {
             var pairings = controller.getPairings();
             scrollPosition = BeginScrollView(scrollPosition, Height(500f));
             using (Scope.Vertical()) {
-                Label("Anitect - Existing Links", RGUIStyle.popupTitle);
+                Label("Animatronitect - Existing Links", RGUIStyle.popupTitle);
                 Space(10f);
             }
             foreach (var pairing in pairings) {

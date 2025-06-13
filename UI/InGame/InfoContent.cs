@@ -12,7 +12,7 @@ namespace LinkedMovement.UI.InGame {
 
         public void DoGUI() {
             using (Scope.Vertical()) {
-                Label("Anitect - Info", RGUIStyle.popupTitle);
+                Label("Animatronitect - Info", RGUIStyle.popupTitle);
                 Space(10f);
                 Label(message);
             }

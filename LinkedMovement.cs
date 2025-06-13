@@ -1,4 +1,5 @@
-﻿using HarmonyLib;
+﻿using DG.Tweening;
+using HarmonyLib;
 using Parkitect.Mods.AssetPacks;
 using System;
 using System.Collections.Generic;
@@ -66,6 +67,9 @@ namespace LinkedMovement {
 
             registerHotkeys();
             Log("Done register hotkeys");
+
+            Log("Loading DOTween");
+            DOTween.Init(true, false, LogBehaviour.Verbose);
 
             Log("Attempt to load assets");
 

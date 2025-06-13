@@ -38,6 +38,7 @@
     <Compile Include="Patches\SerializedMonoBehaviourInitializePostfix.cs" />
     <Compile Include="Patches\SerializedMonoBehaviourOnDestroyPostfix.cs" />
     <Compile Include="UI\Components\HorizontalLine.cs" />
+    <Compile Include="UI\InGame\CreateAmimationContent.cs" />
     <Compile Include="UI\InGame\ExistingLinksContent.cs" />
     <Compile Include="UI\InGame\InfoContent.cs" />
     <Compile Include="UI\InGame\MainContent.cs" />
@@ -61,7 +62,7 @@
     <Compile Include="AltUI\MainWindow.cs" />
     <Compile Include="AltUI\Tooltip.cs" />
     <Compile Include="AltUI\WindowIDManager.cs" />
-    <Compile Include="Calc.cs" />
+    <Compile Include="Utils\Calc.cs" />
     <Compile Include="KeybindManager.cs" />
     <Compile Include="LinkedMovement.cs" />
     <Compile Include="LinkedMovementController.cs" />
@@ -113,7 +114,7 @@
     <Compile Include="RapidGUI\RGUI\Scope\PrefixLabelIndentScope.cs" />
     <Compile Include="RapidGUI\RGUI\Slider.cs" />
     <Compile Include="RapidGUI\RGUI\Slider\RecursiveSlider.cs" />
-    <Compile Include="SelectionHandler.cs" />
+    <Compile Include="Utils\SelectionHandler.cs" />
     <Compile Include="Selection\HitUtility.cs" />
     <Compile Include="Selection\VisibilityObjectSelectionTool.cs" />
     <Compile Include="UI\WindowManager.cs" />
@@ -139,15 +140,6 @@
     </Reference>
     <Reference Include="DOTween">
       <HintPath>Libs\DOTween.dll</HintPath>
-    </Reference>
-    <Reference Include="DOTween43">
-      <HintPath>Libs\DOTween43.dll</HintPath>
-    </Reference>
-    <Reference Include="DOTween46">
-      <HintPath>Libs\DOTween46.dll</HintPath>
-    </Reference>
-    <Reference Include="DOTween50">
-      <HintPath>Libs\DOTween50.dll</HintPath>
     </Reference>
     <Reference Include="GalaxyCSharp">
       <HintPath>Libs\GalaxyCSharp.dll</HintPath>

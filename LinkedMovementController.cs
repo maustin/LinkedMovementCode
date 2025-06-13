@@ -236,15 +236,19 @@ namespace LinkedMovement {
                 return;
             
             if (isSettingBase) {
+                // TODO: Add popup asking if non-animating base should add animation
+                clearBaseObject();
+                baseObject = bo;
                 var baseAnimator = bo.GetComponent<Animator>();
                 if (baseAnimator == null)
                 {
-                    windowManager.showInfoWindow("Selected base object has no animation.");
+                    //windowManager.showInfoWindow("Selected base object has no animation.");
+                    windowManager.showCreateAnimationWindow();
                     return;
                 }
 
-                clearBaseObject();
-                baseObject = bo;
+                //clearBaseObject();
+                //baseObject = bo;
                 setupBaseObject();
             }
             else if (isSettingTarget) {
@@ -353,7 +357,7 @@ namespace LinkedMovement {
         }
 
         public void showExistingLinks() {
-            windowManager.showExistingLinks();
+            windowManager.showExistingLinksWindow();
         }
 
         public void tryToDeletePairing(Pairing pairing) {
@@ -424,7 +428,7 @@ namespace LinkedMovement {
 
         private void setupBaseObject() {
             LinkedMovement.Log("setupBaseObject");
-
+            
             var baseAnimator = baseObject.GetComponent<Animator>();
             baseAnimator.Rebind();
             baseAnimator.Update(0f);

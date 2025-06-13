@@ -180,7 +180,6 @@ namespace LinkedMovement
                 LinkedMovement.Log("Pairing.updatePairingBaseOffset update target position");
 
                 targetBO.transform.position = baseGO.transform.position + newPositionOffset;
-                //targetBO.transform.SetParent(baseGO.transform);
             }
         }
 

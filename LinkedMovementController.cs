@@ -1,4 +1,5 @@
-﻿using LinkedMovement.UI;
+﻿using DG.Tweening;
+using LinkedMovement.UI;
 using LinkedMovement.Utils;
 using Parkitect.UI;
 using System.Collections.Generic;
@@ -22,7 +23,7 @@ namespace LinkedMovement {
 
         public BuildableObject baseObject { get; private set; }
         // TODO: Getter setter useful here?
-        public BaseAnimationParams baseAnimationParams;
+        public LMAnimationParams animationParams;
         public List<BuildableObject> targetObjects { get; private set; }
         public Dictionary<BuildableObject, Vector3> targetOriginTransformPositions { get; private set; }
 
@@ -125,6 +126,7 @@ namespace LinkedMovement {
         private void OnDisable() {
             LinkedMovement.Log("LinkedMovementController OnDisable");
             disableSelectionHandler();
+            DOTween.KillAll();
         }
 
         private void OnDestroy() {
@@ -145,7 +147,7 @@ namespace LinkedMovement {
         }
 
         private void Update() {
-            if (UIUtility.isInputFieldFocused() || GameController.Instance.isGameInputLocked()) {
+            if (UIUtility.isInputFieldFocused() || GameController.Instance.isGameInputLocked() || GameController.Instance.isQuittingGame) {
                 return;
             }
 
@@ -154,6 +156,7 @@ namespace LinkedMovement {
                 windowManager.showMainWindow();
             }
 
+            // TODO: Should this be != ? Or just skip?
             var mouseTool = GameController.Instance.getActiveMouseTool();
             if (mouseTool == null) return;
 
@@ -333,7 +336,7 @@ namespace LinkedMovement {
                     LinkedMovement.Log("Got # created objects: " + blueprintCreatedObjects.Count);
 
                     var pairing = new Pairing(baseObject.gameObject, blueprintCreatedObjects, null, pairName);
-                    pairing.setCustomData(true, basePositionOffset, baseRotationOffset, baseAnimationParams);
+                    pairing.setCustomData(true, basePositionOffset, baseRotationOffset, animationParams);
                     pairing.connect();
 
                     clearAllSelections();
@@ -351,7 +354,7 @@ namespace LinkedMovement {
             LinkedMovement.Log("Join # single targets: " + targetGOs.Count);
 
             var pairing = new Pairing(baseObject.gameObject, targetGOs, null, pairName);
-            pairing.setCustomData(false, basePositionOffset, baseRotationOffset, baseAnimationParams);
+            pairing.setCustomData(false, basePositionOffset, baseRotationOffset, animationParams);
             pairing.connect();
 
             clearAllSelections();

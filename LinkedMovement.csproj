@@ -34,7 +34,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="BaseAnimationParams.cs" />
+    <Compile Include="LMAnimationParams.cs" />
     <Compile Include="LMTrigger.cs" />
     <Compile Include="Patches\BuilderUpdatePrefix.cs" />
     <Compile Include="Patches\SerializedMonoBehaviourInitializePostfix.cs" />

@@ -52,9 +52,10 @@ namespace LinkedMovement
             PairBase pairBase = TAUtils.GetPairBaseFromSerializedMonoBehaviour(baseBO);
 
             var baseAnimParams = pairBase.animParams;
-            LinkedMovement.Log("Has baseAnimParams: " + (baseAnimParams != null));
+            LinkedMovement.Log("Has Sequence Animation: " + (baseAnimParams != null));
             if (baseAnimParams != null) {
                 LinkedMovement.Log("Base target pos: " + baseAnimParams.targetPosition.ToString());
+                pairBase.sequence = TAUtils.BuildAnimationSequence(baseBO.transform, baseAnimParams);
             }
 
             LinkedMovement.Log("connect iterate targetGOs");
@@ -98,6 +99,7 @@ namespace LinkedMovement
 
         public void update() {
             if (!connected) return;
+            // TODO: Skip if sequence and not animating
 
             var bo = TAUtils.GetBuildableObjectFromGameObject(baseGO);
             TAUtils.UpdateMouseColliders(bo);
@@ -108,9 +110,9 @@ namespace LinkedMovement
             }
         }
 
-        public void setCustomData(bool useTargetPositionOffset = false, Vector3 basePositionOffset = new Vector3(), Vector3 baseRotationOffset = new Vector3(), BaseAnimationParams baseAnimationParams = null) {
+        public void setCustomData(bool useTargetPositionOffset = false, Vector3 basePositionOffset = new Vector3(), Vector3 baseRotationOffset = new Vector3(), LMAnimationParams animationParams = null) {
             var baseBO = TAUtils.GetBuildableObjectFromGameObject(baseGO);
-            baseBO.addCustomData(getPairBase(basePositionOffset, baseRotationOffset, baseAnimationParams));
+            baseBO.addCustomData(getPairBase(basePositionOffset, baseRotationOffset, animationParams));
 
             LinkedMovement.Log("setCustomData basePositionOffset: " + basePositionOffset.ToString());
 
@@ -127,9 +129,9 @@ namespace LinkedMovement
             }
         }
 
-        public PairBase getPairBase(Vector3 positionOffset, Vector3 rotationOffset, BaseAnimationParams baseAnimationParams) {
+        public PairBase getPairBase(Vector3 positionOffset, Vector3 rotationOffset, LMAnimationParams animationParams) {
             LinkedMovement.Log("Pairing getPairBase");
-            return new PairBase(pairingId, pairingName, positionOffset, rotationOffset, baseAnimationParams);
+            return new PairBase(pairingId, pairingName, positionOffset, rotationOffset, animationParams);
         }
 
         // TODO: Better name? Should this be a static? Theoretically this should never be null.

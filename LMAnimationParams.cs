@@ -2,7 +2,7 @@
 using UnityEngine;
 
 namespace LinkedMovement {
-    public class BaseAnimationParams : SerializedRawObject {
+    public class LMAnimationParams : SerializedRawObject {
         [Serialized]
         public Vector3 startingPosition;
         [Serialized]
@@ -24,12 +24,12 @@ namespace LinkedMovement {
         [Serialized]
         public float restartDelay = 0f;
 
-        public BaseAnimationParams() {
-            LinkedMovement.Log("BaseAnimationParams base constructor");
+        public LMAnimationParams() {
+            LinkedMovement.Log("LMAnimationParams base constructor");
         }
 
-        public BaseAnimationParams(Vector3 startingPosition) {
-            LinkedMovement.Log("BaseAnimationParams constructor with startingPosition");
+        public LMAnimationParams(Vector3 startingPosition) {
+            LinkedMovement.Log("LMAnimationParams constructor with startingPosition");
             this.startingPosition = startingPosition;
         }
     }

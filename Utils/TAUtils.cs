@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using DG.Tweening;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -91,6 +92,50 @@ namespace LinkedMovement.Utils {
             CurrentHightlightCoroutine = ClearHighlightOnBuildableObject(bo);
             bo.StartCoroutine(CurrentHightlightCoroutine);
         }
+
+        static public Sequence BuildAnimationSequence(Transform transform, LMAnimationParams animationParams) {
+            LinkedMovement.Log("TAUtils.GetAnimationSequence");
+
+            Sequence sequence = DOTween.Sequence();
+            var toTween = DOTween.To(() => transform.position, x => transform.position = x, animationParams.startingPosition + animationParams.targetPosition, animationParams.toDuration);
+            // ease
+            // delay
+            var fromTween = DOTween.To(() => transform.position, x => transform.position = x, animationParams.startingPosition, animationParams.fromDuration);
+            // ease
+            // delay
+            sequence.Append(toTween);
+            sequence.Append(fromTween);
+
+            if (animationParams.isTriggerable) {
+                sequence.SetLoops(0);
+                sequence.Pause();
+            } else {
+                sequence.SetLoops(-1);
+            }
+
+            return sequence;
+        }
+
+        //private void rebuildSequence(bool isSaving = false) {
+        //    LinkedMovement.Log("rebuildSequence");
+        //    killSequence();
+
+        //    sequence = DOTween.Sequence();
+        //    var toTween = DOTween.To(() => baseBO.transform.position, x => baseBO.transform.position = x, animationParams.startingPosition + animationParams.targetPosition, animationParams.toDuration);
+        //    //toTween.SetEase()
+        //    // delay
+        //    var fromTween = DOTween.To(() => baseBO.transform.position, x => baseBO.transform.position = x, animationParams.startingPosition, animationParams.fromDuration);
+        //    //fromTween.SetEase()
+        //    // delay
+        //    sequence.Append(toTween);
+        //    sequence.Append(fromTween);
+        //    if (isSaving && animationParams.isTriggerable) {
+        //        sequence.SetLoops(0);
+        //        sequence.Pause();
+        //    } else {
+        //        sequence.SetLoops(-1);
+        //    }
+        //}
 
         private static void OnHighlightedObjectKilled(SerializedMonoBehaviour smb) {
             CurrentHighlightedObject.OnKilled -= new SerializedMonoBehaviour.OnKilledHandler(OnHighlightedObjectKilled);

@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using DG.Tweening;
+using System;
+using UnityEngine;
 
 namespace LinkedMovement
 {
@@ -36,13 +38,18 @@ namespace LinkedMovement
         public Vector3 rotationOffset;
 
         [Serialized]
-        public BaseAnimationParams animParams;
+        public LMAnimationParams animParams;
+
+        [NonSerialized]
+        public Sequence sequence;
+
+        // TODO: Show/Hide base object
 
         public PairBase() {
             LinkedMovement.Log("PairBase constructor");
         }
 
-        public PairBase(string pId, string pName, Vector3 positionOffset, Vector3 rotationOffset, BaseAnimationParams animParams = null) {
+        public PairBase(string pId, string pName, Vector3 positionOffset, Vector3 rotationOffset, LMAnimationParams animParams = null) {
             LinkedMovement.Log("PairBase constructor w/ params");
             pairId = pId;
             pairName = pName;

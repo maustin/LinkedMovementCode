@@ -4,16 +4,17 @@ using UnityEngine;
 using static UnityEngine.GUILayout;
 
 namespace LinkedMovement.UI.InGame {
-    internal sealed class InfoContent : IDoGUI {
+    internal sealed class InfoContent : LMWindowContent {
         private string message;
+
         public InfoContent(string message) {
             this.message = message;
+            this.title = "Info";
         }
 
-        public void DoGUI() {
+        override public void DoGUI() {
+            base.DoGUI();
             using (Scope.Vertical()) {
-                Label("Animatronitect - Info", RGUIStyle.popupTitle);
-                Space(10f);
                 Label(message);
             }
         }

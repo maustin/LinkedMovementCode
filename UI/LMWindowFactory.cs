@@ -19,7 +19,7 @@ namespace LinkedMovement.UI {
             //title, position, always render, data, content
             string title = "";
             Vector2 position = Vector2.zero;
-            IDoGUI content = null;
+            LMWindowContent content = null;
             bool alwaysRender = false;
             int width = 0;
             int fixedHeight = 0;

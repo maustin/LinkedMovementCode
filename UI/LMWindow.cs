@@ -1,14 +1,13 @@
 ﻿using RapidGUI;
 using UnityEngine;
-using static Mono.Security.X509.X520;
 
 namespace LinkedMovement.UI {
     public class LMWindow : WindowLauncher {
-        private IDoGUI content;
+        private LMWindowContent content;
         public WindowManager.WindowType type;
         public bool alwaysRender;
 
-        public LMWindow(WindowManager.WindowType type, string title, IDoGUI content, bool alwaysRender, int width) : base(title, width) {
+        public LMWindow(WindowManager.WindowType type, string title, LMWindowContent content, bool alwaysRender, int width) : base(title, width) {
             LinkedMovement.Log("LMWindow: " + title);
             this.type = type;
             this.content = content;
@@ -16,6 +15,9 @@ namespace LinkedMovement.UI {
         }
 
         public void Configure(Vector2 position, int fixedHeight, WindowManager windowManager) {
+            this.content.windowManager = windowManager;
+            this.content.window = this;
+
             if (fixedHeight > 0) {
                 this.SetHeight(fixedHeight);
             }

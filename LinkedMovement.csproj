@@ -40,12 +40,14 @@
     <Compile Include="Patches\SerializedMonoBehaviourInitializePostfix.cs" />
     <Compile Include="Patches\SerializedMonoBehaviourOnDestroyPostfix.cs" />
     <Compile Include="UI\Components\HorizontalLine.cs" />
+    <Compile Include="UI\Content\CreateNewContent.cs" />
     <Compile Include="UI\Content\ModeDeterminationContent.cs" />
     <Compile Include="UI\InGame\CreateAmimationContent.cs" />
     <Compile Include="UI\InGame\ExistingLinksContent.cs" />
     <Compile Include="UI\Content\InfoContent.cs" />
     <Compile Include="UI\InGame\MainContent.cs" />
     <Compile Include="UI\LMWindow.cs" />
+    <Compile Include="UI\LMWindowContent.cs" />
     <Compile Include="UI\LMWindowFactory.cs" />
     <Compile Include="UI\Utils\CollapsibleWindow.cs" />
     <Compile Include="UI\Utils\Controls.cs" />

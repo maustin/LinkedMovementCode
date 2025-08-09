@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace LinkedMovement {
     public class LinkedMovementController : MonoBehaviour {
-        // TODO: Move out
+        // TODO: Move enum out?
         public enum CreationSteps {
             Select,
             Assemble,
@@ -28,6 +28,38 @@ namespace LinkedMovement {
         public LMAnimationParams animationParams;
         public List<BuildableObject> targetObjects { get; private set; }
         //public Dictionary<BuildableObject, Vector3> targetOriginTransformPositions { get; private set; }
+
+        public BuildableObject originObject { get; private set; }
+        public Vector3 originPosition {
+            get {
+                if (originObject == null) {
+                    return Vector3.zero;
+                } else {
+                    return originObject.transform.position;
+                }
+            }
+            set {
+                if (originObject == null) {
+                    throw new System.Exception("NO ORIGIN OBJECT TO SET POSITION ON!");
+                } else {
+                    originObject.transform.position = value;
+                }
+            }
+        }
+        private Vector3 _originPositionOffset;
+        public Vector3 originPositionOffset {
+            get {
+                if (_originPositionOffset == null) {
+                    throw new System.Exception("NO ORIGIN POSITION OFFSET!");
+                } else {
+                    return _originPositionOffset;
+                }
+            }
+            set {
+                setOriginOffsetPosition(value);
+            }
+        }
+        // TODO: offset rot
 
         public string animatronicName = string.Empty;
 
@@ -158,21 +190,42 @@ namespace LinkedMovement {
                 return;
             }
 
-            // TODO: Lock checks to specific state changes?
+            selectionHandlerEnabled = false;
+
+            // Select -> Assemble
+            if (creationStep == CreationSteps.Select && newStep == CreationSteps.Assemble) {
+                // TODO
+                // If origin exists and targets have changed, add new targets to origin
+            }
+
+            //if (newStep == CreationSteps.Select) {
+            //    //
+            //} else if (newStep == CreationSteps.Assemble) {
+            //    // TODO
+            //} else if (newStep == CreationSteps.Animate) {
+            //    //
+            //}
+
             if (animatronicName == string.Empty) {
-                LinkedMovement.Log("DO THING!");
                 // TODO: Get #?
                 animatronicName = "New Animatronic";
-
-                //var position = targetObjects[0].transform.position;
-                //LinkedMovement.Log("Target pos: " + position.ToString());
-                //Deco d2 = ScriptableSingleton<AssetManager>.Instance.instantiatePrefab<Deco>("98f0269770ff44247b38607fdb2cf837", position, Quaternion.identity);
-                //if (d2 != null) {
-                //    LinkedMovement.Log("Instantiated base!!!");
-                //} else {
-                //    LinkedMovement.Log("No instantiate base");
-                //}
             }
+
+            // TODO: Lock checks to specific state changes?
+            //if (animatronicName == string.Empty) {
+            //    LinkedMovement.Log("DO THING!");
+            //    // TODO: Get #?
+            //    animatronicName = "New Animatronic";
+
+            //    //var position = targetObjects[0].transform.position;
+            //    //LinkedMovement.Log("Target pos: " + position.ToString());
+            //    //Deco d2 = ScriptableSingleton<AssetManager>.Instance.instantiatePrefab<Deco>("98f0269770ff44247b38607fdb2cf837", position, Quaternion.identity);
+            //    //if (d2 != null) {
+            //    //    LinkedMovement.Log("Instantiated base!!!");
+            //    //} else {
+            //    //    LinkedMovement.Log("No instantiate base");
+            //    //}
+            //}
 
             creationStep = newStep;
         }
@@ -218,6 +271,29 @@ namespace LinkedMovement {
         //        enableSelectionHandler();
         //    }
         //}
+
+        public void generateOrigin() {
+            LinkedMovement.Log("generateOrigin");
+
+            if (originObject != null) {
+                LinkedMovement.Log("Destroy existing origin");
+                originObject.Kill();
+                originObject = null;
+            }
+
+            var originPosition = findTargetsCenterPosition();
+            originObject = ScriptableSingleton<AssetManager>.Instance.instantiatePrefab<Deco>("98f0269770ff44247b38607fdb2cf837", originPosition, Quaternion.identity);
+            if (originObject != null) {
+                LinkedMovement.Log("Instantiated origin!!!");
+            } else {
+                LinkedMovement.Log("FAILED to instantiate origin");
+            }
+        }
+
+        private void setOriginOffsetPosition(Vector3 newPositionOffset) {
+            // TODO
+            _originPositionOffset = newPositionOffset;
+        }
 
         public void pickTargetObject(Selection.Mode newMode) {
             LinkedMovement.Log("pickTargetObject");
@@ -442,6 +518,32 @@ namespace LinkedMovement {
             selectionHandler.DeselectAll();
         }
 
+        private Vector3 findTargetsCenterPosition() {
+            var startingPos = targetObjects[0].transform.position;
+            var minX = startingPos.x;
+            var maxX = startingPos.x;
+            var minY = startingPos.y;
+            var maxY = startingPos.y;
+            var minZ = startingPos.z;
+            var maxZ = startingPos.z;
+
+            foreach (var target in targetObjects) {
+                var tp = target.transform.position;
+                if (tp.x < minX) minX = tp.x;
+                if (tp.x > maxX) maxX = tp.x;
+                if (tp.y < minY) minY = tp.y;
+                if (tp.y > maxY) maxY = tp.y;
+                if (tp.z < minZ) minZ = tp.z;
+                if (tp.z > maxZ) maxZ = tp.z;
+            }
+
+            var midX = minX + ((maxX - minX) * 0.5f);
+            var midY = minY + ((maxY - minY) * 0.5f);
+            var midZ = minZ + ((maxZ - minZ) * 0.5f);
+
+            return new Vector3(midX, midY, midZ);
+        }
+
         //private void resetBaseObject() {
         //    if (baseObject == null) return;
 
@@ -462,7 +564,7 @@ namespace LinkedMovement {
 
         //private void setupBaseObject() {
         //    LinkedMovement.Log("setupBaseObject");
-            
+
         //    var baseAnimator = baseObject.GetComponent<Animator>();
         //    baseAnimator.Rebind();
         //    baseAnimator.Update(0f);

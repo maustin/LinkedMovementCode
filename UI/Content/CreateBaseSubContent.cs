@@ -19,18 +19,25 @@ namespace LinkedMovement.UI.Content {
 
                 Space(10f);
 
-                // TODO
-                bool hasBase = false;
+                bool hasBase = controller.originObject != null;
                 string generateButtonLabel = hasBase ? "Re-Generate Origin" : "Generate Origin";
                 if (Button(generateButtonLabel)) {
-                    // TODO
+                    controller.generateOrigin();
                 }
 
                 Space(10f);
 
-                // position
+                if (controller.originObject != null) {
+                    var newOriginPosition = RGUI.Field(controller.originPosition, "Position");
+                    if (newOriginPosition != controller.originPosition) {
+                        controller.originPosition = newOriginPosition;
+                    }
+                    Label("Rotation");
 
-                // offset
+                    Space(10f);
+                    Label("Offset Position");
+                    Label("Offset Rotation");
+                }
             }
         }
     }

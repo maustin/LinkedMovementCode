@@ -538,7 +538,7 @@ namespace LinkedMovement {
         private void enterAnimateState() {
             LinkedMovement.Log("Enter Animate State");
 
-            animationParams = new LMAnimationParams(originObject.transform.position);
+            animationParams = new LMAnimationParams(originObject.transform.position, originObject.transform.rotation.eulerAngles);
             
             // set targets parent
             foreach (var targetBO in targetObjects) {

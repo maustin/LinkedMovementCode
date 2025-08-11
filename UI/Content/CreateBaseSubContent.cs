@@ -32,11 +32,11 @@ namespace LinkedMovement.UI.Content {
                     if (newOriginPosition != controller.originPosition) {
                         controller.originPosition = newOriginPosition;
                     }
-                    Label("Rotation");
+                    //Label("Rotation");
 
-                    Space(10f);
-                    Label("Offset Position");
-                    Label("Offset Rotation");
+                    //Space(10f);
+                    //Label("Offset Position");
+                    //Label("Offset Rotation");
                 }
             }
         }

@@ -34,7 +34,7 @@ namespace RapidGUI
         #endregion
 
         public KeyCode closeFocusedWindowKey = KeyCode.Q;
-        public int prefixLabelSlideButton = 1;
+        public int prefixLabelSlideButton = 1; // Right mouse button
         public Action onGUI;
 
         public void OnGUI()

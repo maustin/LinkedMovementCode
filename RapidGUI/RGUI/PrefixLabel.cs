@@ -55,6 +55,7 @@ namespace RapidGUI
                 isLong = PrefixLabel(label);
                 if (IsDraggable(type))
                 {
+                    //Debug.Log("XXX IS DRAGGY: " + label);
                     obj = DoDrag(obj, type);
                 }
             }
@@ -90,8 +91,8 @@ namespace RapidGUI
                         RGUIUtility.SetCursor(MouseCursor.ResizeHorizontal);
                         ev.Use();
                     }
+                    break;
                 }
-                break;
 
                 case EventType.MouseUp:
                 {
@@ -100,8 +101,8 @@ namespace RapidGUI
                         GUIUtility.hotControl = 0;
                         ev.Use();
                     }
+                    break;
                 }
-                break;
 
                 case EventType.MouseDrag:
                 {
@@ -130,8 +131,8 @@ namespace RapidGUI
 
                         ev.Use();
                     }
+                    break;
                 }
-                break;
                 
                 case EventType.Repaint:
                 {
@@ -139,8 +140,8 @@ namespace RapidGUI
                     {
                         RGUIUtility.SetCursor(MouseCursor.ResizeHorizontal);
                     }
+                    break;
                 }
-                break;
             }
 
             return obj;

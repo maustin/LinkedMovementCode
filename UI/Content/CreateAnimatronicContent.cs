@@ -45,12 +45,16 @@ namespace LinkedMovement.UI.Content {
             if (controller.getCreationStep() == LinkedMovementController.CreationSteps.Select) {
                 selectSubContent.DoGUI();
 
+                FlexibleSpace();
+
                 HorizontalLine.DrawHorizontalLine(Color.grey);
 
                 using (Scope.Horizontal()) {
                     using (Scope.GuiEnabled(false)) {
                         Button("< Back", Width(65));
                     }
+
+                    FlexibleSpace();
 
                     using (Scope.GuiEnabled(controller.targetObjects.Count > 0)) {
                         if (Button("Next >", Width(65))) {
@@ -62,12 +66,16 @@ namespace LinkedMovement.UI.Content {
             if (controller.getCreationStep() == LinkedMovementController.CreationSteps.Assemble) {
                 assembleSubContent.DoGUI();
 
+                FlexibleSpace();
+
                 HorizontalLine.DrawHorizontalLine(Color.grey);
 
                 using (Scope.Horizontal()) {
                     if (Button("< Back", Width(65))) {
                         controller.setCreationStep(LinkedMovementController.CreationSteps.Select);
                     }
+
+                    FlexibleSpace();
 
                     // TODO
                     using (Scope.GuiEnabled(false)) {
@@ -79,7 +87,7 @@ namespace LinkedMovement.UI.Content {
                 //
 
                 HorizontalLine.DrawHorizontalLine(Color.grey);
-                // PREV NEXT
+                // PREV FlexibleSpace(); NEXT
             }
         }
     }

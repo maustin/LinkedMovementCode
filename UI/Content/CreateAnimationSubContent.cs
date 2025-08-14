@@ -20,13 +20,13 @@ namespace LinkedMovement.UI.Content {
         }
 
         public void DoGUI() {
+            // TODO: Info! ⓘ
+
             originBO = controller.originObject;
             animationParams = controller.animationParams;
 
             using (Scope.Vertical()) {
                 GUILayout.Label("Animate", RGUIStyle.popupTitle);
-
-                Space(5f);
 
                 using (Scope.Horizontal()) {
                     GUILayout.Label("Is Triggerable");
@@ -86,7 +86,9 @@ namespace LinkedMovement.UI.Content {
                     }
                 }
 
+                Space(3f);
                 HorizontalLine.DrawHorizontalLine(Color.grey);
+                Space(5f);
 
                 // FROM Delay
                 using (Scope.Horizontal()) {
@@ -121,7 +123,9 @@ namespace LinkedMovement.UI.Content {
                     }
                 }
 
+                Space(3f);
                 HorizontalLine.DrawHorizontalLine(Color.grey);
+                Space(5f);
 
                 // Restart delay
                 using (Scope.Horizontal()) {

@@ -44,7 +44,6 @@ namespace LinkedMovement.UI.Content {
                     if (!animationParams.targetPosition.Equals(newOriginPosition)) {
                         LinkedMovement.Log("SET target position");
                         animationParams.targetPosition = newOriginPosition;
-                        LinkedMovement.Log("Attempt rebuild");
                         rebuildSequence();
                     }
                 }
@@ -58,36 +57,66 @@ namespace LinkedMovement.UI.Content {
                     if (!animationParams.targetRotation.Equals(newOriginRotation)) {
                         LinkedMovement.Log("SET target rotation");
                         animationParams.targetRotation = newOriginRotation;
-                        LinkedMovement.Log("Attempt rebuild");
                         rebuildSequence();
                     }
                 }
 
                 // TO Duration
                 using (Scope.Horizontal()) {
-                    GUILayout.Label("Animate To Duration");
+                    GUILayout.Label("Animate TO Duration");
+                    var newToDuration = RGUI.Field(animationParams.toDuration);
+                    if (!animationParams.toDuration.Equals(newToDuration)) {
+                        LinkedMovement.Log("SET to duration");
+                        animationParams.toDuration = newToDuration;
+                        rebuildSequence();
+                    }
                 }
 
                 // TO Ease
                 using (Scope.Horizontal()) {
-                    GUILayout.Label("Animate To Easing");
+                    GUILayout.Label("Animate TO Easing");
                 }
 
                 HorizontalLine.DrawHorizontalLine(Color.grey);
 
                 // FROM Delay
                 using (Scope.Horizontal()) {
-                    GUILayout.Label("Pause at Target Duration");
+                    GUILayout.Label("Pause time at target");
+                    var newPauseAtTargetDuration = RGUI.Field(animationParams.fromDelay);
+                    if (!animationParams.fromDelay.Equals(newPauseAtTargetDuration)) {
+                        LinkedMovement.Log("SET from delay");
+                        animationParams.fromDelay = newPauseAtTargetDuration;
+                        rebuildSequence();
+                    }
                 }
 
                 // FROM Duration
                 using (Scope.Horizontal()) {
-                    GUILayout.Label("Return Duration");
+                    GUILayout.Label("Return FROM Duration");
+                    var newReturnFromDuration = RGUI.Field(animationParams.fromDuration);
+                    if (!animationParams.fromDuration.Equals(newReturnFromDuration)) {
+                        LinkedMovement.Log("SET from duration");
+                        animationParams.fromDuration = newReturnFromDuration;
+                        rebuildSequence();
+                    }
                 }
 
                 // FROM Ease
                 using (Scope.Horizontal()) {
-                    GUILayout.Label("Return Easing");
+                    GUILayout.Label("Return FROM Easing");
+                }
+
+                // Restart delay
+                using (Scope.Horizontal()) {
+                    using (Scope.GuiEnabled(!animationParams.isTriggerable)) {
+                        GUILayout.Label("Restart animation delay");
+                        var newRestartDelay = RGUI.Field(animationParams.restartDelay);
+                        if (!animationParams.restartDelay.Equals(newRestartDelay)) {
+                            LinkedMovement.Log("SET restart delay");
+                            animationParams.restartDelay = newRestartDelay;
+                            rebuildSequence();
+                        }
+                    }
                 }
 
                 GUILayout.FlexibleSpace();
@@ -102,18 +131,15 @@ namespace LinkedMovement.UI.Content {
             }
 
             sequence.Kill();
+            sequence = null;
+
             originBO.transform.position = animationParams.startingPosition;
             originBO.transform.rotation = Quaternion.Euler(animationParams.startingRotation);
-            sequence = null;
         }
 
         private void rebuildSequence(bool isSaving = false) {
             LinkedMovement.Log("rebuildSequence");
             killSequence();
-
-            //return;
-
-            //var eAngles = originBO.transform.eulerAngles;
 
             if (originBO == null) {
                 LinkedMovement.Log("NO ORIGIN BO!");
@@ -130,7 +156,7 @@ namespace LinkedMovement.UI.Content {
             //return;
 
             sequence = DOTween.Sequence();
-            var toPositionTween = DOTween.To(() => originBO.transform.position, value => originBO.transform.position = value, animationParams.startingPosition + animationParams.targetPosition, animationParams.toDuration);
+            var toPositionTween = DOTween.To(() => originBO.transform.position, value => originBO.transform.position = value, animationParams.startingPosition + animationParams.targetPosition, animationParams.toDuration);//.SetEase(Ease)
 
             var toRotationTween = DOTween.To(() => originBO.transform.rotation, value => originBO.transform.rotation = value, animationParams.startingRotation + animationParams.targetRotation, animationParams.toDuration).SetOptions(false);
             //var toRotationTween = originBO.transform.DORotate(animationParams.startingRotation + animationParams.targetRotation, animationParams.toDuration, RotateMode.FastBeyond360);
@@ -160,10 +186,15 @@ namespace LinkedMovement.UI.Content {
             //sequence.Insert(0, toRotationTween);
             sequence.Join(toRotationTween);
 
+            sequence.AppendInterval(animationParams.fromDelay);
+
             //sequence.Append(fromRotationTween);
             sequence.Append(fromPositionTween);
             //sequence.Insert(animationParams.toDuration, fromRotationTween);
             sequence.Join(fromRotationTween);
+
+            var restartDelay = animationParams.isTriggerable ? 0 : animationParams.restartDelay;
+            sequence.AppendInterval(restartDelay);
 
             sequence.SetLoops(-1);
             //if (isSaving && animationParams.isTriggerable) {

@@ -2,6 +2,7 @@
 using LinkedMovement.UI.Components;
 using LinkedMovement.UI.Utils;
 using RapidGUI;
+using System;
 using UnityEngine;
 using static UnityEngine.GUILayout;
 
@@ -11,9 +12,11 @@ namespace LinkedMovement.UI.Content {
         private BuildableObject originBO;
         private LMAnimationParams animationParams;
         private Sequence sequence;
+        private string[] easeNames;
 
         public CreateAnimationSubContent() {
             controller = LinkedMovement.GetController();
+            easeNames = Enum.GetNames(typeof(LMEase));
         }
 
         public void DoGUI() {
@@ -23,7 +26,7 @@ namespace LinkedMovement.UI.Content {
             using (Scope.Vertical()) {
                 GUILayout.Label("Animate", RGUIStyle.popupTitle);
 
-                Space(10f);
+                Space(5f);
 
                 using (Scope.Horizontal()) {
                     GUILayout.Label("Is Triggerable");
@@ -75,6 +78,12 @@ namespace LinkedMovement.UI.Content {
                 // TO Ease
                 using (Scope.Horizontal()) {
                     GUILayout.Label("Animate TO Easing");
+                    var newToEasing = RGUI.SelectionPopup(animationParams.toEase, easeNames);
+                    if (animationParams.toEase != newToEasing) {
+                        LinkedMovement.Log("SET to ease");
+                        animationParams.toEase = newToEasing;
+                        rebuildSequence();
+                    }
                 }
 
                 HorizontalLine.DrawHorizontalLine(Color.grey);
@@ -104,7 +113,15 @@ namespace LinkedMovement.UI.Content {
                 // FROM Ease
                 using (Scope.Horizontal()) {
                     GUILayout.Label("Return FROM Easing");
+                    var newFromEasing = RGUI.SelectionPopup(animationParams.fromEase, easeNames);
+                    if (animationParams.fromEase != newFromEasing) {
+                        LinkedMovement.Log("SET from ease");
+                        animationParams.fromEase = newFromEasing;
+                        rebuildSequence();
+                    }
                 }
+
+                HorizontalLine.DrawHorizontalLine(Color.grey);
 
                 // Restart delay
                 using (Scope.Horizontal()) {
@@ -146,63 +163,46 @@ namespace LinkedMovement.UI.Content {
                 return;
             }
 
-            //LinkedMovement.Log(originBO.transform.rotation.ToString());
-            //LinkedMovement.Log("start: " + animationParams.startingRotation.ToString());
-            //LinkedMovement.Log("target: " + animationParams.targetRotation.ToString());
+            // Parse easings
+            Ease toEase;
+            Ease fromEase;
 
-            //var thing = originBO.transform.DORotate(animationParams.startingPosition + animationParams.targetPosition, animationParams.toDuration, RotateMode.FastBeyond360);
-            //DOTween.To(() => myQuaternion, x => myQuaternion = x, new Vector3(0, 180, 0), 1).SetOptions(true);
-            //var thing = DOTween.To(() => originBO.transform.rotation, value => originBO.transform.rotation = value, animationParams.startingPosition + animationParams.targetPosition, animationParams.toDuration).From(false);
-            //return;
+            if (Enum.TryParse(animationParams.toEase, out toEase)) {
+                LinkedMovement.Log($"Sucessfully parsed toEase {animationParams.toEase}");
+            } else {
+                LinkedMovement.Log($"Failed to parse toEase {animationParams.toEase}");
+                toEase = Ease.InOutQuad;
+            }
+
+            if (Enum.TryParse(animationParams.fromEase, out fromEase)) {
+                LinkedMovement.Log($"Sucessfully parsed fromEase {animationParams.fromEase}");
+            } else {
+                LinkedMovement.Log($"Failed to parse fromEase {animationParams.fromEase}");
+                fromEase = Ease.InOutQuad;
+            }
 
             sequence = DOTween.Sequence();
-            var toPositionTween = DOTween.To(() => originBO.transform.position, value => originBO.transform.position = value, animationParams.startingPosition + animationParams.targetPosition, animationParams.toDuration);//.SetEase(Ease)
 
-            var toRotationTween = DOTween.To(() => originBO.transform.rotation, value => originBO.transform.rotation = value, animationParams.startingRotation + animationParams.targetRotation, animationParams.toDuration).SetOptions(false);
-            //var toRotationTween = originBO.transform.DORotate(animationParams.startingRotation + animationParams.targetRotation, animationParams.toDuration, RotateMode.FastBeyond360);
-
-            //var toRotationTween = DOTween.To(() => originBO.transform.eulerAngles, value => originBO.transform.rotation.eulerAngles = value, animationParams.startingRotation + animationParams.targetRotation, animationParams.toDuration);
-            //var toRotationTween = DOTween.To(() => originBO.transform)
-            //var toPositionTween = originBO.transform.DOMove(animationParams.startingPosition + animationParams.targetPosition, animationParams.toDuration);
-            //var toRotationTween = originBO.transform.DORotate(animationParams.startingRotation + animationParams.targetRotation, animationParams.toDuration, RotateMode.FastBeyond360);
-
-            //toPositionTween.SetEase()
-            // delay
-
-            var fromPositionTween = DOTween.To(() => originBO.transform.position, value => originBO.transform.position = value, animationParams.startingPosition, animationParams.fromDuration);
-
+            var toPositionTween = DOTween.To(() => originBO.transform.position, value => originBO.transform.position = value, animationParams.startingPosition + animationParams.targetPosition, animationParams.toDuration).SetEase(toEase);
+            var toRotationTween = DOTween.To(() => originBO.transform.rotation, value => originBO.transform.rotation = value, animationParams.startingRotation + animationParams.targetRotation, animationParams.toDuration).SetOptions(false).SetEase(toEase);
+            
+            var fromPositionTween = DOTween.To(() => originBO.transform.position, value => originBO.transform.position = value, animationParams.startingPosition, animationParams.fromDuration).SetEase(fromEase);
             // Rotation set as "From" to support values >= 360
-            var fromRotationTween = DOTween.To(() => originBO.transform.rotation, value => originBO.transform.rotation = value, animationParams.startingRotation + animationParams.targetRotation, animationParams.fromDuration).From().SetOptions(false);
-            //var fromRotationTween = originBO.transform.DORotate(animationParams.startingRotation, animationParams.fromDuration, RotateMode.FastBeyond360);
-            //var fromPositionTween = originBO.transform.DOMove(animationParams.startingPosition, animationParams.fromDuration);
-            //var fromRotationTween = originBO.transform.DORotate(animationParams.startingRotation, animationParams.fromDuration, RotateMode.FastBeyond360);
-            //fromPositionTween.SetEase()
-            // delay
-
-            //return;
-
-            //sequence.Append(toRotationTween);
+            var fromRotationTween = DOTween.To(() => originBO.transform.rotation, value => originBO.transform.rotation = value, animationParams.startingRotation + animationParams.targetRotation, animationParams.fromDuration).From().SetOptions(false).SetEase(fromEase);
+            
             sequence.Append(toPositionTween);
-            //sequence.Insert(0, toRotationTween);
             sequence.Join(toRotationTween);
 
             sequence.AppendInterval(animationParams.fromDelay);
 
-            //sequence.Append(fromRotationTween);
             sequence.Append(fromPositionTween);
-            //sequence.Insert(animationParams.toDuration, fromRotationTween);
             sequence.Join(fromRotationTween);
 
             var restartDelay = animationParams.isTriggerable ? 0 : animationParams.restartDelay;
             sequence.AppendInterval(restartDelay);
 
+            // TODO: Ability to set loops for triggered?
             sequence.SetLoops(-1);
-            //if (isSaving && animationParams.isTriggerable) {
-            //    sequence.SetLoops(0);
-            //    sequence.Pause();
-            //} else {
-            //    sequence.SetLoops(-1);
-            //}
         }
     }
 }

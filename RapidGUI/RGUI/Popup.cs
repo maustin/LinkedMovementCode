@@ -107,6 +107,7 @@ namespace RapidGUI
                         popupWindow.size = Vector2.Min(size, maxSize);
                     }
 
+                    popupWindow.selectionIndex = selectionIndex;
                     popupWindow.label = label;
                     popupWindow.displayOptions = displayOptions;
                     WindowInvoker.Add(popupWindow);
@@ -119,6 +120,7 @@ namespace RapidGUI
 
         class PopupWindow : IDoGUIWindow
         {
+            public int selectionIndex;
             public string label;
             public Vector2 pos;
             public Vector2 size;
@@ -140,7 +142,9 @@ namespace RapidGUI
 
                         for (var j = 0; j < displayOptions.Length; ++j)
                         {
-                            if (GUILayout.Button(displayOptions[j], RGUIStyle.popupFlatButton))
+                            var buttonStyle = j == selectionIndex ? RGUIStyle.popupFlatButtonSelected : RGUIStyle.popupFlatButton;
+                            //if (GUILayout.Button(displayOptions[j], RGUIStyle.popupFlatButton))
+                            if (GUILayout.Button(displayOptions[j], buttonStyle))
                             {
                                 result = j;
                             }

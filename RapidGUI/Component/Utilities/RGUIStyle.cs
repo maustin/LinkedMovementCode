@@ -7,6 +7,7 @@ namespace RapidGUI
         public static GUIStyle flatButton;
         public static GUIStyle flatButtonLeft;
         public static GUIStyle popupFlatButton;
+        public static GUIStyle popupFlatButtonSelected;
         public static GUIStyle popup;
         public static GUIStyle popupTitle;
         public static GUIStyle darkWindow;
@@ -34,6 +35,7 @@ namespace RapidGUI
             CreateFlatButton();
             CreateFlatButtonLeft();
             CreatePopupFlatButton();
+            CreatePopupFlatButtonSelected();
             CreatePopup();
             CreatePopupTitle();
             CreateDarkWindow();
@@ -92,6 +94,18 @@ namespace RapidGUI
             };
 
             popupFlatButton = style;
+        }
+
+        static void CreatePopupFlatButtonSelected() {
+            var style = new GUIStyle(flatButton) {
+                alignment = GUI.skin.label.alignment,
+                padding = new RectOffset(24, 48, 2, 2),
+                fontStyle = FontStyle.Bold,
+                name = nameof(popupFlatButtonSelected),
+            };
+            style.normal.textColor = Color.yellow;
+
+            popupFlatButtonSelected = style;
         }
 
         static void CreatePopup()

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LinkedMovement.UI.Utils;
+using LinkedMovement.Utils;
 using UnityEngine;
 
 namespace LinkedMovement {
@@ -16,13 +17,13 @@ namespace LinkedMovement {
         [Serialized]
         public float toDuration = 1f;
         [Serialized]
-        public string toEase = "";
+        public string toEase = LMEase.InOutQuad.ToString();
         [Serialized]
         public float fromDelay = 0f;
         [Serialized]
         public float fromDuration = 1f;
         [Serialized]
-        public string fromEase = "";
+        public string fromEase = LMEase.InOutQuad.ToString();
         [Serialized]
         public float restartDelay = 0f;
 

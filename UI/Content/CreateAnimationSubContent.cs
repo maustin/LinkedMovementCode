@@ -101,10 +101,9 @@ namespace LinkedMovement.UI.Content {
                 return;
             }
 
-            // TODO: Reset?
             sequence.Kill();
             originBO.transform.position = animationParams.startingPosition;
-            // TODO: rotation
+            originBO.transform.rotation = Quaternion.Euler(animationParams.startingRotation);
             sequence = null;
         }
 
@@ -132,15 +131,23 @@ namespace LinkedMovement.UI.Content {
 
             sequence = DOTween.Sequence();
             var toPositionTween = DOTween.To(() => originBO.transform.position, value => originBO.transform.position = value, animationParams.startingPosition + animationParams.targetPosition, animationParams.toDuration);
-            var toRotationTween = DOTween.To(() => originBO.transform.rotation, value => originBO.transform.rotation = value, animationParams.startingRotation + animationParams.targetRotation, animationParams.toDuration).From(false);
+
+            var toRotationTween = DOTween.To(() => originBO.transform.rotation, value => originBO.transform.rotation = value, animationParams.startingRotation + animationParams.targetRotation, animationParams.toDuration).SetOptions(false);
+            //var toRotationTween = originBO.transform.DORotate(animationParams.startingRotation + animationParams.targetRotation, animationParams.toDuration, RotateMode.FastBeyond360);
+
             //var toRotationTween = DOTween.To(() => originBO.transform.eulerAngles, value => originBO.transform.rotation.eulerAngles = value, animationParams.startingRotation + animationParams.targetRotation, animationParams.toDuration);
             //var toRotationTween = DOTween.To(() => originBO.transform)
             //var toPositionTween = originBO.transform.DOMove(animationParams.startingPosition + animationParams.targetPosition, animationParams.toDuration);
             //var toRotationTween = originBO.transform.DORotate(animationParams.startingRotation + animationParams.targetRotation, animationParams.toDuration, RotateMode.FastBeyond360);
+
             //toPositionTween.SetEase()
             // delay
+
             var fromPositionTween = DOTween.To(() => originBO.transform.position, value => originBO.transform.position = value, animationParams.startingPosition, animationParams.fromDuration);
-            var fromRotationTween = DOTween.To(() => originBO.transform.rotation, value => originBO.transform.rotation = value, animationParams.startingRotation, animationParams.fromDuration).From(false);
+
+            // Rotation set as "From" to support values >= 360
+            var fromRotationTween = DOTween.To(() => originBO.transform.rotation, value => originBO.transform.rotation = value, animationParams.startingRotation + animationParams.targetRotation, animationParams.fromDuration).From().SetOptions(false);
+            //var fromRotationTween = originBO.transform.DORotate(animationParams.startingRotation, animationParams.fromDuration, RotateMode.FastBeyond360);
             //var fromPositionTween = originBO.transform.DOMove(animationParams.startingPosition, animationParams.fromDuration);
             //var fromRotationTween = originBO.transform.DORotate(animationParams.startingRotation, animationParams.fromDuration, RotateMode.FastBeyond360);
             //fromPositionTween.SetEase()
@@ -148,10 +155,12 @@ namespace LinkedMovement.UI.Content {
 
             //return;
 
+            //sequence.Append(toRotationTween);
             sequence.Append(toPositionTween);
             //sequence.Insert(0, toRotationTween);
             sequence.Join(toRotationTween);
 
+            //sequence.Append(fromRotationTween);
             sequence.Append(fromPositionTween);
             //sequence.Insert(animationParams.toDuration, fromRotationTween);
             sequence.Join(fromRotationTween);

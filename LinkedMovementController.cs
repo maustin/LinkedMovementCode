@@ -13,6 +13,7 @@ namespace LinkedMovement {
             Select,
             Assemble,
             Animate,
+            Finish,
         }
 
         // TODO: Lots of this should prob be moved out to differentiate between
@@ -244,6 +245,9 @@ namespace LinkedMovement {
             if (creationStep == CreationSteps.Animate && newStep == CreationSteps.Assemble) {
                 exitAnimateState();
             }
+            if (creationStep == CreationSteps.Finish) {
+                finishAnimatronic();
+            }
 
             creationStep = newStep;
         }
@@ -458,9 +462,11 @@ namespace LinkedMovement {
             LinkedMovement.Log("Join # single targets: " + targetGOs.Count);
 
             // TODO
+            var pairing = new Pairing(originObject.gameObject, targetGOs, null, animatronicName);
+            pairing.setCustomData(false, animationParams.startingPosition, animationParams.startingRotation, animationParams);
             //var pairing = new Pairing(baseObject.gameObject, targetGOs, null, pairName);
             //pairing.setCustomData(false, basePositionOffset, baseRotationOffset, animationParams);
-            //pairing.connect();
+            pairing.connect();
 
             clearAllSelections();
             clearSelection();
@@ -627,7 +633,8 @@ namespace LinkedMovement {
         }
 
         private void finishAnimatronic() {
-            // TODO
+            joinObjects();
+            windowManager.removeWindowOfType(WindowManager.WindowType.CreateNewAnimatronic);
         }
 
         //private void resetBaseObject() {

@@ -96,11 +96,11 @@ namespace LinkedMovement.UI.Content {
 
                     FlexibleSpace();
 
-                    using (Scope.GuiEnabled(false)) {
-                        if (Button("Finish ✓", Width(65))) {
-                            // TODO
-                        }
+                    //using (Scope.GuiEnabled(false)) {
+                    if (Button("Finish ✓", Width(65))) {
+                        controller.setCreationStep(LinkedMovementController.CreationSteps.Finish);
                     }
+                    //}
                 }
             }
         }

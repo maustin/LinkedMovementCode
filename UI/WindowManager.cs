@@ -117,5 +117,14 @@ namespace LinkedMovement.UI {
         public void removeWindow(LMWindow window) {
             activeWindows.Remove(window);
         }
+
+        public void removeWindowOfType(WindowType type) {
+            foreach (var window in activeWindows) {
+                if (window.type == type) {
+                    removeWindow(window);
+                    break;
+                }
+            }
+        }
     }
 }

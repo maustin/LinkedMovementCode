@@ -29,6 +29,8 @@ namespace LinkedMovement.UI.Content {
                 GUILayout.Label("Animate", RGUIStyle.popupTitle);
 
                 using (Scope.Horizontal()) {
+                    // TODO
+                    //InfoPopper.DoInfoPopper();
                     GUILayout.Label("Is Triggerable");
                     var newIsTriggerable = RGUI.Field(animationParams.isTriggerable);
                     if (newIsTriggerable != animationParams.isTriggerable) {

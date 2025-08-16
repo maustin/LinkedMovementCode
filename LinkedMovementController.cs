@@ -2,6 +2,7 @@
 using LinkedMovement.UI;
 using LinkedMovement.Utils;
 using Parkitect.UI;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -66,6 +67,8 @@ namespace LinkedMovement {
         //}
 
         public string animatronicName = string.Empty;
+
+        public Sequence sampleSequence;
 
         public List<BuildableObject> animatedBuildableObjects { get; private set; }
         public void addAnimatedBuildableObject(BuildableObject bo) {
@@ -410,6 +413,9 @@ namespace LinkedMovement {
 
         public void clearAllSelections() {
             animatronicName = string.Empty;
+            animationParams = null;
+            originObject = null;
+
             clearTargetObjects();
             queuedRemovalTargets.Clear();
 
@@ -495,6 +501,70 @@ namespace LinkedMovement {
             }
         }
 
+        public void killSampleSequence() {
+            LinkedMovement.Log("killSequence");
+            if (sampleSequence == null) {
+                LinkedMovement.Log("No sequence to kill");
+                return;
+            }
+
+            sampleSequence.Kill();
+            sampleSequence = null;
+
+            originObject.transform.position = animationParams.startingPosition;
+            originObject.transform.rotation = Quaternion.Euler(animationParams.startingRotation);
+        }
+
+        public void rebuildSampleSequence(bool isSaving = false) {
+            LinkedMovement.Log("rebuildSequence");
+            killSampleSequence();
+
+            if (originObject == null) {
+                LinkedMovement.Log("NO ORIGIN BO!");
+                return;
+            }
+
+            // Parse easings
+            Ease toEase;
+            Ease fromEase;
+
+            if (Enum.TryParse(animationParams.toEase, out toEase)) {
+                LinkedMovement.Log($"Sucessfully parsed toEase {animationParams.toEase}");
+            } else {
+                LinkedMovement.Log($"Failed to parse toEase {animationParams.toEase}");
+                toEase = Ease.InOutQuad;
+            }
+
+            if (Enum.TryParse(animationParams.fromEase, out fromEase)) {
+                LinkedMovement.Log($"Sucessfully parsed fromEase {animationParams.fromEase}");
+            } else {
+                LinkedMovement.Log($"Failed to parse fromEase {animationParams.fromEase}");
+                fromEase = Ease.InOutQuad;
+            }
+
+            sampleSequence = DOTween.Sequence();
+
+            var toPositionTween = DOTween.To(() => originObject.transform.position, value => originObject.transform.position = value, animationParams.startingPosition + animationParams.targetPosition, animationParams.toDuration).SetEase(toEase);
+            var toRotationTween = DOTween.To(() => originObject.transform.rotation, value => originObject.transform.rotation = value, animationParams.targetRotation, animationParams.toDuration).SetOptions(false).SetEase(toEase);
+
+            var fromPositionTween = DOTween.To(() => originObject.transform.position, value => originObject.transform.position = value, animationParams.startingPosition, animationParams.fromDuration).SetEase(fromEase);
+            var fromRotationTween = DOTween.To(() => originObject.transform.rotation, value => originObject.transform.rotation = value, -animationParams.targetRotation, animationParams.fromDuration).SetOptions(false).SetRelative(true).SetEase(fromEase);
+
+            sampleSequence.Append(toPositionTween);
+            sampleSequence.Join(toRotationTween);
+
+            sampleSequence.AppendInterval(animationParams.fromDelay);
+
+            sampleSequence.Append(fromPositionTween);
+            sampleSequence.Join(fromRotationTween);
+
+            var restartDelay = animationParams.isTriggerable ? 0 : animationParams.restartDelay;
+            sampleSequence.AppendInterval(restartDelay);
+
+            // TODO: Ability to set loops for triggered?
+            sampleSequence.SetLoops(-1);
+        }
+
         private void enableSelectionHandler() {
             if (!selectionHandlerEnabled)
                 selectionHandlerEnabled = true;
@@ -538,20 +608,19 @@ namespace LinkedMovement {
         private void enterAnimateState() {
             LinkedMovement.Log("Enter Animate State");
 
-            animationParams = new LMAnimationParams(originObject.transform.position, originObject.transform.rotation.eulerAngles);
+            if (animationParams == null) {
+                animationParams = new LMAnimationParams(originObject.transform.position, originObject.transform.rotation.eulerAngles);
+            }
             
             // set targets parent
             foreach (var targetBO in targetObjects) {
                 targetBO.transform.SetParent(originObject.transform);
             }
-            //targetBO.transform.SetParent(baseObject.transform);
         }
 
         private void exitAnimateState() {
             LinkedMovement.Log("Exit Animate State");
-            // TODO
-            // Reset animation
-            // clear targets parent
+            killSampleSequence();
             foreach (var targetBO in targetObjects) {
                 targetBO.transform.SetParent(null);
             }

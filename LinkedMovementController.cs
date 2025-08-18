@@ -414,15 +414,26 @@ namespace LinkedMovement {
         //}
 
         public void clearTargetObjects() {
+            LinkedMovement.Log("Controller.clearTargetObjects");
+            foreach (var target in targetObjects) {
+                if (target != null && target.transform != null)
+                    target.transform.parent = null;
+            }
             targetObjects.Clear();
         }
 
         public void clearAllSelections() {
+            LinkedMovement.Log("Controller.clearAllSelections");
             animatronicName = string.Empty;
             animationParams = null;
-            originObject = null;
 
             clearTargetObjects();
+
+            if (originObject != null) {
+                originObject.destruct();
+            }
+            originObject = null;
+
             queuedRemovalTargets.Clear();
 
             foreach (var handle in highlightHandles.Values) {
@@ -432,7 +443,10 @@ namespace LinkedMovement {
         }
 
         public void joinObjects() {
-            LinkedMovement.Log("JOIN!");
+            LinkedMovement.Log("Controller.joinObjects");
+
+            // "Officially" create the origin
+            originObject.Initialize();
 
             //if (selectedBlueprint != null) {
             //    LinkedMovement.Log("Create blueprint");
@@ -462,8 +476,8 @@ namespace LinkedMovement {
                 targetGOs.Add(bo.gameObject);
             }
             LinkedMovement.Log("Join # single targets: " + targetGOs.Count);
+            targetObjects.Clear();
 
-            // TODO
             var pairing = new Pairing(originObject.gameObject, targetGOs, null, animatronicName);
             // TODO: Eliminate origin offsets
             pairing.setCustomData(false, default, default, animationParams);
@@ -472,6 +486,8 @@ namespace LinkedMovement {
             //var pairing = new Pairing(baseObject.gameObject, targetGOs, null, pairName);
             //pairing.setCustomData(false, basePositionOffset, baseRotationOffset, animationParams);
             pairing.connect();
+
+            originObject = null;
 
             clearAllSelections();
             clearSelection();

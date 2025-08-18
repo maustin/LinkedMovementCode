@@ -416,7 +416,8 @@ namespace LinkedMovement {
         }
 
         private void clearSelection() {
-            selectionHandler.DeselectAll();
+            if (selectionHandler != null)
+                selectionHandler.DeselectAll();
         }
 
         // TODO: Move to utils

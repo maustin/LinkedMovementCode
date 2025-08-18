@@ -8,7 +8,7 @@ namespace LinkedMovement.UI.Utils {
     public class InfoPopper {
         public static void DoInfoPopper() {
             // TODO
-            if (Button("ⓘ", RGUIStyle.popupFlatButton, Width(20f))) {
+            if (Button("ⓘ", RGUIStyle.popupFlatButton, Width(40f))) {
                 LinkedMovement.GetController().windowManager.createWindow(WindowManager.WindowType.Information, "This is a test");
             }
         }

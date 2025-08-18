@@ -149,23 +149,28 @@ namespace LinkedMovement {
 
             selectionHandlerEnabled = false;
 
+            // TODO: Should be elsewhere (state machine!)
             if (animatronicName == string.Empty) {
                 // TODO: Get #?
                 animatronicName = "New Animatronic";
             }
 
-            // TODO: State machiney?
+            // TODO: Really need state machine to cover below
             if (creationStep == CreationSteps.Assemble && newStep == CreationSteps.Animate) {
                 enterAnimateState();
             }
+
             if (creationStep == CreationSteps.Animate) {
                 exitAnimateState();
             }
+
             if (newStep == CreationSteps.Finish) {
                 finishAnimatronic();
+            } else {
+                // finishAnimatronic resets the state so we don't want to change it back
+                // Again, really need state machine
+                creationStep = newStep;
             }
-
-            creationStep = newStep;
         }
 
         public List<Pairing> getPairings() {

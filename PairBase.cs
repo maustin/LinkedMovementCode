@@ -58,12 +58,12 @@ namespace LinkedMovement
             this.animParams = animParams;
         }
 
-        public Vector3 getPositionOffset() {
-            return positionOffset;
-        }
+        //public Vector3 getPositionOffset() {
+        //    return positionOffset;
+        //}
 
-        public void setPositionOffset(Vector3 positionOffset) {
-            this.positionOffset = positionOffset;
-        }
+        //public void setPositionOffset(Vector3 positionOffset) {
+        //    this.positionOffset = positionOffset;
+        //}
     }
 }

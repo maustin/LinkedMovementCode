@@ -109,6 +109,7 @@ namespace LinkedMovement
             }
         }
 
+        // TODO: eliminate useTargetPositionOffset
         public void setCustomData(bool useTargetPositionOffset = false, Vector3 basePositionOffset = new Vector3(), Vector3 baseRotationOffset = new Vector3(), LMAnimationParams animationParams = null) {
             var baseBO = LMUtils.GetBuildableObjectFromGameObject(baseGO);
             baseBO.addCustomData(getPairBase(basePositionOffset, baseRotationOffset, animationParams));
@@ -117,9 +118,9 @@ namespace LinkedMovement
 
             foreach (GameObject targetGO in targetGOs) {
                 var offset = Vector3.zero;
-                if (useTargetPositionOffset) {
-                    offset = targetGO.transform.position;
-                }
+                //if (useTargetPositionOffset) {
+                //    offset = targetGO.transform.position;
+                //}
                 
                 LinkedMovement.Log("offset: " + offset.ToString());
 

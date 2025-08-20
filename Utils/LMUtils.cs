@@ -10,6 +10,10 @@ namespace LinkedMovement.Utils {
     static class LMUtils {
         private static Dictionary<BuildableObject, HighlightOverlayController.HighlightHandle> HighlightHandles;
 
+        public static bool IsGeneratedOrigin(BuildableObject bo) {
+            return bo != null && bo.getName() == "LMOriginBase";
+        }
+
         public static void AttachTargetToBase(Transform baseObject, Transform targetObject) {
             LinkedMovement.Log("LMUtils.AttachTargetToBase, parent: " + baseObject.name + ", target: " + targetObject.name);
             var baseTransform = baseObject;
@@ -70,7 +74,7 @@ namespace LinkedMovement.Utils {
             Sequence sequence = DOTween.Sequence();
 
             var toPositionTween = DOTween.To(() => transform.position, value => transform.position = value, animationParams.startingPosition + animationParams.targetPosition, animationParams.toDuration).SetEase(toEase);
-            var toRotationTween = DOTween.To(() => transform.rotation, value => transform.rotation = value, animationParams.targetRotation, animationParams.toDuration).SetOptions(false).SetEase(toEase);
+            var toRotationTween = DOTween.To(() => transform.rotation, value => transform.rotation = value, animationParams.targetRotation, animationParams.toDuration).SetOptions(false).SetRelative(true).SetEase(toEase);
 
             var fromPositionTween = DOTween.To(() => transform.position, value => transform.position = value, animationParams.startingPosition, animationParams.fromDuration).SetEase(fromEase);
             var fromRotationTween = DOTween.To(() => transform.rotation, value => transform.rotation = value, -animationParams.targetRotation, animationParams.fromDuration).SetOptions(false).SetRelative(true).SetEase(fromEase);

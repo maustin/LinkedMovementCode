@@ -91,18 +91,17 @@ namespace LinkedMovement {
 
         private void OnDestroy() {
             LinkedMovement.Log("LinkedMovementController OnDestroy");
-            LinkedMovement.ClearController();
+            clearAllSelections();
             if (selectionHandler != null) {
                 GameObject.Destroy(selectionHandler);
                 selectionHandler = null;
             }
-            clearAllSelections();
-            targetObjects.Clear();
             pairings.Clear();
             if (windowManager != null) {
                 windowManager.destroy();
                 windowManager = null;
             }
+            LinkedMovement.ClearController();
         }
 
         private void Update() {
@@ -150,7 +149,7 @@ namespace LinkedMovement {
                 return;
             }
 
-            selectionHandlerEnabled = false;
+            disableSelectionHandler();
 
             // TODO: Should be elsewhere (state machine!)
             if (animatronicName == string.Empty) {
@@ -216,8 +215,10 @@ namespace LinkedMovement {
             LinkedMovement.Log("Controller.removeOrigin");
             if (originObject != null) {
                 LMUtils.RemoveObjectHighlight(originObject);
-                LinkedMovement.Log("Destroy existing origin");
-                originObject.Kill();
+                LinkedMovement.Log("Destroy existing origin: " + originObject.getName());
+                // Only destroy the origin if it was generated
+                if (!LMUtils.IsGeneratedOrigin(originObject))
+                    originObject.Kill();
                 originObject = null;
             }
         }
@@ -225,6 +226,9 @@ namespace LinkedMovement {
         public void pickingOriginObject() {
             LinkedMovement.Log("Controller.pickOriginObject");
             pickingMode = PickingMode.Origin;
+
+            selectionHandler.Options.Mode = Selection.Mode.Individual;
+            enableSelectionHandler();
         }
 
         public void pickingTargetObject(Selection.Mode newMode) {
@@ -269,6 +273,7 @@ namespace LinkedMovement {
 
             LMUtils.AddObjectHighlight(bo, Color.red);
             originObject = bo;
+            disableSelectionHandler();
         }
 
         private void addTargetBuildableObject(BuildableObject bo) {
@@ -285,10 +290,6 @@ namespace LinkedMovement {
             targetObjects.Add(bo);
 
             LMUtils.AddObjectHighlight(bo, Color.yellow);
-            
-            LinkedMovement.Log("Selected BO position:");
-            LinkedMovement.Log("World: " + bo.gameObject.transform.position.ToString());
-            LinkedMovement.Log("Local: " + bo.gameObject.transform.localPosition.ToString());
         }
 
         public void queueRemoveTargetBuildableObject(BuildableObject bo) {
@@ -361,6 +362,9 @@ namespace LinkedMovement {
             clearAllSelections();
         }
 
+        // TODO: WIP: Working on targeting objects to object already animating
+        // Possible need to *not* reset origin position when not generated?
+
         public void tryToDeletePairing(Pairing pairing) {
             LinkedMovement.Log("tryToDeletePairing " + pairing.getPairingName());
 
@@ -403,10 +407,11 @@ namespace LinkedMovement {
                 return;
             }
 
+            // TODO: Try/catch to handle sequence already destroyed
             sampleSequence.Kill();
             sampleSequence = null;
 
-            if (originObject != null && originObject.transform != null && animationParams != null) {
+            if (originObject != null && originObject.transform != null && animationParams != null && LMUtils.IsGeneratedOrigin(originObject)) {
                 originObject.transform.position = animationParams.startingPosition;
                 originObject.transform.rotation = Quaternion.Euler(animationParams.startingRotation);
             }

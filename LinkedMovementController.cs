@@ -16,8 +16,13 @@ namespace LinkedMovement {
             Finish,
         }
 
-        // TODO: Lots of this should prob be moved out to differentiate between
-        // create new animation and edit existing animation
+        private enum PickingMode {
+            Origin,
+            Target,
+        }
+        private PickingMode pickingMode;
+
+        // TODO: !!! This needs to be split into a couple different classes
 
         private SelectionHandler selectionHandler;
         private bool selectionHandlerEnabled {
@@ -63,8 +68,7 @@ namespace LinkedMovement {
         }
 
         private List<BuildableObject> queuedRemovalTargets = new List<BuildableObject>();
-        private Dictionary<BuildableObject, HighlightOverlayController.HighlightHandle> highlightHandles = new Dictionary<BuildableObject, HighlightOverlayController.HighlightHandle>();
-
+        
         private List<Pairing> pairings = new List<Pairing>();
 
         private void Awake() {
@@ -93,7 +97,6 @@ namespace LinkedMovement {
                 selectionHandler = null;
             }
             clearAllSelections();
-            //baseObject = null;
             targetObjects.Clear();
             pairings.Clear();
             if (windowManager != null) {
@@ -120,7 +123,7 @@ namespace LinkedMovement {
             }
 
             var mouseTool = GameController.Instance.getActiveMouseTool();
-            // TODO: Log? What is dis? (Is handler when game menu is open?)
+            // TODO: What is dis? (Think is handler when game menu is open)
             if (mouseTool == null) return;
 
             foreach (var bo in animatedBuildableObjects) {
@@ -199,23 +202,34 @@ namespace LinkedMovement {
         public void generateOrigin() {
             LinkedMovement.Log("generateOrigin");
 
+            removeOrigin();
+
+            var originPosition = LMUtils.FindBuildObjectsCenterPosition(targetObjects);
+            originObject = ScriptableSingleton<AssetManager>.Instance.instantiatePrefab<Deco>("98f0269770ff44247b38607fdb2cf837", originPosition, Quaternion.identity);
+            if (originObject == null) {
+                throw new Exception("FAILED TO CREATE ORIGIN OBJECT");
+            }
+            LMUtils.AddObjectHighlight(originObject, Color.red);
+        }
+
+        public void removeOrigin() {
+            LinkedMovement.Log("Controller.removeOrigin");
             if (originObject != null) {
+                LMUtils.RemoveObjectHighlight(originObject);
                 LinkedMovement.Log("Destroy existing origin");
                 originObject.Kill();
                 originObject = null;
             }
-
-            var originPosition = findTargetsCenterPosition();
-            originObject = ScriptableSingleton<AssetManager>.Instance.instantiatePrefab<Deco>("98f0269770ff44247b38607fdb2cf837", originPosition, Quaternion.identity);
-            if (originObject != null) {
-                LinkedMovement.Log("Instantiated origin!!!");
-            } else {
-                LinkedMovement.Log("FAILED to instantiate origin");
-            }
         }
 
-        public void pickTargetObject(Selection.Mode newMode) {
+        public void pickingOriginObject() {
+            LinkedMovement.Log("Controller.pickOriginObject");
+            pickingMode = PickingMode.Origin;
+        }
+
+        public void pickingTargetObject(Selection.Mode newMode) {
             LinkedMovement.Log("pickTargetObject");
+            pickingMode = PickingMode.Target;
             
             var options = selectionHandler.Options;
             if (options.Mode == newMode) {
@@ -230,8 +244,35 @@ namespace LinkedMovement {
             }
         }
 
-        public void addTargetBuildableObject(BuildableObject bo) {
-            LinkedMovement.Log("addTargetBuildableObject");
+        public void handleAddObjectSelection(BuildableObject bo) {
+            LinkedMovement.Log("Controller.handleObjectSelection");
+            if (pickingMode == PickingMode.Origin)
+                addOriginBuildableObject(bo);
+            else if (pickingMode == PickingMode.Target)
+                addTargetBuildableObject(bo);
+            else
+                throw new Exception("UNKNOWN PICKING MODE");
+        }
+
+        public void handleRemoveObjectSelection(BuildableObject bo) {
+            LinkedMovement.Log("Controller.handleRemoveObjectSelection");
+            if (pickingMode == PickingMode.Target)
+                removeTargetBuildableObject(bo);
+        }
+
+        private void addOriginBuildableObject(BuildableObject bo) {
+            LinkedMovement.Log("Controller.addOriginBuildableObject");
+            if (bo == null) {
+                LinkedMovement.Log("null BuildableObject");
+                return;
+            }
+
+            LMUtils.AddObjectHighlight(bo, Color.red);
+            originObject = bo;
+        }
+
+        private void addTargetBuildableObject(BuildableObject bo) {
+            LinkedMovement.Log("Controller.addTargetBuildableObject");
             if (bo == null) {
                 LinkedMovement.Log("null BuildableObject");
                 return;
@@ -243,18 +284,8 @@ namespace LinkedMovement {
 
             targetObjects.Add(bo);
 
-            // Ensure target bo isn't already highlighted
-            if (highlightHandles.ContainsKey(bo)) {
-                highlightHandles[bo].remove();
-                highlightHandles.Remove(bo);
-            }
-
-            // Build highlight
-            List<Renderer> renderers = new List<Renderer>();
-            bo.retrieveRenderersToHighlight(renderers);
-            var highlightHandle = HighlightOverlayController.Instance.add(renderers, -1, Color.yellow);
-            highlightHandles.Add(bo, highlightHandle);
-
+            LMUtils.AddObjectHighlight(bo, Color.yellow);
+            
             LinkedMovement.Log("Selected BO position:");
             LinkedMovement.Log("World: " + bo.gameObject.transform.position.ToString());
             LinkedMovement.Log("Local: " + bo.gameObject.transform.localPosition.ToString());
@@ -265,20 +296,15 @@ namespace LinkedMovement {
             queuedRemovalTargets.Add(bo);
         }
 
-        public void removeTargetBuildableObject(BuildableObject bo) {
+        private void removeTargetBuildableObject(BuildableObject bo) {
             LinkedMovement.Log("removeTargetBuildableObject");
             if (bo == null) {
                 LinkedMovement.Log("null BuildableObject");
                 return;
             }
 
-            if (highlightHandles.ContainsKey(bo)) {
-                highlightHandles[bo].remove();
-                highlightHandles.Remove(bo);
-            } else {
-                LinkedMovement.Log("No highlight handle found");
-            }
-
+            LMUtils.RemoveObjectHighlight(bo);
+            
             targetObjects.Remove(bo);
         }
 
@@ -303,17 +329,10 @@ namespace LinkedMovement {
             clearSelection();
             clearTargetObjects();
 
-            if (originObject != null) {
-                originObject.destruct();
-            }
-            originObject = null;
+            removeOrigin();
 
             queuedRemovalTargets.Clear();
-
-            foreach (var handle in highlightHandles.Values) {
-                handle.remove();
-            }
-            highlightHandles.Clear();
+            LMUtils.ResetObjectHighlights();
         }
 
         public void joinObjects() {
@@ -418,33 +437,6 @@ namespace LinkedMovement {
         private void clearSelection() {
             if (selectionHandler != null)
                 selectionHandler.DeselectAll();
-        }
-
-        // TODO: Move to utils
-        private Vector3 findTargetsCenterPosition() {
-            var startingPos = targetObjects[0].transform.position;
-            var minX = startingPos.x;
-            var maxX = startingPos.x;
-            var minY = startingPos.y;
-            var maxY = startingPos.y;
-            var minZ = startingPos.z;
-            var maxZ = startingPos.z;
-
-            foreach (var target in targetObjects) {
-                var tp = target.transform.position;
-                if (tp.x < minX) minX = tp.x;
-                if (tp.x > maxX) maxX = tp.x;
-                if (tp.y < minY) minY = tp.y;
-                if (tp.y > maxY) maxY = tp.y;
-                if (tp.z < minZ) minZ = tp.z;
-                if (tp.z > maxZ) maxZ = tp.z;
-            }
-
-            var midX = minX + ((maxX - minX) * 0.5f);
-            var midY = minY + ((maxY - minY) * 0.5f);
-            var midZ = minZ + ((maxZ - minZ) * 0.5f);
-
-            return new Vector3(midX, midY, midZ);
         }
 
         private void enterAnimateState() {

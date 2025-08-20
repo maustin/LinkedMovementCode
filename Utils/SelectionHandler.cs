@@ -128,7 +128,7 @@ namespace LinkedMovement {
             }
 
             LinkedMovement.Log($"OnAdd: {o.GetType().Name} -- {o.getName()}");
-            controller.addTargetBuildableObject(o);
+            controller.handleAddObjectSelection(o);
         }
         private void OnRemovedSelectedObject(BuildableObject o) {
             LinkedMovement.Log("SelectionHandler.OnRemovedSelectedObject");
@@ -137,7 +137,7 @@ namespace LinkedMovement {
             }
 
             LinkedMovement.Log($"OnRemove: {o.GetType().Name} -- {o.getName()}");
-            controller.removeTargetBuildableObject(o);
+            controller.handleRemoveObjectSelection(o);
         }
         public void DeselectAll() {
             LinkedMovement.Log("SelectionHandler DeselectAll");

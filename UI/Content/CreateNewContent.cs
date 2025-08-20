@@ -82,7 +82,7 @@ namespace LinkedMovement.UI.Content {
                 using (Scope.Horizontal()) {
                     Label("Target Objects");
                     if (Button("Select", Width(64))) {
-                        controller.pickTargetObject(selectionModes[selectedSelectionMode]);
+                        controller.pickingTargetObject(selectionModes[selectedSelectionMode]);
                     }
                 }
 
@@ -96,8 +96,8 @@ namespace LinkedMovement.UI.Content {
                 foreach (var targetObject in targetObjects) {
                     using (Scope.Horizontal()) {
                         Label(targetObject.getName());
-                        if (Button("Clear", Width(65)))
-                            controller.removeTargetBuildableObject(targetObject);
+                        //if (Button("Clear", Width(65)))
+                            //controller.removeTargetBuildableObject(targetObject);
                     }
                 }
                 EndScrollView();

@@ -6,66 +6,48 @@ using System.Collections.Generic;
 using UnityEngine;
 
 namespace LinkedMovement.Utils {
+    // TODO: Lots of UI stuff. Split or move to UI.Utils?
     static class LMUtils {
-        static private HighlightOverlayController.HighlightHandle CurrentHighlightHandle;
-        static private BuildableObject CurrentHighlightedObject;
-        static private IEnumerator CurrentHightlightCoroutine;
+        private static Dictionary<BuildableObject, HighlightOverlayController.HighlightHandle> HighlightHandles;
 
-        static public void AttachTargetToBase(Transform baseObject, Transform targetObject) {
+        public static void AttachTargetToBase(Transform baseObject, Transform targetObject) {
             LinkedMovement.Log("LMUtils.AttachTargetToBase, parent: " + baseObject.name + ", target: " + targetObject.name);
             var baseTransform = baseObject;
             targetObject.SetParent(baseTransform);
         }
 
-        static public void UpdateMouseColliders(BuildableObject bo) {
+        public static void UpdateMouseColliders(BuildableObject bo) {
             if (bo.mouseColliders != null) {
                 foreach (MouseCollider mouseCollider in bo.mouseColliders)
                     mouseCollider.updatePosition();
             }
         }
 
-        static public string GetGameObjectBuildableName(GameObject go) {
+        public static string GetGameObjectBuildableName(GameObject go) {
             var buildableObject = GetBuildableObjectFromGameObject(go);
             if (buildableObject != null)
                 return buildableObject.getName();
             return go.name;
         }
 
-        static public BuildableObject GetBuildableObjectFromGameObject(GameObject go) {
+        public static BuildableObject GetBuildableObjectFromGameObject(GameObject go) {
             var buildableObject = go.GetComponent<BuildableObject>();
             return buildableObject;
         }
 
-        static public PairBase GetPairBaseFromSerializedMonoBehaviour(SerializedMonoBehaviour smb) {
+        public static PairBase GetPairBaseFromSerializedMonoBehaviour(SerializedMonoBehaviour smb) {
             PairBase pairBase;
             smb.tryGetCustomData(out pairBase);
             return pairBase;
         }
 
-        static public PairTarget GetPairTargetFromSerializedMonoBehaviour(SerializedMonoBehaviour smb) {
+        public static PairTarget GetPairTargetFromSerializedMonoBehaviour(SerializedMonoBehaviour smb) {
             PairTarget pairTarget;
             smb.tryGetCustomData(out pairTarget);
             return pairTarget;
         }
 
-        static public void HighlightBuildableObject(BuildableObject bo) {
-            if (CurrentHighlightedObject != null) {
-                CurrentHighlightedObject.OnKilled -= new SerializedMonoBehaviour.OnKilledHandler(OnHighlightedObjectKilled);
-                if (CurrentHightlightCoroutine != null) {
-                    CurrentHighlightedObject.StopCoroutine(CurrentHightlightCoroutine);
-                }
-            }
-            CurrentHighlightHandle?.remove();
-
-            CurrentHighlightHandle = HighlightOverlayController.Instance.add(bo.getRenderersToHighlight());
-            CurrentHighlightedObject = bo;
-            CurrentHighlightedObject.OnKilled += new SerializedMonoBehaviour.OnKilledHandler(OnHighlightedObjectKilled);
-
-            CurrentHightlightCoroutine = ClearHighlightOnBuildableObject(bo);
-            bo.StartCoroutine(CurrentHightlightCoroutine);
-        }
-
-        static public Sequence BuildAnimationSequence(Transform transform, LMAnimationParams animationParams, bool isEditing = false) {
+        public static Sequence BuildAnimationSequence(Transform transform, LMAnimationParams animationParams, bool isEditing = false) {
             LinkedMovement.Log("LMUtils.BuildAnimationSequence");
             // Parse easings
             Ease toEase;
@@ -125,19 +107,64 @@ namespace LinkedMovement.Utils {
             return sequence;
         }
 
-        private static void OnHighlightedObjectKilled(SerializedMonoBehaviour smb) {
-            CurrentHighlightedObject.OnKilled -= new SerializedMonoBehaviour.OnKilledHandler(OnHighlightedObjectKilled);
-            CurrentHighlightedObject = null;
-            CurrentHighlightHandle?.remove();
-            CurrentHighlightHandle = null;
+        public static Vector3 FindBuildObjectsCenterPosition(List<BuildableObject> objects) {
+            var startingPos = objects[0].transform.position;
+            var minX = startingPos.x;
+            var maxX = startingPos.x;
+            var minY = startingPos.y;
+            var maxY = startingPos.y;
+            var minZ = startingPos.z;
+            var maxZ = startingPos.z;
+
+            foreach (var target in objects) {
+                var tp = target.transform.position;
+                if (tp.x < minX) minX = tp.x;
+                if (tp.x > maxX) maxX = tp.x;
+                if (tp.y < minY) minY = tp.y;
+                if (tp.y > maxY) maxY = tp.y;
+                if (tp.z < minZ) minZ = tp.z;
+                if (tp.z > maxZ) maxZ = tp.z;
+            }
+
+            var midX = minX + ((maxX - minX) * 0.5f);
+            var midY = minY + ((maxY - minY) * 0.5f);
+            var midZ = minZ + ((maxZ - minZ) * 0.5f);
+
+            return new Vector3(midX, midY, midZ);
         }
 
-        private static IEnumerator ClearHighlightOnBuildableObject(BuildableObject bo) {
-            yield return new WaitForSecondsRealtime(2f);
-            if (bo == CurrentHighlightedObject) {
-                OnHighlightedObjectKilled(bo);
-                CurrentHightlightCoroutine = null;
+        public static void AddObjectHighlight(BuildableObject bo, Color color) {
+            EnsureHighlightHandlesReady();
+            // Remove target if already present
+            RemoveObjectHighlight(bo);
+
+            List<Renderer> renderers = new List<Renderer>();
+            bo.retrieveRenderersToHighlight(renderers);
+            var highlightHandle = HighlightOverlayController.Instance.add(renderers, -1, color);
+            HighlightHandles.Add(bo, highlightHandle);
+        }
+
+        public static void RemoveObjectHighlight(BuildableObject bo) {
+            EnsureHighlightHandlesReady();
+            if (HighlightHandles.ContainsKey(bo)) {
+                HighlightHandles[bo].remove();
+                HighlightHandles.Remove(bo);
             }
+        }
+
+        public static void ResetObjectHighlights() {
+            if (HighlightHandles != null) {
+                foreach (var handle in HighlightHandles.Values) {
+                    handle.remove();
+                }
+                HighlightHandles.Clear();
+            }
+            HighlightHandles = null;
+        }
+
+        private static void EnsureHighlightHandlesReady() {
+            if (HighlightHandles == null)
+                HighlightHandles = new Dictionary<BuildableObject, HighlightOverlayController.HighlightHandle>();
         }
     }
 }

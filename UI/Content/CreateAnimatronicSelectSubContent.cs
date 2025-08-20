@@ -18,7 +18,8 @@ namespace LinkedMovement.UI.Content {
 
         public void DoGUI() {
             using (Scope.Vertical()) {
-                GUILayout.Label("Select Objects", RGUIStyle.popupTitle);
+                Label("Select Objects", RGUIStyle.popupTitle);
+                Label("Select the objects that will be animating.");
                 Space(10f);
 
                 using (Scope.Horizontal()) {
@@ -27,14 +28,13 @@ namespace LinkedMovement.UI.Content {
                 }
 
                 using (Scope.Horizontal()) {
-                    Label("Target Objects");
-                    if (Button("Select", Width(64))) {
-                        controller.pickTargetObject(selectionModes[selectedSelectionMode]);
+                    if (Button("Select")) {
+                        controller.pickingTargetObject(selectionModes[selectedSelectionMode]);
                     }
                 }
 
                 var targetObjects = controller.targetObjects;
-                targetsScrollPosition = BeginScrollView(targetsScrollPosition, GUILayout.Height(300f));
+                targetsScrollPosition = BeginScrollView(targetsScrollPosition, Height(300f));
                 foreach (var targetObject in targetObjects) {
                     using (Scope.Horizontal()) {
                         Label(targetObject.getName());

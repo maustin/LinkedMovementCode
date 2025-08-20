@@ -13,28 +13,42 @@ namespace LinkedMovement.UI.Content {
 
         public void DoGUI() {
             using (Scope.Vertical()) {
-                GUILayout.Label("Assemble", RGUIStyle.popupTitle);
+                Label("Origin", RGUIStyle.popupTitle);
+                Label("Select or Generate the object that the target objects will animate with.");
 
                 Space(10f);
 
-                bool hasBase = controller.originObject != null;
-                string generateButtonLabel = hasBase ? "Re-Generate Origin" : "Generate Origin";
-                if (Button(generateButtonLabel)) {
-                    controller.generateOrigin();
-                }
+                var originObject = controller.originObject;
+                bool hasBase = originObject != null;
 
-                Space(10f);
+                if (hasBase) {
+                    using (Scope.Horizontal()) {
+                        Label(originObject.getName());
+                        if (Button("X", Width(40))) {
+                            controller.removeOrigin();
+                        }
+                    }
 
-                if (controller.originObject != null) {
                     var newOriginPosition = RGUI.Field(controller.originPosition, "Position");
                     if (newOriginPosition != controller.originPosition) {
                         controller.originPosition = newOriginPosition;
                     }
-                    //Label("Rotation");
+                }
 
-                    //Space(10f);
-                    //Label("Offset Position");
-                    //Label("Offset Rotation");
+                Space(10f);
+
+                using (Scope.GuiEnabled(!hasBase)) {
+                    if (Button("Generate Origin")) {
+                        controller.generateOrigin();
+                    }
+                }
+
+                Space(5f);
+
+                using (Scope.GuiEnabled(!hasBase)) {
+                    if (Button("Select Origin")) {
+                        controller.pickingOriginObject();
+                    }
                 }
             }
         }

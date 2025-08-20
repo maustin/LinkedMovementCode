@@ -97,6 +97,8 @@ namespace LinkedMovement
         public void update() {
             if (!connected) return;
             // TODO: Skip if sequence and not animating
+            
+            // TODO: Might be resource intensive. See when we can skip.
 
             var bo = LMUtils.GetBuildableObjectFromGameObject(baseGO);
             LMUtils.UpdateMouseColliders(bo);

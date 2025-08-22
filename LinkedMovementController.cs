@@ -163,7 +163,7 @@ namespace LinkedMovement {
                 enterAnimateState();
             }
 
-            if (creationStep == CreationSteps.Animate) {
+            if (creationStep == CreationSteps.Animate && newStep != CreationSteps.Finish) {
                 exitAnimateState();
             }
 
@@ -348,11 +348,14 @@ namespace LinkedMovement {
             LMUtils.ResetObjectHighlights();
         }
 
-        public void joinObjects() {
+        private void joinObjects() {
             LinkedMovement.Log("Controller.joinObjects");
 
-            // "Officially" create the origin object
-            originObject.Initialize();
+            if (LMUtils.IsGeneratedOrigin(originObject)) {
+                // "Officially" create the generated origin object
+                originObject.Initialize();
+            }
+            restartAssociated();
 
             List<GameObject> targetGOs = new List<GameObject>();
             foreach (var bo in targetObjects) {
@@ -434,8 +437,8 @@ namespace LinkedMovement {
             //}
         }
 
-        public void rebuildSampleSequence(bool doRestart = false) {
-            LinkedMovement.Log("rebuildSequence");
+        public void rebuildSampleSequence() {
+            LinkedMovement.Log("Controller.rebuildSampleSequence");
             killSampleSequence();
 
             if (originObject == null) {
@@ -446,13 +449,13 @@ namespace LinkedMovement {
             //if (originObject.transform.parent != null && originObject.transform.parent.gameObject != null) {
             //    LMUtils.RestartAssociatedAnimations(originObject.transform.parent.gameObject);
             //}
-            if (doRestart)
-                restartAssociated();
+            restartAssociated();
 
             sampleSequence = LMUtils.BuildAnimationSequence(originObject.transform, animationParams, true);
         }
 
         private void restartAssociated() {
+            LinkedMovement.Log("Controller.restartAssociated");
             if (originObject.transform.parent != null && originObject.transform.parent.gameObject != null) {
                 LMUtils.RestartAssociatedAnimations(originObject.transform.parent.gameObject);
             }
@@ -480,6 +483,7 @@ namespace LinkedMovement {
                 animationParams = new LMAnimationParams(originObject.transform.position, originObject.transform.rotation.eulerAngles);
             }
 
+            // Restart parent sequences so target is attached when parent is at starting location
             restartAssociated();
 
             // set targets parent
@@ -487,7 +491,7 @@ namespace LinkedMovement {
                 targetBO.transform.SetParent(originObject.transform);
             }
 
-            rebuildSampleSequence(false);
+            rebuildSampleSequence();
         }
 
         private void exitAnimateState() {
@@ -500,6 +504,7 @@ namespace LinkedMovement {
 
         private void finishAnimatronic() {
             LinkedMovement.Log("Finish Animatronic");
+            killSampleSequence();
             joinObjects();
         }
 

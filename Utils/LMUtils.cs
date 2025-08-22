@@ -74,15 +74,10 @@ namespace LinkedMovement.Utils {
 
         public static Sequence BuildAnimationSequence(Transform transform, LMAnimationParams animationParams, bool isEditing = false) {
             LinkedMovement.Log("LMUtils.BuildAnimationSequence");
-            //LinkedMovement.Log(animationParams.ToString());
-
-            //var hasParent = transform.parent != null;
+            LinkedMovement.Log(animationParams.ToString());
 
             // TODO: Need to prevent adding multiple pairings on the same objects
             // E.g. an object can only be the base of a single Pairing
-            //if (isEditing && transform.parent != null && transform.parent.gameObject != null)
-            //    RestartAssociatedAnimations(transform.parent.gameObject);
-                //RestartAssociatedAnimations(transform.gameObject);
 
             // Parse easings
             Ease toEase;
@@ -124,16 +119,6 @@ namespace LinkedMovement.Utils {
                     .Group(fromRotationTween))
                 .ChainDelay(animationParams.restartDelay)
                 ;
-
-            //Sequence sequence = Sequence.Create(cycles: -1, CycleMode.Restart)
-            //    .ChainDelay(0)
-            //    .Group(toPositionTween)
-            //    .Group(toRotationTween)
-            //    .ChainDelay(animationParams.fromDelay)
-            //    .Group(fromPositionTween)
-            //    .Group(fromRotationTween)
-            //    .ChainDelay(animationParams.restartDelay)
-            //    ;
 
             return sequence;
         }

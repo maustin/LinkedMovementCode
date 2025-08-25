@@ -77,7 +77,7 @@ namespace LinkedMovement {
         private IEnumerator playEffect() {
             LinkedMovement.Log("LMTrigger.playEffect");
             sequence = LMUtils.BuildAnimationSequence(gameObject.transform, animationParams);
-            //sequence.Play();
+            //sequence.isPaused = false;
             yield return null;
         }
 

@@ -219,9 +219,22 @@ namespace LinkedMovement {
 
             var originPosition = LMUtils.FindBuildObjectsCenterPosition(targetObjects);
             originObject = ScriptableSingleton<AssetManager>.Instance.instantiatePrefab<Deco>("98f0269770ff44247b38607fdb2cf837", originPosition, Quaternion.identity);
+
+            //originObject = ScriptableSingleton<AssetManager>.Instance.instantiatePrefab<Deco>(Prefabs.ScenicCube, originPosition, Quaternion.identity);
             if (originObject == null) {
                 throw new Exception("FAILED TO CREATE ORIGIN OBJECT");
             }
+            //originObject.setDisplayName("LMOriginBase");
+            //originObject.setCanBeDestroyedByPlayer(false);
+            //originObject.GetComponent<CustomColors>().setColor(new Color(1f, 0f, 1f), 0);
+            //originObject.GetComponent<CustomSize>().setValue(0.1f);
+
+            //LinkedMovement.Log("Origin components:");
+            //Component[] components = originObject.GetComponents<Component>();
+            //foreach (var component in components) {
+            //    LinkedMovement.Log(component.GetType().ToString());
+            //}
+
             LMUtils.AddObjectHighlight(originObject, Color.red);
         }
 

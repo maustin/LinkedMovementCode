@@ -29,6 +29,10 @@ class ChunkedMeshEventStartPrefix {
         if (deco == null) {
             return true;
         }
+        PairBase pairBase = LMUtils.GetPairBaseFromSerializedMonoBehaviour(deco);
+        if (pairBase != null) {
+            return false;
+        }
         PairTarget pairTarget = LMUtils.GetPairTargetFromSerializedMonoBehaviour(deco);
         if (pairTarget != null) {
             return false;

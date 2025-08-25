@@ -86,7 +86,6 @@ namespace LinkedMovement {
         private void OnDisable() {
             LinkedMovement.Log("LinkedMovementController OnDisable");
             disableSelectionHandler();
-            //DOTween.KillAll();
             // TODO: Do all Sequences need to be tracked here so they can be killed?
         }
 
@@ -218,22 +217,17 @@ namespace LinkedMovement {
             removeOrigin();
 
             var originPosition = LMUtils.FindBuildObjectsCenterPosition(targetObjects);
-            originObject = ScriptableSingleton<AssetManager>.Instance.instantiatePrefab<Deco>("98f0269770ff44247b38607fdb2cf837", originPosition, Quaternion.identity);
-
-            //originObject = ScriptableSingleton<AssetManager>.Instance.instantiatePrefab<Deco>(Prefabs.ScenicCube, originPosition, Quaternion.identity);
+            //originObject = ScriptableSingleton<AssetManager>.Instance.instantiatePrefab<Deco>("98f0269770ff44247b38607fdb2cf837", originPosition, Quaternion.identity);
+            // Use built-in prefab for base. Otherwise trying to use mod object will fail in non-mod (e.g. scenario) env.
+            originObject = ScriptableSingleton<AssetManager>.Instance.instantiatePrefab<Deco>(Prefabs.ScenicCube, originPosition, Quaternion.identity);
             if (originObject == null) {
                 throw new Exception("FAILED TO CREATE ORIGIN OBJECT");
             }
-            //originObject.setDisplayName("LMOriginBase");
-            //originObject.setCanBeDestroyedByPlayer(false);
-            //originObject.GetComponent<CustomColors>().setColor(new Color(1f, 0f, 1f), 0);
-            //originObject.GetComponent<CustomSize>().setValue(0.1f);
-
-            //LinkedMovement.Log("Origin components:");
-            //Component[] components = originObject.GetComponents<Component>();
-            //foreach (var component in components) {
-            //    LinkedMovement.Log(component.GetType().ToString());
-            //}
+            originObject.setDisplayName("LMOriginBase");
+            originObject.setCanBeDestroyedByPlayer(false);
+            originObject.GetComponent<CustomColors>().setColor(new Color(1f, 0f, 1f), 0);
+            originObject.GetComponent<CustomSize>().setValue(0.1f);
+            Destroy(originObject.GetComponent<ChunkedMesh>());
 
             LMUtils.AddObjectHighlight(originObject, Color.red);
         }
@@ -242,6 +236,7 @@ namespace LinkedMovement {
             LinkedMovement.Log("Controller.removeOrigin");
             if (originObject != null) {
                 LMUtils.RemoveObjectHighlight(originObject);
+                LMUtils.SetChunkedMeshEnalbedIfPresent(originObject, true);
                 LinkedMovement.Log("Destroy existing origin: " + originObject.getName());
                 // Only destroy the origin if it was generated
                 if (LMUtils.IsGeneratedOrigin(originObject))
@@ -277,6 +272,10 @@ namespace LinkedMovement {
 
         public void handleAddObjectSelection(BuildableObject bo) {
             LinkedMovement.Log("Controller.handleObjectSelection");
+
+            // We have to disable the ChunkedMesh component so tweens update the visual location
+            LMUtils.SetChunkedMeshEnalbedIfPresent(bo, false);
+
             if (pickingMode == PickingMode.Origin)
                 addOriginBuildableObject(bo);
             else if (pickingMode == PickingMode.Target)
@@ -287,6 +286,7 @@ namespace LinkedMovement {
 
         public void handleRemoveObjectSelection(BuildableObject bo) {
             LinkedMovement.Log("Controller.handleRemoveObjectSelection");
+            LMUtils.SetChunkedMeshEnalbedIfPresent(bo, true);
             if (pickingMode == PickingMode.Target)
                 removeTargetBuildableObject(bo);
         }
@@ -331,6 +331,7 @@ namespace LinkedMovement {
                 return;
             }
 
+            LMUtils.SetChunkedMeshEnalbedIfPresent(bo, true);
             LMUtils.RemoveObjectHighlight(bo);
             
             targetObjects.Remove(bo);
@@ -339,6 +340,7 @@ namespace LinkedMovement {
         public void clearTargetObjects() {
             LinkedMovement.Log("Controller.clearTargetObjects");
             foreach (var target in targetObjects) {
+                LMUtils.SetChunkedMeshEnalbedIfPresent(target, true);
                 if (target != null && target.transform != null)
                     target.transform.parent = null;
             }

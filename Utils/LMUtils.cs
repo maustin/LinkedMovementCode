@@ -10,6 +10,23 @@ namespace LinkedMovement.Utils {
     static class LMUtils {
         private static Dictionary<BuildableObject, HighlightOverlayController.HighlightHandle> HighlightHandles;
 
+        public static void LogBuildableObjectComponents(BuildableObject bo) {
+            LinkedMovement.Log("LogBuildableObjectComponents:");
+            Component[] components = bo.GetComponents<Component>();
+            foreach (var component in components) {
+                LinkedMovement.Log(component.GetType().ToString());
+            }
+            LinkedMovement.Log("End list");
+        }
+
+        public static void SetChunkedMeshEnalbedIfPresent(BuildableObject bo, bool enalbed) {
+            var chunker = bo.GetComponent<ChunkedMesh>();
+            if (chunker != null) {
+                LinkedMovement.Log($"ChunkedMesh for {bo.getName()} set to {enalbed.ToString()}");
+                chunker.enabled = enalbed;
+            }
+        }
+
         public static bool IsGeneratedOrigin(BuildableObject bo) {
             return bo != null && bo.getName() == "LMOriginBase";
         }
@@ -75,6 +92,7 @@ namespace LinkedMovement.Utils {
 
         public static Sequence BuildAnimationSequence(Transform transform, LMAnimationParams animationParams, bool isEditing = false) {
             LinkedMovement.Log("LMUtils.BuildAnimationSequence");
+            //LinkedMovement.Log(animationParams.ToString());
 
             // TODO: Need to prevent adding multiple pairings on the same objects
             // E.g. an object can only be the base of a single Pairing
@@ -106,7 +124,7 @@ namespace LinkedMovement.Utils {
                     loops = 0;
                 } else {
                     if (animationParams.initialStartDelayMin > 0f || animationParams.initialStartDelayMax > 0f) {
-                        UnityEngine.Random.Range(animationParams.initialStartDelayMin, animationParams.initialStartDelayMax);
+                        startingDelay = UnityEngine.Random.Range(animationParams.initialStartDelayMin, animationParams.initialStartDelayMax);
                     }
                 }
             }
@@ -121,7 +139,6 @@ namespace LinkedMovement.Utils {
             var fromRotationTween = Tween.LocalEulerAngles(transform, animationParams.startingRotation + animationParams.targetRotation, animationParams.startingRotation, animationParams.fromDuration, fromEase);
 
             Sequence sequence = Sequence.Create(cycles: loops, cycleMode: CycleMode.Restart)
-                .ChainDelay(startingDelay)
                 .Chain(Sequence.Create()
                     .Group(toPositionTween)
                     .Group(toRotationTween))
@@ -131,6 +148,11 @@ namespace LinkedMovement.Utils {
                     .Group(fromRotationTween))
                 .ChainDelay(animationParams.restartDelay)
                 ;
+
+            if (startingDelay > 0f) {
+                sequence.isPaused = true;
+                Tween.Delay(startingDelay, () => sequence.isPaused = false);
+            }
 
             return sequence;
         }

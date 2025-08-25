@@ -64,19 +64,19 @@ namespace LinkedMovement
 
             LinkedMovement.Log("connect iterate targetGOs");
             foreach (GameObject targetGO in targetGOs) {
+                // TODO: Below doesn't seem to be necessary
                 // If ChunkedMesh, it's a built-in object and we need to handle it
-                var targetChunkedMesh = targetGO.GetComponent<ChunkedMesh>();
-
-                if (targetChunkedMesh != null) {
-                    //LinkedMovement.Log("Target is built-in deco object, enable movement");
-                    targetChunkedMesh.enabled = false;
-                    var targetMeshRenderer = targetGO.GetComponent<MeshRenderer>();
-                    if (targetMeshRenderer != null) {
-                        targetMeshRenderer.enabled = true;
-                    } else {
-                        LinkedMovement.Log("connect MESHRENDERER NULL!");
-                    }
-                }
+                //var targetChunkedMesh = targetGO.GetComponent<ChunkedMesh>();
+                //if (targetChunkedMesh != null) {
+                //    //LinkedMovement.Log("Target is built-in deco object, enable movement");
+                //    targetChunkedMesh.enabled = false;
+                //    var targetMeshRenderer = targetGO.GetComponent<MeshRenderer>();
+                //    if (targetMeshRenderer != null) {
+                //        targetMeshRenderer.enabled = true;
+                //    } else {
+                //        LinkedMovement.Log("connect MESHRENDERER NULL!");
+                //    }
+                //}
 
                 var targetBO = LMUtils.GetBuildableObjectFromGameObject(targetGO);
                 PairTarget pairTarget = LMUtils.GetPairTargetFromSerializedMonoBehaviour(targetBO);

@@ -15,6 +15,7 @@ namespace LinkedMovement.UI {
             EditAnimation,
             Information,
             Error,
+            ConfirmAction,
         }
 
         private List<LMWindow> activeWindows = new List<LMWindow>();

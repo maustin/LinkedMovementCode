@@ -1,9 +1,6 @@
-﻿using LinkedMovement;
-using LinkedMovement.UI.Content;
+﻿using LinkedMovement.UI.Content;
 using LinkedMovement.UI.InGame;
-using RapidGUI;
 using System;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace LinkedMovement.UI {
@@ -39,15 +36,15 @@ namespace LinkedMovement.UI {
                     width = 400;
                     fixedHeight = 500;
                     position = getWindowPositionCenter(width, (int)(fixedHeight * 0.5));
-                    //content = 
+                    content = new ExistingAnimatronicsContent();
                     break;
                 case WindowManager.WindowType.EditAnimatronic:
                     title = "Edit Animatronic";
                     width = 400;
                     position = getWindowPositionCenter(width, 300);
                     alwaysRender = true;
-                    //content = 
                     allowMultiple = true;
+                    //content = 
                     break;
                 case WindowManager.WindowType.EditAnimation:
                     title = "Edit Animation";
@@ -55,8 +52,8 @@ namespace LinkedMovement.UI {
                     fixedHeight = 500;
                     position = getWindowPositionCenter(width, (int)(fixedHeight * 0.5));
                     alwaysRender = true;
-                    //content = 
                     allowMultiple = true;
+                    //content = 
                     break;
                 case WindowManager.WindowType.Information:
                     title = "Information";
@@ -73,6 +70,9 @@ namespace LinkedMovement.UI {
                     alwaysRender = true;
                     content = new InfoContent(data as string);
                     allowMultiple = true;
+                    break;
+                case WindowManager.WindowType.ConfirmAction:
+                    // TODO: Confirmation window
                     break;
                 default:
                     throw new Exception("Unknown window type");

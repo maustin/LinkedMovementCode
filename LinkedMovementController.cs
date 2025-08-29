@@ -38,6 +38,8 @@ namespace LinkedMovement {
         public List<BuildableObject> targetObjects { get; private set; }
 
         public BuildableObject originObject { get; private set; }
+
+        // TODO: Does this need to be a getter/setter?
         public Vector3 originPosition {
             get {
                 if (originObject == null) {
@@ -66,6 +68,8 @@ namespace LinkedMovement {
         public void removeAnimatedBuildableObject(BuildableObject bo) {
             animatedBuildableObjects.Remove(bo);
         }
+
+        private Pairing pendingPairingForDeletion;
 
         private List<BuildableObject> queuedRemovalTargets = new List<BuildableObject>();
         
@@ -173,6 +177,15 @@ namespace LinkedMovement {
                 // Again, really need state machine
                 creationStep = newStep;
             }
+        }
+
+        public void editPairing(Pairing pairing) {
+            // TODO
+        }
+
+        public void confirmDeletePairing(Pairing pairing) {
+            pendingPairingForDeletion = pairing;
+            // TODO: Window
         }
 
         public List<Pairing> getPairings() {

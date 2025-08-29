@@ -7,7 +7,6 @@ namespace LinkedMovement
 {
     public class Pairing {
         public GameObject baseGO;
-        // TODO: add getter/setter?
         public List<GameObject> targetGOs = new List<GameObject>();
         public string pairingId;
         public string pairingName;
@@ -54,7 +53,7 @@ namespace LinkedMovement
             var baseAnimParams = pairBase.animParams;
             LinkedMovement.Log("Pair has animParams: " + (baseAnimParams != null));
             if (baseAnimParams != null) {
-                LinkedMovement.Log("Anim target pos: " + baseAnimParams.targetPosition.ToString());
+                //LinkedMovement.Log("Anim target pos: " + baseAnimParams.targetPosition.ToString());
                 if (baseAnimParams.isTriggerable) {
                     baseBO.gameObject.AddComponent<LMTrigger>().animationParams = baseAnimParams;
                 } else {
@@ -65,10 +64,10 @@ namespace LinkedMovement
                 return;
             }
 
-            LinkedMovement.Log("Origin position: " + baseBO.transform.position.ToString());
-            LinkedMovement.Log("Origin local position: " + baseBO.transform.localPosition.ToString());
-            LinkedMovement.Log("Origin rotation: " + baseBO.transform.eulerAngles.ToString());
-            LinkedMovement.Log("Origin local rotation: " + baseBO.transform.localEulerAngles.ToString());
+            //LinkedMovement.Log("Origin position: " + baseBO.transform.position.ToString());
+            //LinkedMovement.Log("Origin local position: " + baseBO.transform.localPosition.ToString());
+            //LinkedMovement.Log("Origin rotation: " + baseBO.transform.eulerAngles.ToString());
+            //LinkedMovement.Log("Origin local rotation: " + baseBO.transform.localEulerAngles.ToString());
 
             LinkedMovement.Log("connect iterate targetGOs");
             foreach (GameObject targetGO in targetGOs) {

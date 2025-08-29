@@ -15,7 +15,7 @@ namespace RapidGUI
     public static partial class RGUIUtility
     {
         //static readonly Dictionary<MouseCursor, CursorData.Data> cursorTable;
-        static readonly Dictionary<MouseCursor, CursorType> cursorTable;
+        //static readonly Dictionary<MouseCursor, CursorType> cursorTable;
 
 
         static RGUIUtility()

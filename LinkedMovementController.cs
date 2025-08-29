@@ -273,6 +273,9 @@ namespace LinkedMovement {
         public void handleAddObjectSelection(BuildableObject bo) {
             LinkedMovement.Log("Controller.handleObjectSelection");
 
+            LinkedMovement.Log("Object position: " + bo.transform.position.ToString());
+            LinkedMovement.Log("Object local position: " + bo.transform.localPosition.ToString());
+
             // We have to disable the ChunkedMesh component so tweens update the visual location
             LMUtils.SetChunkedMeshEnalbedIfPresent(bo, false);
 
@@ -481,19 +484,43 @@ namespace LinkedMovement {
         private void enterAnimateState() {
             LinkedMovement.Log("Enter Animate State");
 
-            if (animationParams == null) {
-                animationParams = new LMAnimationParams(originObject.transform.position, originObject.transform.localEulerAngles);
+            foreach (var targetBO in targetObjects) {
+                LinkedMovement.Log("Target initial position: " + targetBO.transform.position.ToString());
+                LinkedMovement.Log("Target initial local position: " + targetBO.transform.localPosition.ToString());
             }
+            LinkedMovement.Log("Origin initial position: " + originObject.transform.position.ToString());
+            LinkedMovement.Log("Origin initial local position: " + originObject.transform.localPosition.ToString());
+
+            if (animationParams == null) {
+                //animationParams = new LMAnimationParams(originObject.transform.position, originObject.transform.localEulerAngles);
+                animationParams = new LMAnimationParams();
+            }
+            animationParams.setOriginalValues(originObject.transform);
 
             // Restart parent sequences so target is attached when parent is at starting location
             restartAssociated();
 
+            LinkedMovement.Log("Origin post-restart position: " + originObject.transform.position.ToString());
+            LinkedMovement.Log("Origin post-restart local position: " + originObject.transform.localPosition.ToString());
+
+            animationParams.setStartingValues(originObject.transform, LMUtils.IsGeneratedOrigin(originObject));
+
+            LinkedMovement.Log("Attach targets");
             // set targets parent
             foreach (var targetBO in targetObjects) {
+                LinkedMovement.Log("Target pre-parent position: " + targetBO.transform.position.ToString());
+                LinkedMovement.Log("Target pre-parent local position: " + targetBO.transform.localPosition.ToString());
                 targetBO.transform.SetParent(originObject.transform);
+                LinkedMovement.Log("Target post-parent position: " + targetBO.transform.position.ToString());
+                LinkedMovement.Log("Target post-parent local position: " + targetBO.transform.localPosition.ToString());
             }
 
             rebuildSampleSequence();
+
+            foreach (var targetBO in targetObjects) {
+                LinkedMovement.Log("Target post-rebuild position: " + targetBO.transform.position.ToString());
+                LinkedMovement.Log("Target post-rebuild local position: " + targetBO.transform.localPosition.ToString());
+            }
         }
 
         private void exitAnimateState() {

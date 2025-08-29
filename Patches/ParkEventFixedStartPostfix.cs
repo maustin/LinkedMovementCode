@@ -19,6 +19,7 @@ class ParkEventFixedStartPostfix {
         return methodBase;
     }
 
+    // Post-park load, all objects should be created and we can now find pairings
     [HarmonyPostfix]
     static void eventFixedStart() {
         LinkedMovement.LinkedMovement.Log("Park.eventFixedStart Postfix");
@@ -31,7 +32,7 @@ class ParkEventFixedStartPostfix {
             if (pairBase != null) {
                 LinkedMovement.LinkedMovement.Log("Found pairBase");
 
-                var pairTargets = FindPairTargetSOs(pairBase);
+                var pairTargets = LMUtils.FindPairTargetSOs(pairBase);
                 if (pairTargets.Count > 0) {
                     var pairTargetGOs = new List<GameObject>();
                     foreach (var pairTarget in pairTargets) {
@@ -40,6 +41,7 @@ class ParkEventFixedStartPostfix {
 
                     LinkedMovement.LinkedMovement.Log($"Creating Pairing with {pairTargetGOs.Count} targets");
                     var pairing = new Pairing(so.gameObject, pairTargetGOs, pairBase.pairId, pairBase.pairName);
+                    pairBase.animParams.setStartingValues(so.transform, LMUtils.IsGeneratedOrigin(so as BuildableObject));
                     pairing.connect();
                 } else {
                     LinkedMovement.LinkedMovement.Log("No pair matches found, remove PairBase");
@@ -47,20 +49,6 @@ class ParkEventFixedStartPostfix {
                 }
             }
         }
-    }
-
-    static private List<SerializedMonoBehaviour> FindPairTargetSOs(PairBase pairBase) {
-        var targets = new List<SerializedMonoBehaviour>();
-        var sos = GameController.Instance.getSerializedObjects();
-        foreach (var so in sos) {
-            PairTarget pairTarget = LMUtils.GetPairTargetFromSerializedMonoBehaviour(so);
-            if (pairTarget != null) {
-                if (pairTarget.pairId == pairBase.pairId) {
-                    LinkedMovement.LinkedMovement.Log("Same pairId!");
-                    targets.Add(so);
-                }
-            }
-        }
-        return targets;
+        // TODO: Do we need to find orphaned PairTargets?
     }
 }

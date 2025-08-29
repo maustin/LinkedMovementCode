@@ -52,15 +52,23 @@ namespace LinkedMovement
             pairBase = LMUtils.GetPairBaseFromSerializedMonoBehaviour(baseBO);
 
             var baseAnimParams = pairBase.animParams;
-            LinkedMovement.Log("Has Sequence Animation: " + (baseAnimParams != null));
+            LinkedMovement.Log("Pair has animParams: " + (baseAnimParams != null));
             if (baseAnimParams != null) {
-                LinkedMovement.Log("Base target pos: " + baseAnimParams.targetPosition.ToString());
+                LinkedMovement.Log("Anim target pos: " + baseAnimParams.targetPosition.ToString());
                 if (baseAnimParams.isTriggerable) {
                     baseBO.gameObject.AddComponent<LMTrigger>().animationParams = baseAnimParams;
                 } else {
                     pairBase.sequence = LMUtils.BuildAnimationSequence(baseBO.transform, baseAnimParams);
                 }
+            } else {
+                LinkedMovement.Log("NO animParams!!!");
+                return;
             }
+
+            LinkedMovement.Log("Origin position: " + baseBO.transform.position.ToString());
+            LinkedMovement.Log("Origin local position: " + baseBO.transform.localPosition.ToString());
+            LinkedMovement.Log("Origin rotation: " + baseBO.transform.eulerAngles.ToString());
+            LinkedMovement.Log("Origin local rotation: " + baseBO.transform.localEulerAngles.ToString());
 
             LinkedMovement.Log("connect iterate targetGOs");
             foreach (GameObject targetGO in targetGOs) {
@@ -79,11 +87,21 @@ namespace LinkedMovement
                 //}
 
                 var targetBO = LMUtils.GetBuildableObjectFromGameObject(targetGO);
-                PairTarget pairTarget = LMUtils.GetPairTargetFromSerializedMonoBehaviour(targetBO);
+                //PairTarget pairTarget = LMUtils.GetPairTargetFromSerializedMonoBehaviour(targetBO);
 
                 LinkedMovement.GetController().removeAnimatedBuildableObject(targetBO);
 
+                LinkedMovement.Log("Target pre-parent position: " + targetBO.transform.position.ToString());
+                LinkedMovement.Log("Target pre-parent local position: " + targetBO.transform.localPosition.ToString());
+                LinkedMovement.Log("Target pre-parent rotation: " + targetBO.transform.eulerAngles.ToString());
+                LinkedMovement.Log("Target pre-parent local rotation: " + targetBO.transform.localEulerAngles.ToString());
+
                 LMUtils.AttachTargetToBase(baseGO.transform, targetGO.transform);
+
+                LinkedMovement.Log("Target post-parent position: " + targetBO.transform.position.ToString());
+                LinkedMovement.Log("Target post-parent local position: " + targetBO.transform.localPosition.ToString());
+                LinkedMovement.Log("Target post-parent rotation: " + targetBO.transform.eulerAngles.ToString());
+                LinkedMovement.Log("Target post-parent local rotation: " + targetBO.transform.localEulerAngles.ToString());
             }
 
             connected = true;

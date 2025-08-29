@@ -26,6 +26,7 @@ namespace LinkedMovement
         [Serialized]
         public string pairId;
 
+        // TODO: Think this can be eliminated
         [Serialized]
         public Vector3 positionOffset;
 

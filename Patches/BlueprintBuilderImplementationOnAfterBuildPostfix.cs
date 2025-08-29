@@ -54,7 +54,9 @@ class BlueprintBuilderImplementationOnAfterBuildPostfix {
 
         if (originObject != null && targets.Count > 0) {
             LinkedMovement.LinkedMovement.Log("Create Pairing from blueprint");
-            pairBase.animParams.startingRotation = originObject.transform.localEulerAngles;
+            //pairBase.animParams.startingRotation = originObject.transform.localEulerAngles;
+            pairBase.animParams.setStartingValues(originObject.transform, LMUtils.IsGeneratedOrigin(originObject));
+            pairBase.animParams.calculateRotationOffset();
             // create new pairing ID so we don't collide with existing pairings
             var newPairingId = Guid.NewGuid().ToString();
             pairBase.pairId = newPairingId;

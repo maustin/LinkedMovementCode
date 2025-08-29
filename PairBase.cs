@@ -31,12 +31,15 @@ namespace LinkedMovement
         [Serialized]
         public string pairName;
 
+        // TODO: Think this can be eliminated
         [Serialized]
         public Vector3 positionOffset;
 
         [Serialized]
         public Vector3 rotationOffset;
 
+        // TODO: Can this be moved elsewhere so generated base object can be omitted from blueprints?
+        // Or should generated objects automatically be selected when building a blueprint? Might be harder.
         [Serialized]
         public LMAnimationParams animParams;
 

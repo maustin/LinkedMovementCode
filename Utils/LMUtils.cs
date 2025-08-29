@@ -1,7 +1,6 @@
 ﻿// ATTRIB: TransformAnarchy
 using PrimeTween;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -28,7 +27,25 @@ namespace LinkedMovement.Utils {
         }
 
         public static bool IsGeneratedOrigin(BuildableObject bo) {
-            return bo != null && bo.getName() == "LMOriginBase";
+            //return bo != null && bo.getName() == "LMOriginBase";
+            return bo != null && bo.getName().Contains("LMOriginBase");
+        }
+
+        public static List<SerializedMonoBehaviour> FindPairTargetSOs(PairBase pairBase) {
+            LinkedMovement.Log("FindPairTargetSOs with pairId: " + pairBase.pairId);
+            var targets = new List<SerializedMonoBehaviour>();
+            var sos = GameController.Instance.getSerializedObjects();
+            foreach (var so in sos) {
+                PairTarget pairTarget = LMUtils.GetPairTargetFromSerializedMonoBehaviour(so);
+                if (pairTarget != null) {
+                    if (pairTarget.pairId == pairBase.pairId) {
+                        //LinkedMovement.Log("Same pairId!");
+                        targets.Add(so);
+                    }
+                }
+            }
+            LinkedMovement.Log($"Found {targets.Count.ToString()} targets");
+            return targets;
         }
 
         public static void AttachTargetToBase(Transform baseObject, Transform targetObject) {
@@ -129,24 +146,38 @@ namespace LinkedMovement.Utils {
                 }
             }
 
+            //Vector3 rotationOffset = animationParams.startingLocalRotation - animationParams.originalLocalRotation;
+            //Vector3 rotatedPositionTarget = Quaternion.Euler(rotationOffset) * animationParams.targetPosition;
+
             // TODO: Thinking triggerable can have restartDelay as a cool-down period
             //var restartDelay = animationParams.isTriggerable ? 0 : animationParams.restartDelay;
 
             var toPositionTween = Tween.LocalPositionAdditive(transform, animationParams.targetPosition, animationParams.toDuration, toEase);
-            var toRotationTween = Tween.LocalEulerAngles(transform, animationParams.startingRotation, animationParams.startingRotation + animationParams.targetRotation, animationParams.toDuration, toEase);
+            //var toPositionTween = Tween.LocalPosition(transform, animationParams.startingLocalPosition + animationParams.targetPosition, animationParams.toDuration, toEase);
+            //var toPositionTween = Tween.Position(transform, animationParams.startingPosition + rotatedPositionTarget, animationParams.toDuration, toEase);
+            //var toRotationTween = Tween.LocalEulerAngles(transform, animationParams.startingRotation, animationParams.startingRotation + animationParams.targetRotation, animationParams.toDuration, toEase);
+            var toRotationTween = Tween.LocalRotationAdditive(transform, animationParams.targetRotation, animationParams.toDuration, toEase);
 
             var fromPositionTween = Tween.LocalPositionAdditive(transform, -animationParams.targetPosition, animationParams.fromDuration, fromEase);
-            var fromRotationTween = Tween.LocalEulerAngles(transform, animationParams.startingRotation + animationParams.targetRotation, animationParams.startingRotation, animationParams.fromDuration, fromEase);
+            //var fromPositionTween = Tween.LocalPosition(transform, animationParams.startingLocalPosition, animationParams.fromDuration, fromEase);
+            //var fromPositionTween = Tween.Position(transform, animationParams.startingPosition, animationParams.fromDuration, fromEase);
+            //var fromRotationTween = Tween.LocalEulerAngles(transform, animationParams.startingRotation + animationParams.targetRotation, animationParams.startingRotation, animationParams.fromDuration, fromEase);
+            var fromRotationTween = Tween.LocalRotationAdditive(transform, -animationParams.targetRotation, animationParams.fromDuration, fromEase);
 
             Sequence sequence = Sequence.Create(cycles: loops, cycleMode: CycleMode.Restart)
                 .Chain(Sequence.Create()
+                    //.Group(toRotationTween)
                     .Group(toPositionTween)
-                    .Group(toRotationTween))
+                    .Group(toRotationTween)
+                    )
                 .ChainDelay(animationParams.fromDelay)
                 .Chain(Sequence.Create()
+                    //.Group(fromRotationTween)
                     .Group(fromPositionTween)
-                    .Group(fromRotationTween))
+                    .Group(fromRotationTween)
+                    )
                 .ChainDelay(animationParams.restartDelay)
+                //.ChainDelay(1f);
                 ;
 
             if (startingDelay > 0f) {

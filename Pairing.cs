@@ -46,7 +46,7 @@ namespace LinkedMovement
 
             var baseBO = LMUtils.GetBuildableObjectFromGameObject(baseGO);
 
-            LinkedMovement.GetController().removeAnimatedBuildableObject(baseBO);
+            //LinkedMovement.GetController().removeAnimatedBuildableObject(baseBO);
 
             pairBase = LMUtils.GetPairBaseFromSerializedMonoBehaviour(baseBO);
 
@@ -87,7 +87,7 @@ namespace LinkedMovement
 
                 var targetBO = LMUtils.GetBuildableObjectFromGameObject(targetGO);
 
-                LinkedMovement.GetController().removeAnimatedBuildableObject(targetBO);
+                //LinkedMovement.GetController().removeAnimatedBuildableObject(targetBO);
 
                 LMUtils.AttachTargetToBase(baseGO.transform, targetGO.transform);
             }

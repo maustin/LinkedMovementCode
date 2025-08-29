@@ -61,13 +61,13 @@ namespace LinkedMovement {
 
         public Sequence sampleSequence;
 
-        public List<BuildableObject> animatedBuildableObjects { get; private set; }
-        public void addAnimatedBuildableObject(BuildableObject bo) {
-            animatedBuildableObjects.Add(bo);
-        }
-        public void removeAnimatedBuildableObject(BuildableObject bo) {
-            animatedBuildableObjects.Remove(bo);
-        }
+        //public List<BuildableObject> animatedBuildableObjects { get; private set; }
+        //public void addAnimatedBuildableObject(BuildableObject bo) {
+        //    animatedBuildableObjects.Add(bo);
+        //}
+        //public void removeAnimatedBuildableObject(BuildableObject bo) {
+        //    animatedBuildableObjects.Remove(bo);
+        //}
 
         private Pairing pendingPairingForDeletion;
 
@@ -79,7 +79,7 @@ namespace LinkedMovement {
             LinkedMovement.Log("LinkedMovementController Awake");
             targetObjects = new List<BuildableObject>();
             
-            animatedBuildableObjects = new List<BuildableObject>();
+            //animatedBuildableObjects = new List<BuildableObject>();
 
             windowManager = new WindowManager();
             selectionHandler = gameObject.AddComponent<SelectionHandler>();
@@ -129,9 +129,9 @@ namespace LinkedMovement {
             // TODO: What is dis?
             if (mouseTool == null) return;
 
-            foreach (var bo in animatedBuildableObjects) {
-                LMUtils.UpdateMouseColliders(bo);
-            }
+            //foreach (var bo in animatedBuildableObjects) {
+            //    LMUtils.UpdateMouseColliders(bo);
+            //}
 
             foreach (var pairing in pairings) {
                 pairing.update();

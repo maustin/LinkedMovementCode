@@ -84,9 +84,9 @@ namespace LinkedMovement.UI.Content {
             if (animationParams.timeOfLastStepsUpdate > lastAnimationStepsUpdate) {
                 animationStepContents = new List<EditAnimationStepSubContent>();
 
-                // TODO: Make LINQy?
-                foreach (var animationStep in animationParams.animationSteps) {
-                    animationStepContents.Add(new EditAnimationStepSubContent(animationParams, animationStep));
+                var numSteps = animationParams.animationSteps.Count;
+                for (int i = 0; i < numSteps; i++) {
+                    animationStepContents.Add(new EditAnimationStepSubContent(animationParams, animationParams.animationSteps[i], i + 1));
                 }
 
                 lastAnimationStepsUpdate = animationParams.timeOfLastStepsUpdate;

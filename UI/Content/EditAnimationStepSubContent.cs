@@ -2,7 +2,6 @@
 using LinkedMovement.UI.Components;
 using LinkedMovement.UI.Utils;
 using RapidGUI;
-using System;
 using UnityEngine;
 using static UnityEngine.GUILayout;
 
@@ -11,19 +10,21 @@ namespace LinkedMovement.UI.Content {
         private LinkedMovementController controller;
         private LMAnimationParams animationParams;
         private LMAnimationStep animationStep;
+        private int stepIndex;
 
-        // TODO: Possible open/closed states
-
-        public EditAnimationStepSubContent(LMAnimationParams animationParams, LMAnimationStep animationStep) {
+        public EditAnimationStepSubContent(LMAnimationParams animationParams, LMAnimationStep animationStep, int stepIndex) {
             controller = LinkedMovement.GetController();
             this.animationParams = animationParams;
             this.animationStep = animationStep;
+            this.stepIndex = stepIndex;
         }
 
         public void DoGUI() {
             using (Scope.Vertical()) {
                 using (Scope.Horizontal()) {
-                    HorizontalLine.DrawHorizontalLine(Color.grey);
+                    if (Button($"{(animationStep.uiIsOpen ? "▼" : "►")} {stepIndex.ToString()} : {(animationStep.name == "" ? "Step" : animationStep.name)} ", RGUIStyle.flatButtonLeft)) {
+                        animationStep.uiIsOpen = !animationStep.uiIsOpen;
+                    }
                     if (Button("↑", Width(25f))) {
                         LinkedMovement.Log("Move AnimationStep UP");
                         var didChange = animationParams.moveAnimationStepUp(animationStep);
@@ -43,79 +44,90 @@ namespace LinkedMovement.UI.Content {
                     }
                 }
 
-                using (Scope.Horizontal()) {
-                    Space(5f);
-                    GUILayout.Label("Start delay");
-                    var newStartDelay = RGUI.Field(animationStep.startDelay);
-                    if (animationStep.startDelay != newStartDelay) {
-                        animationStep.startDelay = newStartDelay;
-                        controller.rebuildSampleSequence();
-                    }
-                }
-
-                using (Scope.Horizontal()) {
-                    Space(5f);
-                    GUILayout.Label("Duration");
-                    var newDuration = RGUI.Field(animationStep.duration);
-                    if (animationStep.duration != newDuration) {
-                        animationStep.duration = newDuration;
-                        controller.rebuildSampleSequence();
-                    }
-                }
-
-                using (Scope.Horizontal()) {
-                    Space(5f);
-                    GUILayout.Label("Ease");
-                    var newEase = RGUI.SelectionPopup(animationStep.ease, LMEase.Names);
-                    if (animationStep.ease != newEase) {
-                        animationStep.ease = newEase;
-                        controller.rebuildSampleSequence();
-                    }
-                }
-
-                using (Scope.Horizontal()) {
-                    Space(5f);
-                    GUILayout.Label("Position change");
-                    var newPosition = RGUI.Field(animationStep.targetPosition);
-                    if (!animationStep.targetPosition.Equals(newPosition)) {
-                        animationStep.targetPosition = newPosition;
-                        controller.rebuildSampleSequence();
-                    }
-                }
-
-                using (Scope.Horizontal()) {
-                    Space(5f);
-                    GUILayout.Label("Rotation change");
-                    var newRotation = RGUI.Field(animationStep.targetRotation);
-                    if (!animationStep.targetRotation.Equals(newRotation)) {
-                        animationStep.targetRotation = newRotation;
-                        controller.rebuildSampleSequence();
-                    }
-                }
-
-                using (Scope.Horizontal()) {
-                    Space(5f);
-                    GUILayout.Label("Scale change");
-                    var newScale = RGUI.Field(animationStep.targetScale);
-                    if (!animationStep.targetScale.Equals(newScale)) {
-                        animationStep.targetScale = newScale;
-                        controller.rebuildSampleSequence();
-                    }
-                }
-
-                using (Scope.Horizontal()) {
-                    Space(5f);
-                    GUILayout.Label("End delay");
-                    var newEndDelay = RGUI.Field(animationStep.endDelay);
-                    if (animationStep.endDelay != newEndDelay) {
-                        animationStep.endDelay = newEndDelay;
-                        controller.rebuildSampleSequence();
-                    }
+                if (animationStep.uiIsOpen) {
+                    doOpenGUI();
                 }
 
             }
 
             Space(5f);
+        }
+
+        private void doOpenGUI() {
+            using (Scope.Horizontal()) {
+                Label("Step name");
+                animationStep.name = RGUI.Field(animationStep.name);
+            }
+
+            using (Scope.Horizontal()) {
+                Space(5f);
+                GUILayout.Label("Start delay");
+                var newStartDelay = RGUI.Field(animationStep.startDelay);
+                if (animationStep.startDelay != newStartDelay) {
+                    animationStep.startDelay = newStartDelay;
+                    controller.rebuildSampleSequence();
+                }
+            }
+
+            using (Scope.Horizontal()) {
+                Space(5f);
+                GUILayout.Label("Duration");
+                var newDuration = RGUI.Field(animationStep.duration);
+                if (animationStep.duration != newDuration) {
+                    animationStep.duration = newDuration;
+                    controller.rebuildSampleSequence();
+                }
+            }
+
+            using (Scope.Horizontal()) {
+                Space(5f);
+                GUILayout.Label("Ease");
+                var newEase = RGUI.SelectionPopup(animationStep.ease, LMEase.Names);
+                if (animationStep.ease != newEase) {
+                    animationStep.ease = newEase;
+                    controller.rebuildSampleSequence();
+                }
+            }
+
+            using (Scope.Horizontal()) {
+                Space(5f);
+                GUILayout.Label("Position change");
+                var newPosition = RGUI.Field(animationStep.targetPosition);
+                if (!animationStep.targetPosition.Equals(newPosition)) {
+                    animationStep.targetPosition = newPosition;
+                    controller.rebuildSampleSequence();
+                }
+            }
+
+            using (Scope.Horizontal()) {
+                Space(5f);
+                GUILayout.Label("Rotation change");
+                var newRotation = RGUI.Field(animationStep.targetRotation);
+                if (!animationStep.targetRotation.Equals(newRotation)) {
+                    animationStep.targetRotation = newRotation;
+                    controller.rebuildSampleSequence();
+                }
+            }
+
+            using (Scope.Horizontal()) {
+                Space(5f);
+                GUILayout.Label("Scale change");
+                var newScale = RGUI.Field(animationStep.targetScale);
+                if (!animationStep.targetScale.Equals(newScale)) {
+                    animationStep.targetScale = newScale;
+                    controller.rebuildSampleSequence();
+                }
+            }
+
+            using (Scope.Horizontal()) {
+                Space(5f);
+                GUILayout.Label("End delay");
+                var newEndDelay = RGUI.Field(animationStep.endDelay);
+                if (animationStep.endDelay != newEndDelay) {
+                    animationStep.endDelay = newEndDelay;
+                    controller.rebuildSampleSequence();
+                }
+            }
         }
     }
 }

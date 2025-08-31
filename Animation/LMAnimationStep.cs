@@ -8,6 +8,8 @@ namespace LinkedMovement.Animation {
     public class LMAnimationStep : SerializedRawObject {
         // Id?
         [Serialized]
+        public string name = "";
+        [Serialized]
         public float duration = 1f;
         [Serialized]
         public string ease = LMEase.Values.InOutQuad.ToString();
@@ -22,5 +24,8 @@ namespace LinkedMovement.Animation {
         public Vector3 targetRotation = Vector3.zero;
         [Serialized]
         public Vector3 targetScale = Vector3.one;
+
+        [NonSerialized]
+        public bool uiIsOpen = true;
     }
 }

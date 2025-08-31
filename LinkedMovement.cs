@@ -1,15 +1,11 @@
 ﻿using HarmonyLib;
-using Parkitect.Mods.AssetPacks;
+//using Parkitect.Mods.AssetPacks;
 using PrimeTween;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Reflection;
 using UnityEngine;
 
 namespace LinkedMovement {
     public class LinkedMovement : AbstractMod {
-        public const string VERSION_NUMBER = "1.0";
+        public const string VERSION_NUMBER = "beta 8-31";
         //public override string getIdentifier() => "artex.linkedMovement";
         //public override string getIdentifier() => "com.themeparkitect.LinkedMovement";
         public override string getIdentifier() => "com.themeparkitect.LinkedMovementCode";

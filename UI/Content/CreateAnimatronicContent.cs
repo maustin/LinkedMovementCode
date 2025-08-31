@@ -33,7 +33,7 @@ namespace LinkedMovement.UI.Content {
                 Space(5f);
 
                 Label((controller.getCreationStep() == LinkedMovementController.CreationSteps.Select ? "> " : "") + "Select Objects");
-                Label((controller.getCreationStep() == LinkedMovementController.CreationSteps.Assemble ? "> " : "") + "Assemble");
+                Label((controller.getCreationStep() == LinkedMovementController.CreationSteps.Assemble ? "> " : "") + "Origin");
                 Label((controller.getCreationStep() == LinkedMovementController.CreationSteps.Animate ? "> " : "") + "Animate");
 
                 Space(5f);

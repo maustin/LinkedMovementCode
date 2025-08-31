@@ -1,6 +1,4 @@
 ﻿using LinkedMovement.Animation;
-using LinkedMovement.UI.Utils;
-using LinkedMovement.Utils;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -75,16 +73,18 @@ namespace LinkedMovement {
 
         // TODO: Do we need to ensure this only runs once?
         public void calculateRotationOffset() {
-            // TODO!
-
             // When object is built rotated, we need to adjust the target position
             LinkedMovement.Log("calculateRotatationOffset");
-            //Vector3 rotationOffset = startingLocalRotation - originalLocalRotation;
-            //LinkedMovement.Log("rotationOffset: " + rotationOffset.ToString());
-            //Vector3 rotatedPositionTarget = Quaternion.Euler(rotationOffset) * targetPosition;
-            //LinkedMovement.Log("Original targetPosition: " + targetPosition.ToString());
-            //LinkedMovement.Log("New targetPosition: " + rotatedPositionTarget.ToString());
-            //targetPosition = rotatedPositionTarget;
+
+            Vector3 rotationOffset = startingLocalRotation - originalLocalRotation;
+            LinkedMovement.Log("rotationOffset: " + rotationOffset.ToString());
+
+            foreach (var step in animationSteps) {
+                Vector3 rotatedPositionTarget = Quaternion.Euler(rotationOffset) * step.targetPosition;
+                LinkedMovement.Log("Original targetPosition: " + step.targetPosition.ToString());
+                LinkedMovement.Log("New targetPosition: " + rotatedPositionTarget.ToString());
+                step.targetPosition = rotatedPositionTarget;
+            }
         }
 
         public override string ToString() {

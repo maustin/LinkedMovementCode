@@ -69,6 +69,11 @@ namespace LinkedMovement {
         //    animatedBuildableObjects.Remove(bo);
         //}
 
+        // TODO:
+        // - Existing animations UI
+        // - Timeline animations
+        // - Scale UI
+
         private Pairing pendingPairingForDeletion;
 
         private List<BuildableObject> queuedRemovalTargets = new List<BuildableObject>();
@@ -141,7 +146,10 @@ namespace LinkedMovement {
         private void OnGUI() {
             if (OptionsMenu.instance != null) return;
 
+            float uiScale = Settings.Instance.uiScale;
+            GUI.matrix = Matrix4x4.TRS(Vector3.zero, Quaternion.identity, new Vector3(uiScale, uiScale, 1f));
             windowManager.DoGUI();
+            GUI.matrix = Matrix4x4.identity;
         }
 
         public CreationSteps getCreationStep() { return creationStep; }
@@ -363,6 +371,7 @@ namespace LinkedMovement {
             targetObjects.Clear();
         }
 
+        // TODO: This needs a more accurate name
         public void clearAllSelections() {
             LinkedMovement.Log("Controller.clearAllSelections");
 

@@ -91,72 +91,23 @@ namespace LinkedMovement.UI {
         }
 
         private static Vector2 getWindowPositionCenter(int width, int height) {
-            return new Vector2(Screen.width * 0.5f - width * 0.5f, Screen.height * 0.5f - height * 0.5f);
+            //LinkedMovement.Log($"getWindowPositionCenter width: {width.ToString()}, height: {height.ToString()}");
+            var positionX = Screen.width * 0.5f / Settings.Instance.uiScale - width * 0.5f;
+            var positionY = Screen.height * 0.5f / Settings.Instance.uiScale - height * 0.5f;
+            //LinkedMovement.Log($"position x: {positionX.ToString()}, y: {positionY.ToString()}");
+            return new Vector2 { x = positionX, y = positionY };
         }
 
         private static Vector2 getWindowPositionRight(int width) {
-            return new Vector2(Screen.width - HORIZONTAL_PADDING - width, VERTICAL_PADDING);
+            //LinkedMovement.Log($"getWindowPositionRight width: {width.ToString()}");
+            var positionX = Screen.width / Settings.Instance.uiScale - width - HORIZONTAL_PADDING / Settings.Instance.uiScale;
+            var positionY = VERTICAL_PADDING / Settings.Instance.uiScale;
+            //LinkedMovement.Log($"position x: {positionX.ToString()}, y: {positionY.ToString()}");
+            return new Vector2 { x = positionX,y = positionY };
+        }
+
+        private static float getUIScaledValue(float value) {
+            return value / Settings.Instance.uiScale;
         }
     }
 }
-
-//public void showMainWindow() {
-//    if (mainWindow == null) {
-//        LinkedMovement.Log("WindowManager Show Main Window");
-//        var width = 400f;
-//        mainWindow = new WindowLauncher("Animatronitect - Link Objects", width);
-//        mainWindow.rect.position = new Vector2(Screen.width - 200.0f - width, 75.0f);
-//        var mainContent = new MainContent();
-//        mainWindow.Add(mainContent.DoGUI);
-//        mainWindow.Open();
-//        mainWindow.onClose += (WindowLauncher launcher) => mainWindow = null;
-//    }
-//}
-
-//public void showInfoWindow(string message)
-//{
-//    LinkedMovement.Log("WindowManager Show info " + message);
-
-//    if (infoWindow != null)
-//    {
-//        infoWindow.Close();
-//    }
-
-//    var width = 300f;
-//    infoWindow = new WindowLauncher("Animatronitect - Info", width);
-//    infoWindow.rect.position = new Vector2(Screen.width * 0.5f - width * 0.5f, Screen.height * 0.5f);
-//    var infoContent = new InfoContent(message);
-//    infoWindow.Add(infoContent.DoGUI);
-//    infoWindow.Open();
-//    infoWindow.onClose += (WindowLauncher launcher) => infoWindow = null;
-//}
-
-//public void showExistingLinksWindow() {
-//    if (existingLinksWindow == null) {
-//        LinkedMovement.Log("WindowManager Show existing links");
-//        var width = 400f;
-//        existingLinksWindow = new WindowLauncher("Animatronitect - Existing Links", width);
-//        existingLinksWindow.SetHeight(500f);
-//        existingLinksWindow.rect.position = new Vector2(Screen.width - 400.0f - width, 175.0f);
-//        var existingPairsContent = new ExistingLinksContent();
-//        existingLinksWindow.Add(existingPairsContent.DoGUI);
-//        existingLinksWindow.Open();
-//        existingLinksWindow.onClose += (WindowLauncher launcher) => existingLinksWindow = null;
-//    }
-//}
-
-//public void showCreateAnimationWindow() {
-//    LinkedMovement.Log("WindowManagwer Show create animation");
-//    if (createAnimationWindow != null) {
-//        createAnimationWindow.Close();
-//    }
-
-//    var width = 400f;
-//    createAnimationWindow = new WindowLauncher("Animatronitect - Create Animation", width);
-//    createAnimationWindow.SetHeight(500f);
-//    createAnimationWindow.rect.position = new Vector2(Screen.width - 400.0f - width, 175.0f);
-//    var createAnimationContent = new CreateAmimationContent(createAnimationWindow);
-//    createAnimationWindow.Add(createAnimationContent.DoGUI);
-//    createAnimationWindow.Open();
-//    createAnimationWindow.onClose += (WindowLauncher launcher) => createAnimationWindow = null;
-//}

@@ -41,7 +41,7 @@ class ParkEventFixedStartPostfix {
 
                     LinkedMovement.LinkedMovement.Log($"Creating Pairing with {pairTargetGOs.Count} targets");
                     var pairing = new Pairing(so.gameObject, pairTargetGOs, pairBase.pairId, pairBase.pairName);
-                    pairBase.animParams.setStartingValues(so.transform, LMUtils.IsGeneratedOrigin(so as BuildableObject));
+                    pairBase.animParams.setStartingValues(so.transform); //, LMUtils.IsGeneratedOrigin(so as BuildableObject));
                     pairing.connect();
                 } else {
                     LinkedMovement.LinkedMovement.Log("No pair matches found, remove PairBase");

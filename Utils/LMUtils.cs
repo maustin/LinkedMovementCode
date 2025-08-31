@@ -74,7 +74,7 @@ namespace LinkedMovement.Utils {
 
             if (targets.Count > 0) {
                 LinkedMovement.Log("Create Pairing " + pairBase.pairName);
-                pairBase.animParams.setStartingValues(originObject.transform, LMUtils.IsGeneratedOrigin(originObject));
+                pairBase.animParams.setStartingValues(originObject.transform); //, LMUtils.IsGeneratedOrigin(originObject));
                 pairBase.animParams.calculateRotationOffset();
                 // create new pairing ID so we don't collide with existing pairings
                 var newPairingId = Guid.NewGuid().ToString();
@@ -142,7 +142,6 @@ namespace LinkedMovement.Utils {
                 pairBase.sequence.progress = 0f;
             }
 
-            // TODO: Keep?
             var animationParams = pairBase.animParams;
             LMUtils.ResetTransformLocals(gameObject.transform, animationParams.startingLocalPosition, animationParams.startingLocalRotation, animationParams.startingLocalScale);
 
@@ -164,14 +163,15 @@ namespace LinkedMovement.Utils {
             if (Enum.TryParse(ease, out parsedEase)) {
                 // OK
             } else {
-                // Default
+                // Couldn't parse, use default
+                LinkedMovement.Log($"ParseStringToEase couldn't parse '{ease}', using default");
                 parsedEase = Ease.InOutQuad;
             }
 
             return parsedEase;
         }
 
-        private static void BuildAnimationStep(Transform transform, Sequence sequence, LMAnimationStep animationStep) {
+        private static void BuildAnimationStep(Transform transform, Sequence sequence, LMAnimationParams animationParams, LMAnimationStep animationStep) {
             LinkedMovement.Log("BuildAnimationStep");
 
             if (animationStep.startDelay > 0f) {
@@ -181,7 +181,7 @@ namespace LinkedMovement.Utils {
             Ease ease = ParseStringToEase(animationStep.ease);
             bool hasPositionChange = !animationStep.targetPosition.Equals(Vector3.zero);
             bool hasRotationChange = !animationStep.targetRotation.Equals(Vector3.zero);
-            bool hasScaleChange = !animationStep.targetScale.Equals(Vector3.one);
+            bool hasScaleChange = !animationStep.targetScale.Equals(Vector3.zero);
 
             if (hasPositionChange || hasRotationChange || hasScaleChange) {
                 var subSequence = Sequence.Create();
@@ -192,7 +192,8 @@ namespace LinkedMovement.Utils {
                     subSequence.Group(Tween.LocalRotationAdditive(transform, animationStep.targetRotation, animationStep.duration, ease));
                 }
                 if (hasScaleChange) {
-                    // TODO
+                    var targetScale = new Vector3(animationStep.targetScale.x * animationParams.startingLocalScale.x, animationStep.targetScale.y * animationParams.startingLocalScale.y, animationStep.targetScale.z * animationParams.startingLocalScale.z);
+                    subSequence.Group(Tween.ScaleAdditive(transform, targetScale, animationStep.duration, ease));
                 }
                 sequence.Chain(subSequence);
             }
@@ -223,30 +224,10 @@ namespace LinkedMovement.Utils {
                 }
             }
 
-            // TODO: Thinking triggerable can have restartDelay as a cool-down period
-            //var restartDelay = animationParams.isTriggerable ? 0 : animationParams.restartDelay;
-
-            //var toPositionTween = Tween.LocalPositionAdditive(transform, animationParams.targetPosition, animationParams.toDuration, toEase);
-            //var toRotationTween = Tween.LocalRotationAdditive(transform, animationParams.targetRotation, animationParams.toDuration, toEase);
-
-            //var fromPositionTween = Tween.LocalPositionAdditive(transform, -animationParams.targetPosition, animationParams.fromDuration, fromEase);
-            //var fromRotationTween = Tween.LocalRotationAdditive(transform, -animationParams.targetRotation, animationParams.fromDuration, fromEase);
-
             Sequence sequence = Sequence.Create(cycles: loops, cycleMode: CycleMode.Restart);
-                //.Chain(Sequence.Create()
-                //    .Group(toPositionTween)
-                //    .Group(toRotationTween)
-                //    )
-                //.ChainDelay(animationParams.fromDelay)
-                //.Chain(Sequence.Create()
-                //    .Group(fromPositionTween)
-                //    .Group(fromRotationTween)
-                //    )
-                //.ChainDelay(animationParams.restartDelay)
-                //;
 
             foreach (var animationStep in animationParams.animationSteps) {
-                BuildAnimationStep(transform, sequence, animationStep);
+                BuildAnimationStep(transform, sequence, animationParams, animationStep);
             }
 
             if (startingDelay > 0f) {

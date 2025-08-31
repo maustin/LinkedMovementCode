@@ -39,7 +39,8 @@ namespace LinkedMovement.UI.Content {
                     }
                 }
 
-                using (Scope.GuiEnabled(!animationParams.isTriggerable)) {
+                //using (Scope.GuiEnabled(!animationParams.isTriggerable)) {
+                using (Scope.GuiEnabled(false)) {
                     using (Scope.Horizontal()) {
                         GUILayout.Label("Delay animation on park load");
                         var newUseInitialStartDelay = RGUI.Field(animationParams.useInitialStartDelay);
@@ -50,7 +51,8 @@ namespace LinkedMovement.UI.Content {
                     }
                 }
 
-                using (Scope.GuiEnabled(!animationParams.isTriggerable && animationParams.useInitialStartDelay)) {
+                //using (Scope.GuiEnabled(!animationParams.isTriggerable && animationParams.useInitialStartDelay)) {
+                using (Scope.GuiEnabled(false)) {
                     using (Scope.Horizontal()) {
                         var newInitialDelayMin = RGUI.Field(animationParams.initialStartDelayMin, "Delay time min");
                         var newInitialDelayMax = RGUI.Field(animationParams.initialStartDelayMax, "Delay time max");

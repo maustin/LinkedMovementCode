@@ -1,12 +1,9 @@
 ﻿using LinkedMovement.UI.Utils;
-using LinkedMovement.Utils;
 using System;
-using System.Text;
 using UnityEngine;
 
 namespace LinkedMovement.Animation {
     public class LMAnimationStep : SerializedRawObject {
-        // Id?
         [Serialized]
         public string name = "";
         [Serialized]
@@ -23,7 +20,7 @@ namespace LinkedMovement.Animation {
         [Serialized]
         public Vector3 targetRotation = Vector3.zero;
         [Serialized]
-        public Vector3 targetScale = Vector3.one;
+        public Vector3 targetScale = Vector3.zero;
 
         [NonSerialized]
         public bool uiIsOpen = true;

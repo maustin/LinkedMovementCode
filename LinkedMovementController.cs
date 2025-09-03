@@ -209,7 +209,11 @@ namespace LinkedMovement {
         }
 
         public void discardChanges() {
-            // TODO: !!!
+            if (targetPairing != null) {
+                // TODO
+            } else {
+                resetController();
+            }
         }
 
         // TODO

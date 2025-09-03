@@ -126,6 +126,14 @@ namespace LinkedMovement.Utils {
             return pairTarget;
         }
 
+        public static List<BuildableObject> GetBuildableObjectsFromGameObjects(List<GameObject> gameObjects) {
+            List<BuildableObject> buildableObjects = new List<BuildableObject>();
+            foreach (GameObject go in gameObjects) {
+                buildableObjects.Add(GetBuildableObjectFromGameObject(go));
+            }
+            return buildableObjects;
+        }
+
         public static void RestartAssociatedAnimations(GameObject gameObject) {
             LinkedMovement.Log("LMUtils.RestartAssociatedAnimations for " + gameObject.name);
 

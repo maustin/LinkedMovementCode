@@ -20,9 +20,7 @@ namespace LinkedMovement
 
         public Pairing(GameObject baseGO, List<GameObject> targetGOs, string pId = null, string name = "") {
             LinkedMovement.Log("Pairing contstructor with options");
-            this.baseGO = baseGO;
-            this.targetGOs = new List<GameObject>(targetGOs);
-
+            
             if (pId != null) {
                 pairingId = pId;
             }
@@ -31,6 +29,12 @@ namespace LinkedMovement
             }
             LinkedMovement.Log("Pairing ID: " + pairingId);
 
+            setup(baseGO, targetGOs, name);
+        }
+
+        public void setup(GameObject baseGO, List<GameObject> targetGOs, string name = "") {
+            this.baseGO = baseGO;
+            this.targetGOs = new List<GameObject>(targetGOs);
             pairingName = name;
 
             LinkedMovement.GetController().addPairing(this);
@@ -93,6 +97,15 @@ namespace LinkedMovement
             }
 
             connected = true;
+        }
+
+        public void disconnect() {
+            if (pairBase.sequence.isAlive) {
+                pairBase.sequence.Stop();
+                var animParams = pairBase.animParams;
+                LMUtils.ResetTransformLocals(baseGO.transform, animParams.startingLocalPosition, animParams.startingLocalRotation, animParams.startingLocalScale);
+            }
+            connected = false;
         }
 
         public void update() {

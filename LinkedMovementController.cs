@@ -8,13 +8,13 @@ using UnityEngine;
 
 namespace LinkedMovement {
     public class LinkedMovementController : MonoBehaviour {
-        // TODO: Move enum out
         public enum CreationSteps {
             Select,
             Assemble,
             Animate,
             Finish,
         }
+        private CreationSteps creationStep = CreationSteps.Select;
 
         private enum PickingMode {
             Origin,
@@ -29,11 +29,9 @@ namespace LinkedMovement {
             get => selectionHandler.enabled;
             set => selectionHandler.enabled = value;
         }
-        private CreationSteps creationStep = CreationSteps.Select;
 
         public WindowManager windowManager;
 
-        // TODO: Getter setter useful here?
         public LMAnimationParams animationParams;
         public List<BuildableObject> targetObjects { get; private set; }
 
@@ -60,6 +58,8 @@ namespace LinkedMovement {
         public string animatronicName = string.Empty;
 
         public Sequence sampleSequence;
+
+        private Pairing targetPairing;
 
         //public List<BuildableObject> animatedBuildableObjects { get; private set; }
         //public void addAnimatedBuildableObject(BuildableObject bo) {
@@ -100,7 +100,7 @@ namespace LinkedMovement {
 
         private void OnDestroy() {
             LinkedMovement.Log("LinkedMovementController OnDestroy");
-            clearAllSelections();
+            resetController();
             if (selectionHandler != null) {
                 GameObject.Destroy(selectionHandler);
                 selectionHandler = null;
@@ -163,13 +163,12 @@ namespace LinkedMovement {
 
             disableSelectionHandler();
 
-            // TODO: Should be elsewhere (state machine!)
+            // TODO: Prolly need state machine here
             if (animatronicName == string.Empty) {
                 // TODO: Get #?
                 animatronicName = "New Animatronic";
             }
 
-            // TODO: Really need state machine to cover below
             if (creationStep == CreationSteps.Assemble && newStep == CreationSteps.Animate) {
                 enterAnimateState();
             }
@@ -187,8 +186,30 @@ namespace LinkedMovement {
             }
         }
 
-        public void editPairing(Pairing pairing) {
-            // TODO
+        public void setTargetPairing(Pairing pairing) {
+            targetPairing = pairing;
+            if (targetPairing == null) return;
+
+            pairing.disconnect();
+
+            originObject = LMUtils.GetBuildableObjectFromGameObject(targetPairing.baseGO);
+            targetObjects = LMUtils.GetBuildableObjectsFromGameObjects(targetPairing.targetGOs);
+
+            LMUtils.AddObjectHighlight(originObject, Color.red);
+            foreach (var target in targetObjects) {
+                LMUtils.AddObjectHighlight(target, Color.yellow);
+            }
+            
+            rebuildSampleSequence();
+        }
+
+        public void clearTargetPairing() {
+            LMUtils.ResetObjectHighlights();
+            targetPairing = null;
+        }
+
+        public void discardChanges() {
+            // TODO: !!!
         }
 
         // TODO
@@ -219,6 +240,10 @@ namespace LinkedMovement {
 
         public void addPairing(Pairing pairing) {
             LinkedMovement.Log("Controller.addPairing " + pairing.pairingId);
+            if (pairings.Contains(pairing)) {
+                LinkedMovement.Log("Pairing already present");
+                return;
+            }
             pairings.Add(pairing);
         }
 
@@ -358,6 +383,7 @@ namespace LinkedMovement {
 
             LMUtils.SetChunkedMeshEnalbedIfPresent(bo, true);
             LMUtils.RemoveObjectHighlight(bo);
+            bo.transform.parent = null;
             
             targetObjects.Remove(bo);
         }
@@ -372,12 +398,12 @@ namespace LinkedMovement {
             targetObjects.Clear();
         }
 
-        // TODO: This needs a more accurate name
-        public void clearAllSelections() {
-            LinkedMovement.Log("Controller.clearAllSelections");
+        public void resetController() {
+            LinkedMovement.Log("Controller.resetController");
 
             setCreationStep(CreationSteps.Select);
 
+            targetPairing = null;
             animatronicName = string.Empty;
             animationParams = null;
 
@@ -389,6 +415,8 @@ namespace LinkedMovement {
 
             queuedRemovalTargets.Clear();
             LMUtils.ResetObjectHighlights();
+
+            clearTargetPairing();
         }
 
         private void joinObjects() {
@@ -404,20 +432,28 @@ namespace LinkedMovement {
             foreach (var bo in targetObjects) {
                 targetGOs.Add(bo.gameObject);
             }
-            LinkedMovement.Log("Join # single targets: " + targetGOs.Count);
+            LinkedMovement.Log($"Join {targetGOs.Count} targets");
             targetObjects.Clear();
 
             // TODO: This is duplicating data
             animationParams.name = animatronicName;
 
-            var pairing = new Pairing(originObject.gameObject, targetGOs, null, animatronicName);
+            Pairing pairing;
+            if (targetPairing != null) {
+                pairing = targetPairing;
+                pairing.setup(originObject.gameObject, targetGOs, animatronicName);
+            } else {
+                pairing = new Pairing(originObject.gameObject, targetGOs, null, animatronicName);
+            }
+
             // TODO: Eliminate origin offsets
             pairing.setCustomData(false, default, default, animationParams);
-            pairing.connect();
 
             originObject = null;
 
-            clearAllSelections();
+            resetController();
+
+            pairing.connect();
         }
 
         public void tryToDeletePairing(Pairing pairing) {

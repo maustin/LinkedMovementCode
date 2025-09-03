@@ -146,5 +146,27 @@ namespace LinkedMovement {
             sb.AppendLine("initialStartDelayMax: " + initialStartDelayMax.ToString());
             return sb.ToString();
         }
+
+        public static LMAnimationParams Duplicate(LMAnimationParams animationParams) {
+            var newAnimationParams = new LMAnimationParams();
+            newAnimationParams.startingPosition = animationParams.startingPosition;
+            newAnimationParams.startingLocalPosition = animationParams.startingLocalPosition;
+            newAnimationParams.startingRotation = animationParams.startingRotation;
+            newAnimationParams.startingLocalRotation = animationParams.startingLocalRotation;
+            newAnimationParams.startingLocalScale = animationParams.startingLocalScale;
+            newAnimationParams.originalRotation = animationParams.originalRotation;
+            newAnimationParams.originalLocalRotation = animationParams.originalLocalRotation;
+            newAnimationParams.originalScale = animationParams.originalScale;
+            newAnimationParams.name = animationParams.name;
+            newAnimationParams.isTriggerable = animationParams.isTriggerable;
+            newAnimationParams.useInitialStartDelay = animationParams.useInitialStartDelay;
+            newAnimationParams.initialStartDelayMin = animationParams.initialStartDelayMin;
+            newAnimationParams.initialStartDelayMax = animationParams.initialStartDelayMax;
+            newAnimationParams.animationSteps = new List<LMAnimationStep>();
+            foreach (var step in animationParams.animationSteps) {
+                newAnimationParams.animationSteps.Add(LMAnimationStep.Duplicate(step));
+            }
+            return newAnimationParams;
+        }
     }
 }

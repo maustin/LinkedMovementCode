@@ -24,5 +24,18 @@ namespace LinkedMovement.Animation {
 
         [NonSerialized]
         public bool uiIsOpen = true;
+
+        public static LMAnimationStep Duplicate(LMAnimationStep step) {
+            var newAnimationStep = new LMAnimationStep();
+            newAnimationStep.name = step.name;
+            newAnimationStep.duration = step.duration;
+            newAnimationStep.ease = step.ease;
+            newAnimationStep.startDelay = step.startDelay;
+            newAnimationStep.endDelay = step.endDelay;
+            newAnimationStep.targetPosition = step.targetPosition;
+            newAnimationStep.targetRotation = step.targetRotation;
+            newAnimationStep.targetScale = step.targetScale;
+            return newAnimationStep;
+        }
     }
 }

@@ -31,7 +31,6 @@ namespace LinkedMovement.UI {
                 // TODO: NEED a better way to do this
                 if (type == WindowManager.WindowType.CreateNewAnimatronic) {
                     LinkedMovement.Log("New Animatronic Window closing");
-                    //LinkedMovement.GetController().resetController();
                     LinkedMovement.GetController().discardChanges();
                 }
                 if (type == WindowManager.WindowType.EditAnimatronic) {

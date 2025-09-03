@@ -199,6 +199,8 @@ namespace LinkedMovement {
             foreach (var target in targetObjects) {
                 LMUtils.AddObjectHighlight(target, Color.yellow);
             }
+
+            animationParams = LMAnimationParams.Duplicate(targetPairing.pairBase.animParams);
             
             rebuildSampleSequence();
         }
@@ -210,10 +212,11 @@ namespace LinkedMovement {
 
         public void discardChanges() {
             if (targetPairing != null) {
-                // TODO
-            } else {
-                resetController();
-            }
+                targetPairing.connect();
+            }// else {
+            //    resetController();
+            //}
+            resetController();
         }
 
         // TODO

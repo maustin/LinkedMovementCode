@@ -49,9 +49,13 @@ namespace LinkedMovement {
 
         public void setOriginalValues(Transform originTransform) {
             LinkedMovement.Log("LMAnimationParams constructor with params");
+            
             originalRotation = originTransform.eulerAngles;
             originalLocalRotation = originTransform.localEulerAngles;
             originalScale = originTransform.localScale;
+
+            //LinkedMovement.Log("original eulerAngles: " + originalRotation.ToString());
+            //LinkedMovement.Log("original localEulerAngles: " + originalLocalRotation.ToString());
         }
 
         // TODO: originIsGenerated doesn't seem to be carrying after save/load
@@ -63,6 +67,9 @@ namespace LinkedMovement {
             startingRotation = originTransform.eulerAngles;
             startingLocalRotation = originTransform.localEulerAngles;
             startingLocalScale = originTransform.localScale;
+
+            //LinkedMovement.Log("starting rotation: " + startingRotation.ToString());
+            //LinkedMovement.Log("starting local rotation: " + startingLocalRotation.ToString());
         }
 
         // TODO: Do we need to ensure this only runs once?

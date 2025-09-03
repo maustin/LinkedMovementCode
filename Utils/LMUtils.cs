@@ -152,6 +152,8 @@ namespace LinkedMovement.Utils {
         }
 
         public static void ResetTransformLocals(Transform transform, Vector3 localPosition, Vector3 localRotation, Vector3 localScale) {
+            LinkedMovement.Log("LMUtils.ResetTransformLocals");
+
             transform.localPosition = localPosition;
             transform.localEulerAngles = localRotation;
             transform.localScale = localScale;
@@ -171,12 +173,10 @@ namespace LinkedMovement.Utils {
             return parsedEase;
         }
 
-        private static void BuildAnimationStep(Transform transform, Sequence sequence, LMAnimationParams animationParams, LMAnimationStep animationStep) {
+        private static void BuildAnimationStep(Transform transform, Sequence sequence, LMAnimationParams animationParams, LMAnimationStep animationStep, ref Vector3 lastRotationTarget) {
             LinkedMovement.Log("BuildAnimationStep");
 
-            if (animationStep.startDelay > 0f) {
-                sequence.ChainDelay(animationStep.startDelay);
-            }
+            sequence.ChainDelay(animationStep.startDelay);
 
             Ease ease = ParseStringToEase(animationStep.ease);
             bool hasPositionChange = !animationStep.targetPosition.Equals(Vector3.zero);
@@ -186,27 +186,25 @@ namespace LinkedMovement.Utils {
             if (hasPositionChange || hasRotationChange || hasScaleChange) {
                 var subSequence = Sequence.Create();
                 if (hasPositionChange) {
-                    subSequence.Group(Tween.LocalPositionAdditive(transform, animationStep.targetPosition, animationStep.duration, ease));
+                    sequence.Group(Tween.LocalPositionAdditive(transform, animationStep.targetPosition, animationStep.duration, ease));
                 }
                 if (hasRotationChange) {
-                    subSequence.Group(Tween.LocalRotationAdditive(transform, animationStep.targetRotation, animationStep.duration, ease));
+                    var newRotationTarget = lastRotationTarget + animationStep.targetRotation;
+                    sequence.Group(Tween.LocalEulerAngles(transform, lastRotationTarget, newRotationTarget, animationStep.duration, ease));
+                    lastRotationTarget = newRotationTarget;
                 }
                 if (hasScaleChange) {
                     var targetScale = new Vector3(animationStep.targetScale.x * animationParams.startingLocalScale.x, animationStep.targetScale.y * animationParams.startingLocalScale.y, animationStep.targetScale.z * animationParams.startingLocalScale.z);
-                    subSequence.Group(Tween.ScaleAdditive(transform, targetScale, animationStep.duration, ease));
+                    sequence.Group(Tween.ScaleAdditive(transform, targetScale, animationStep.duration, ease));
                 }
-                sequence.Chain(subSequence);
             }
 
-            if (animationStep.endDelay > 0f) {
-                sequence.ChainDelay(animationStep.endDelay);
-            }
+            sequence.ChainDelay(animationStep.endDelay);
 
         }
 
         public static Sequence BuildAnimationSequence(Transform transform, LMAnimationParams animationParams, bool isEditing = false) {
             LinkedMovement.Log("LMUtils.BuildAnimationSequence");
-            //LinkedMovement.Log(animationParams.ToString());
 
             // TODO: Need to prevent adding multiple pairings on the same objects
             // E.g. an object can only be the base of a single Pairing
@@ -227,8 +225,9 @@ namespace LinkedMovement.Utils {
 
             Sequence sequence = Sequence.Create(cycles: loops, cycleMode: CycleMode.Restart);
 
+            var lastRotationTarget = animationParams.startingLocalRotation;
             foreach (var animationStep in animationParams.animationSteps) {
-                BuildAnimationStep(transform, sequence, animationParams, animationStep);
+                BuildAnimationStep(transform, sequence, animationParams, animationStep, ref lastRotationTarget);
             }
 
             if (startingDelay > 0f) {

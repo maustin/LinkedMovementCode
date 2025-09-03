@@ -457,10 +457,10 @@ namespace LinkedMovement {
 
         public void killSampleSequence() {
             LinkedMovement.Log("Controller.killSampleSequence");
-            
+
             if (sampleSequence.isAlive) {
-                sampleSequence.SetRemainingCycles(false);
-                sampleSequence.Complete();
+                LinkedMovement.Log("Sequence is alive, stop!");
+                sampleSequence.Stop();
             }
             
             if (originObject == null || animationParams == null) {

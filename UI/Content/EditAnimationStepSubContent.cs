@@ -105,6 +105,7 @@ namespace LinkedMovement.UI.Content {
                 var newRotation = RGUI.Field(animationStep.targetRotation);
                 if (!animationStep.targetRotation.Equals(newRotation)) {
                     animationStep.targetRotation = newRotation;
+                    //LinkedMovement.Log("SET rotation: " + newRotation.ToString());
                     controller.rebuildSampleSequence();
                 }
             }

@@ -74,6 +74,9 @@
     <Compile Include="UI\Content\CreateAnimatronicSelectSubContent.cs" />
     <Compile Include="UI\Content\CreateBaseSubContent.cs" />
     <Compile Include="UI\Content\EditAnimationStepSubContent.cs" />
+    <Compile Include="UI\Content\EditAnimatronicAnimationSubContent.cs" />
+    <Compile Include="UI\Content\EditAnimatronicContent.cs" />
+    <Compile Include="UI\Content\EditAnimatronicSelectSubContent.cs" />
     <Compile Include="UI\Content\ExistingAnimatronicsContent.cs" />
     <Compile Include="UI\Content\ModeDeterminationContent.cs" />
     <Compile Include="UI\Content\InfoContent.cs" />

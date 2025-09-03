@@ -21,7 +21,7 @@ namespace LinkedMovement.UI.Content {
                 if (Button("View Existing Animatronics")) {
                     LinkedMovement.Log("Clicked View Existing");
                     windowManager.removeWindow(this.window);
-                    //windowManager.createWindow(WindowManager.WindowType.ShowExistingAnimatronics, null);
+                    windowManager.createWindow(WindowManager.WindowType.ShowExistingAnimatronics, null);
                 }
             }
         }

@@ -23,10 +23,12 @@ namespace LinkedMovement.UI.Content {
                 foreach (var pairing in pairings) {
                     using (Scope.Horizontal()) {
                         if (Button(pairing.pairingName, RGUIStyle.flatButtonLeft)) {
-                            controller.editPairing(pairing);
+                            controller.windowManager.createWindow(WindowManager.WindowType.EditAnimatronic, pairing);
                         }
-                        if (Button("X", Width(40))) {
-                            controller.confirmDeletePairing(pairing);
+                        using (Scope.GuiEnabled(false)) {
+                            if (Button("X", Width(40))) {
+                                controller.confirmDeletePairing(pairing);
+                            }
                         }
                     }
             }

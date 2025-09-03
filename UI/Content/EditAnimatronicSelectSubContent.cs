@@ -32,7 +32,7 @@ namespace LinkedMovement.UI.Content {
 
                 using (Scope.Horizontal()) {
                     if (Button("Select")) {
-                        controller.pickingTargetObject(selectionModes[selectedSelectionMode], pairing);
+                        controller.pickingTargetObject(selectionModes[selectedSelectionMode]);
                     }
                 }
 

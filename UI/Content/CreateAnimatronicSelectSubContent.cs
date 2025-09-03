@@ -19,7 +19,7 @@ namespace LinkedMovement.UI.Content {
         public void DoGUI() {
             using (Scope.Vertical()) {
                 Label("Select Objects", RGUIStyle.popupTitle);
-                Label("Select the objects that will be animating.");
+                Label("Select the objects that will attach to the origin.");
                 Space(10f);
 
                 using (Scope.Horizontal()) {

@@ -14,6 +14,7 @@ namespace LinkedMovement.UI.Content {
 
         public CreateAnimatronicContent() {
             controller = LinkedMovement.GetController();
+            controller.setCreationStep(LinkedMovementController.CreationSteps.Select);
 
             selectSubContent = new CreateAnimatronicSelectSubContent();
             assembleSubContent = new CreateBaseSubContent();

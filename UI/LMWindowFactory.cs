@@ -44,9 +44,10 @@ namespace LinkedMovement.UI {
                     title = "Edit Animatronic: " + pairing.getPairingName();
                     width = 450;
                     fixedHeight = 500;
-                    position = getWindowPositionCenter(width, fixedHeight);
-                    alwaysRender = true;
-                    allowMultiple = true;
+                    //position = getWindowPositionCenter(width, fixedHeight);
+                    position = getWindowPositionRight(width);
+                    //alwaysRender = true;
+                    //allowMultiple = true;
                     content = new EditAnimatronicContent(pairing);
                     break;
                 case WindowManager.WindowType.EditAnimation:
@@ -54,8 +55,8 @@ namespace LinkedMovement.UI {
                     width = 400;
                     fixedHeight = 500;
                     position = getWindowPositionCenter(width, (int)(fixedHeight * 0.5));
-                    alwaysRender = true;
-                    allowMultiple = true;
+                    //alwaysRender = true;
+                    //allowMultiple = false;
                     //content = 
                     break;
                 case WindowManager.WindowType.Information:

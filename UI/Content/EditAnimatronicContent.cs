@@ -37,6 +37,17 @@ namespace LinkedMovement.UI.Content {
 
             using (Scope.Vertical()) {
                 using (Scope.Horizontal()) {
+                    Label("Name");
+                    var newPairingName = RGUI.Field(pairing.pairingName);
+                    if (newPairingName != pairing.pairingName) {
+                        pairing.pairingName = newPairingName;
+                        pairing.pairBase.pairName = newPairingName;
+                        title = "Edit Animatronic: " + newPairingName;
+                    }
+                }
+                Space(5f);
+
+                using (Scope.Horizontal()) {
                     if (Button($"{(selectUIOpen ? "▼" : "►")} Targets", RGUIStyle.flatButtonLeft)) {
                         selectUIOpen = !selectUIOpen;
                     }

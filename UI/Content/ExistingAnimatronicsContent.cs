@@ -1,5 +1,6 @@
 ﻿using LinkedMovement.UI.Components;
 using LinkedMovement.UI.Utils;
+using LinkedMovement.Utils;
 using RapidGUI;
 using UnityEngine;
 using static UnityEngine.GUILayout;
@@ -21,8 +22,9 @@ namespace LinkedMovement.UI.Content {
                 var pairings = controller.getPairings();
                 targetsScrollPosition = BeginScrollView(targetsScrollPosition, Height(300f));
                 foreach (var pairing in pairings) {
+                    var depth = LMUtils.GetPairingDepth(pairing);
                     using (Scope.Horizontal()) {
-                        if (Button(pairing.pairingName, RGUIStyle.flatButtonLeft)) {
+                        if (Button(new string('-', depth) + " " + pairing.pairingName, RGUIStyle.flatButtonLeft)) {
                             windowManager.removeWindow(this.window);
                             windowManager.createWindow(WindowManager.WindowType.EditAnimatronic, pairing);
                         }

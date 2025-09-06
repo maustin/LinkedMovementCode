@@ -141,7 +141,6 @@ namespace LinkedMovement.Utils {
         }
 
         public static void RestartAssociatedAnimations(GameObject gameObject) {
-            // Root restart
             LinkedMovement.Log("LMUtils.RestartAssociatedAnimations for " + gameObject.name);
             bool isRootResetCall = false;
             if (baseGameObjectsReset == null) {
@@ -383,6 +382,24 @@ namespace LinkedMovement.Utils {
                 duration += step.endDelay;
             }
             return duration;
+        }
+
+        public static int GetPairingDepth(Pairing pairing) {
+            int depth = 0;
+
+            CountPairingParent(pairing, ref depth);
+
+            return depth;
+        }
+
+        private static void CountPairingParent(Pairing pairing, ref int depth) {
+            if (pairing.baseGO.transform.parent == null || pairing.baseGO.transform.parent.gameObject == null) return;
+
+            var parentPairing = LinkedMovement.GetController().findPairingByBaseGameObject(pairing.baseGO.transform.parent.gameObject);
+            if (parentPairing != null) {
+                depth++;
+                CountPairingParent(parentPairing, ref depth);
+            }
         }
 
     }

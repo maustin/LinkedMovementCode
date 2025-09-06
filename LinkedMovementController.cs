@@ -212,6 +212,8 @@ namespace LinkedMovement {
 
         public void discardChanges() {
             if (targetPairing != null) {
+                // TODO: reset associated
+                restartAssociated();
                 targetPairing.connect();
             }// else {
             //    resetController();
@@ -237,7 +239,7 @@ namespace LinkedMovement {
         }
 
         public Pairing findPairingByBaseGameObject(GameObject gameObject) {
-            LinkedMovement.Log("Controller.findPairingByBaseGameObject, from id: " + gameObject.name);
+            LinkedMovement.Log("Controller.findPairingByBaseGameObject, name: " + gameObject.name);
             foreach (var pairing in pairings) {
                 LinkedMovement.Log("Checking pairing name: " + pairing.pairingName + ", id: " + pairing.pairingId + ", go id: " + pairing.baseGO.name);
                 if (pairing.baseGO == gameObject) return pairing;
@@ -528,8 +530,11 @@ namespace LinkedMovement {
 
         private void restartAssociated() {
             LinkedMovement.Log("Controller.restartAssociated");
-            if (originObject.transform.parent != null && originObject.transform.parent.gameObject != null) {
-                LMUtils.RestartAssociatedAnimations(originObject.transform.parent.gameObject);
+            //if (originObject.transform.parent != null && originObject.transform.parent.gameObject != null) {
+            //    LMUtils.RestartAssociatedAnimations(originObject.transform.parent.gameObject);
+            //}
+            if (originObject.gameObject != null) {
+                LMUtils.RestartAssociatedAnimations(originObject.gameObject);
             }
         }
 

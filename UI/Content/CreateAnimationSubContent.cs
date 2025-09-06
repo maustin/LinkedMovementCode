@@ -70,6 +70,7 @@ namespace LinkedMovement.UI.Content {
 
                 if (Button("Add Step")) {
                     animationParams.addNewAnimationStep();
+                    controller.rebuildSampleSequence();
                 }
 
                 targetsScrollPosition = BeginScrollView(targetsScrollPosition, Height(400f));

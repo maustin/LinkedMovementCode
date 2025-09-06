@@ -40,6 +40,8 @@ namespace LinkedMovement
             LinkedMovement.GetController().addPairing(this);
         }
 
+        public bool isConnected() { return connected; }
+
         public void connect() {
             LinkedMovement.Log("Pairing connect, # targets: " + targetGOs.Count);
 

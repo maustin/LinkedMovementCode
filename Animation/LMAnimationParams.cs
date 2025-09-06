@@ -88,13 +88,13 @@ namespace LinkedMovement {
             }
         }
 
-        public bool isStepFirst(LMAnimationStep step) {
-            return animationSteps.IndexOf(step) == 0;
-        }
+        //public bool isStepFirst(LMAnimationStep step) {
+        //    return animationSteps.IndexOf(step) == 0;
+        //}
 
-        public bool isStepLast(LMAnimationStep step) {
-            return animationSteps.IndexOf(step) == animationSteps.Count - 1;
-        }
+        //public bool isStepLast(LMAnimationStep step) {
+        //    return animationSteps.IndexOf(step) == animationSteps.Count - 1;
+        //}
 
         public void addNewAnimationStep() {
             animationSteps.Add(new LMAnimationStep());
@@ -107,11 +107,12 @@ namespace LinkedMovement {
         }
 
         public bool moveAnimationStepUp(LMAnimationStep step) {
-            if (isStepFirst(step))
+            var index = animationSteps.IndexOf(step);
+            if (index == 0) {
                 return false;
-            
+            }
             animationSteps.Remove(step);
-            animationSteps.Insert(0, step);
+            animationSteps.Insert(--index, step);
             timeOfLastStepsUpdate = DateTimeOffset.Now.ToUnixTimeMilliseconds();
             return true;
         }

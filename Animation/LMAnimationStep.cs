@@ -1,5 +1,6 @@
 ﻿using LinkedMovement.UI.Utils;
 using System;
+using System.Text;
 using UnityEngine;
 
 namespace LinkedMovement.Animation {
@@ -36,6 +37,22 @@ namespace LinkedMovement.Animation {
             newAnimationStep.targetRotation = step.targetRotation;
             newAnimationStep.targetScale = step.targetScale;
             return newAnimationStep;
+        }
+
+        public override string ToString() {
+            var sb = new StringBuilder("LMAnimationParams\n");
+            sb.AppendLine("name: " + name);
+            sb.AppendLine("duration: " + duration.ToString());
+            sb.AppendLine("ease: " + ease);
+            sb.AppendLine("startDelay: " + startDelay.ToString());
+            sb.AppendLine("endDelay: " + endDelay.ToString());
+            if (targetPosition != Vector3.zero)
+                sb.AppendLine("targetPosition: " + targetPosition.ToString());
+            if (targetRotation != Vector3.zero)
+                sb.AppendLine("targetRotation: " + targetRotation.ToString());
+            if (targetScale != Vector3.zero)
+                sb.AppendLine("targetScale: " + targetScale.ToString());
+            return sb.ToString();
         }
     }
 }

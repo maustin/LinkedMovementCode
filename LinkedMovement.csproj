@@ -153,7 +153,6 @@
     <Compile Include="RapidGUI\RGUI\Scope\PrefixLabelIndentScope.cs" />
     <Compile Include="RapidGUI\RGUI\Slider.cs" />
     <Compile Include="RapidGUI\RGUI\Slider\RecursiveSlider.cs" />
-    <Compile Include="Utils\DOTweenShims.cs" />
     <Compile Include="Utils\SelectionHandler.cs" />
     <Compile Include="Selection\HitUtility.cs" />
     <Compile Include="Selection\VisibilityObjectSelectionTool.cs" />

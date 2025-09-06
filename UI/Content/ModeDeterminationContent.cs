@@ -18,13 +18,13 @@ namespace LinkedMovement.UI.Content {
 
                 Space(10f);
 
-                using (Scope.GuiEnabled(false)) {
+                //using (Scope.GuiEnabled(false)) {
                     if (Button("View Existing Animatronics")) {
                         LinkedMovement.Log("Clicked View Existing");
                         windowManager.removeWindow(this.window);
                         windowManager.createWindow(WindowManager.WindowType.ShowExistingAnimatronics, null);
                     }
-                }
+                //}
             }
         }
     }

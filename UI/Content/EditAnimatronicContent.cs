@@ -1,10 +1,5 @@
-﻿using LinkedMovement.Animation;
-using LinkedMovement.UI.Components;
-using LinkedMovement.UI.Utils;
+﻿using LinkedMovement.UI.Utils;
 using RapidGUI;
-using System;
-using System.Collections.Generic;
-using UnityEngine;
 using static UnityEngine.GUILayout;
 
 namespace LinkedMovement.UI.Content {
@@ -24,12 +19,14 @@ namespace LinkedMovement.UI.Content {
             this.pairing = pairing;
             this.animationParams = pairing.pairBase.animParams;
 
+            controller.setTargetPairing(pairing);
+
             foreach (var step in this.animationParams.animationSteps) {
                 step.uiIsOpen = false;
             }
 
             selectSubContent = new EditAnimatronicSelectSubContent(pairing);
-            animateSubContent = new EditAnimatronicAnimationSubContent(pairing);
+            animateSubContent = new EditAnimatronicAnimationSubContent();
         }
 
         public override void DoGUI() {
@@ -47,9 +44,11 @@ namespace LinkedMovement.UI.Content {
                 }
                 Space(5f);
 
-                using (Scope.Horizontal()) {
-                    if (Button($"{(selectUIOpen ? "▼" : "►")} Targets", RGUIStyle.flatButtonLeft)) {
-                        selectUIOpen = !selectUIOpen;
+                using (Scope.GuiEnabled(false)) {
+                    using (Scope.Horizontal()) {
+                        if (Button($"{(selectUIOpen ? "▼" : "►")} Targets", RGUIStyle.flatButtonLeft)) {
+                            selectUIOpen = !selectUIOpen;
+                        }
                     }
                 }
                 if (selectUIOpen) {
@@ -70,5 +69,6 @@ namespace LinkedMovement.UI.Content {
                 controller.saveChanges();
             }
         }
+
     }
 }

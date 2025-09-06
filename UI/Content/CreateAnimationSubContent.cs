@@ -1,5 +1,4 @@
-﻿using LinkedMovement.UI.Components;
-using LinkedMovement.UI.Utils;
+﻿using LinkedMovement.UI.Utils;
 using RapidGUI;
 using System.Collections.Generic;
 using UnityEngine;

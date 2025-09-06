@@ -187,9 +187,10 @@ namespace LinkedMovement {
         }
 
         public void setTargetPairing(Pairing pairing) {
-            targetPairing = pairing;
-            if (targetPairing == null) return;
             LinkedMovement.Log("Controller.setTargetPairing " + pairing.pairingName);
+            targetPairing = pairing;
+            //if (targetPairing == null) return;
+            //LinkedMovement.Log("Controller.setTargetPairing " + pairing.pairingName);
 
             pairing.disconnect();
 
@@ -250,11 +251,11 @@ namespace LinkedMovement {
         }
 
         public Pairing findPairingByBaseGameObject(GameObject gameObject) {
-            LinkedMovement.Log("Controller.findPairingByBaseGameObject, name: " + gameObject.name);
+            //LinkedMovement.Log("Controller.findPairingByBaseGameObject, name: " + gameObject.name);
             foreach (var pairing in pairings) {
                 //LinkedMovement.Log("Checking pairing name: " + pairing.pairingName + ", id: " + pairing.pairingId + ", go id: " + pairing.baseGO.name);
                 if (pairing.baseGO == gameObject) {
-                    LinkedMovement.Log($"Found pairing {pairing.pairingName} for GO origin");
+                    //LinkedMovement.Log($"Found pairing {pairing.pairingName} for GO origin");
                     return pairing;
                 }
             }

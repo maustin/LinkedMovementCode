@@ -213,6 +213,7 @@ namespace LinkedMovement {
 
         public void discardChanges() {
             LinkedMovement.Log("Controller.discardChanges");
+            LMUtils.ResetObjectHighlights();
             if (targetPairing != null) {
                 killSampleSequence();
                 restartAssociated();
@@ -478,6 +479,25 @@ namespace LinkedMovement {
             resetController();
 
             pairing.connect();
+        }
+
+        public void saveChanges() {
+            // Only use when editing
+            LinkedMovement.Log("Controller.saveChanges");
+            // TODO: Lots of this shared with discard. Consolidate.
+            LMUtils.ResetObjectHighlights();
+            killSampleSequence();
+            restartAssociated();
+            targetPairing.pairBase.animParams = animationParams;
+            targetPairing.connect();
+            targetPairing = null;
+            LMUtils.SetChunkedMeshEnalbedIfPresent(originObject, true);
+            originObject = null;
+            foreach (var target in targetObjects) {
+                LMUtils.SetChunkedMeshEnalbedIfPresent(target, true);
+            }
+            targetObjects.Clear();
+            resetController();
         }
 
         public void tryToDeletePairing(Pairing pairing) {

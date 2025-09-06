@@ -25,8 +25,6 @@ namespace LinkedMovement.UI.Content {
             rebuildStepContents();
 
             using (Scope.Vertical()) {
-                GUILayout.Label("Animate", RGUIStyle.popupTitle);
-
                 using (Scope.Horizontal()) {
                     // TODO
                     //InfoPopper.DoInfoPopper();

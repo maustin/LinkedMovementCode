@@ -85,6 +85,7 @@ namespace LinkedMovement.UI.Content {
                 }
             }
             if (controller.getCreationStep() == LinkedMovementController.CreationSteps.Animate) {
+                GUILayout.Label("Animate", RGUIStyle.popupTitle);
                 animateSubContent.DoGUI();
 
                 FlexibleSpace();

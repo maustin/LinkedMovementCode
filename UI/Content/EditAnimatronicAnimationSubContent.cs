@@ -2,6 +2,7 @@
 using LinkedMovement.UI.Components;
 using LinkedMovement.UI.Utils;
 using RapidGUI;
+using System.Collections.Generic;
 using UnityEngine;
 using static UnityEngine.GUILayout;
 
@@ -9,13 +10,14 @@ namespace LinkedMovement.UI.Content {
     internal class EditAnimatronicAnimationSubContent : IDoGUI {
         private LinkedMovementController controller;
         private Pairing pairing;
-        private LMAnimationParams animationParams;
+        private IDoGUI animateSubContent;
 
         private bool didSetTargetPairing = false;
 
         public EditAnimatronicAnimationSubContent(Pairing pairing) {
             controller = LinkedMovement.GetController();
             this.pairing = pairing;
+            animateSubContent = new CreateAnimationSubContent();
         }
 
         public void DoGUI() {
@@ -24,14 +26,11 @@ namespace LinkedMovement.UI.Content {
                 didSetTargetPairing = true;
             }
 
-            using (Scope.Vertical()) {
-                Label("To Do");
-            }
+            animateSubContent.DoGUI();
         }
 
         private void setTargetPairing() {
             controller.setTargetPairing(pairing);
-            animationParams = controller.animationParams;
         }
     }
 }

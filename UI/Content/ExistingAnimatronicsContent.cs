@@ -24,7 +24,8 @@ namespace LinkedMovement.UI.Content {
                 foreach (var pairing in pairings) {
                     var depth = LMUtils.GetPairingDepth(pairing);
                     using (Scope.Horizontal()) {
-                        if (Button(new string('-', depth) + " " + pairing.pairingName, RGUIStyle.flatButtonLeft)) {
+                        string prefix = depth > 0 ? (new string('-', depth) + " ") : "";
+                        if (Button(prefix + pairing.pairingName, RGUIStyle.flatButtonLeft)) {
                             windowManager.removeWindow(this.window);
                             windowManager.createWindow(WindowManager.WindowType.EditAnimatronic, pairing);
                         }

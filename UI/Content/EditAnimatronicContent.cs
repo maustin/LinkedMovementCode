@@ -64,6 +64,11 @@ namespace LinkedMovement.UI.Content {
                     animateSubContent.DoGUI();
                 }
             }
+
+            if (Button("Save Changes")) {
+                windowManager.removeWindow(window);
+                controller.saveChanges();
+            }
         }
     }
 }

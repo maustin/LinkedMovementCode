@@ -189,6 +189,7 @@ namespace LinkedMovement {
         public void setTargetPairing(Pairing pairing) {
             targetPairing = pairing;
             if (targetPairing == null) return;
+            LinkedMovement.Log("Controller.setTargetPairing " + pairing.pairingName);
 
             pairing.disconnect();
 
@@ -211,13 +212,18 @@ namespace LinkedMovement {
         }
 
         public void discardChanges() {
+            LinkedMovement.Log("Controller.discardChanges");
             if (targetPairing != null) {
-                // TODO: reset associated
-                restartAssociated();
+                killSampleSequence();
+                restartAssociated(true);
+                //LMUtils.ResetTransformLocals(originObject.transform, animationParams.startingLocalPosition, animationParams.startingLocalRotation, animationParams.startingLocalScale);
+                LinkedMovement.Log("Reconnect targetPairing");
                 targetPairing.connect();
-            }// else {
-            //    resetController();
-            //}
+                //targetPairing = null;
+                LMUtils.SetChunkedMeshEnalbedIfPresent(originObject, true);
+                originObject = null;
+            }
+
             resetController();
         }
 
@@ -241,9 +247,13 @@ namespace LinkedMovement {
         public Pairing findPairingByBaseGameObject(GameObject gameObject) {
             LinkedMovement.Log("Controller.findPairingByBaseGameObject, name: " + gameObject.name);
             foreach (var pairing in pairings) {
-                LinkedMovement.Log("Checking pairing name: " + pairing.pairingName + ", id: " + pairing.pairingId + ", go id: " + pairing.baseGO.name);
-                if (pairing.baseGO == gameObject) return pairing;
+                //LinkedMovement.Log("Checking pairing name: " + pairing.pairingName + ", id: " + pairing.pairingId + ", go id: " + pairing.baseGO.name);
+                if (pairing.baseGO == gameObject) {
+                    LinkedMovement.Log($"Found pairing {pairing.pairingName} for GO origin");
+                    return pairing;
+                }
             }
+            LinkedMovement.Log("No pairings found");
             return null;
         }
 
@@ -529,14 +539,14 @@ namespace LinkedMovement {
             sampleSequence = LMUtils.BuildAnimationSequence(originObject.transform, animationParams, true);
         }
 
-        private void restartAssociated() {
+        private void restartAssociated(bool skipCurrentTarget = false) {
             LinkedMovement.Log("Controller.restartAssociated");
-            if (originObject.transform.parent != null && originObject.transform.parent.gameObject != null) {
-                LMUtils.RestartAssociatedAnimations(originObject.transform.parent.gameObject);
-            }
-            //if (originObject.gameObject != null) {
-            //    LMUtils.RestartAssociatedAnimations(originObject.gameObject);
+            //if (originObject.transform.parent != null && originObject.transform.parent.gameObject != null) {
+            //    LMUtils.RestartAssociatedAnimations(originObject.transform.parent.gameObject);
             //}
+            if (originObject.gameObject != null) {
+                LMUtils.RestartAssociatedAnimations(originObject.gameObject, skipCurrentTarget);
+            }
         }
 
         private void enableSelectionHandler() {

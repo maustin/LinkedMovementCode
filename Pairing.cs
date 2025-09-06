@@ -102,7 +102,9 @@ namespace LinkedMovement
         }
 
         public void disconnect() {
+            LinkedMovement.Log("Disconnect pairing " + pairingName);
             if (pairBase.sequence.isAlive) {
+                LinkedMovement.Log("Pairing is alive, stop and reset local");
                 pairBase.sequence.Stop();
                 var animParams = pairBase.animParams;
                 LMUtils.ResetTransformLocals(baseGO.transform, animParams.startingLocalPosition, animParams.startingLocalRotation, animParams.startingLocalScale);

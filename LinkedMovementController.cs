@@ -561,7 +561,7 @@ namespace LinkedMovement {
 
         private void restartAssociated() {
             LinkedMovement.Log("Controller.restartAssociated");
-            if (originObject.gameObject != null) {
+            if (originObject != null && originObject.gameObject != null) {
                 LMUtils.RestartAssociatedAnimations(originObject.gameObject);
             }
         }

@@ -99,9 +99,12 @@ namespace LinkedMovement.UI.Content {
 
                     FlexibleSpace();
 
-                    if (Button("Finish ✓", Width(65))) {
-                        windowManager.removeWindow(window);
-                        controller.setCreationStep(LinkedMovementController.CreationSteps.Finish);
+                    var canFinish = controller.animationParams != null && controller.animationParams.animationSteps.Count > 0;
+                    using (Scope.GuiEnabled(canFinish)) {
+                        if (Button("Finish ✓", Width(65))) {
+                            windowManager.removeWindow(window);
+                            controller.setCreationStep(LinkedMovementController.CreationSteps.Finish);
+                        }
                     }
                 }
             }

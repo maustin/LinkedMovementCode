@@ -41,7 +41,7 @@ namespace LinkedMovement.Utils {
             var targets = new List<SerializedMonoBehaviour>();
             var sos = GameController.Instance.getSerializedObjects();
             foreach (var so in sos) {
-                PairTarget pairTarget = LMUtils.GetPairTargetFromSerializedMonoBehaviour(so);
+                PairTarget pairTarget = GetPairTargetFromSerializedMonoBehaviour(so);
                 if (pairTarget != null) {
                     if (pairTarget.pairId == pairBase.pairId) {
                         targets.Add(so);
@@ -59,7 +59,7 @@ namespace LinkedMovement.Utils {
         }
 
         private static void TryToBuildPairingFromBuildableObject(BuildableObject possibleOriginBO, List<BuildableObject> builtObjectInstances) {
-            PairBase pairBase = LMUtils.GetPairBaseFromSerializedMonoBehaviour(possibleOriginBO);
+            PairBase pairBase = GetPairBaseFromSerializedMonoBehaviour(possibleOriginBO);
             if (pairBase == null) return;
 
             LinkedMovement.Log("TryToBuildPairingFromBuildableObject");
@@ -69,7 +69,7 @@ namespace LinkedMovement.Utils {
             List<PairTarget> pairTargets = new List<PairTarget>();
 
             foreach (var bo in builtObjectInstances) {
-                var pairTarget = LMUtils.GetPairTargetFromSerializedMonoBehaviour(bo);
+                var pairTarget = GetPairTargetFromSerializedMonoBehaviour(bo);
                 if (pairTarget != null && pairTarget.pairId == pairBase.pairId) {
                     targets.Add(bo);
                     pairTargets.Add(pairTarget);
@@ -408,7 +408,7 @@ namespace LinkedMovement.Utils {
         public static void RemovePairTargetFromUnusedTargets(List<GameObject> oldTargetGOs, List<BuildableObject> newTargetObjects) {
             LinkedMovement.Log("LMUtils.RemovePairTargetFromUnusedTargets");
             foreach (var oldTargetGO in oldTargetGOs) {
-                var oldTargetObject = LMUtils.GetBuildableObjectFromGameObject(oldTargetGO);
+                var oldTargetObject = GetBuildableObjectFromGameObject(oldTargetGO);
                 if (!newTargetObjects.Contains(oldTargetObject)) {
                     LinkedMovement.Log("Try to remove PairTarget from " + oldTargetObject.name);
                     var didRemove = oldTargetObject.removeCustomData<PairTarget>();
@@ -418,12 +418,15 @@ namespace LinkedMovement.Utils {
         }
 
         // BuildableObjects in the old list that are not in the new list need to have their parent reset
-        public static void RemoveParentFromUnusedTargets(List<BuildableObject> oldTargetObjects, List<BuildableObject> newTargetObjects) {
-            LinkedMovement.Log("LMUtils.RemoveParentFromUnusedTargets");
+        // and their ChunkedMesh (if present) re-enabled
+        public static void ResetUnusedTargets(List<BuildableObject> oldTargetObjects, List<BuildableObject> newTargetObjects) {
+            LinkedMovement.Log("LMUtils.ResetUnusedTargets");
+            // TODO: Re-enable ChunkedMesh for unused targets
             foreach (var oldTargetObject in oldTargetObjects) {
                 if (!newTargetObjects.Contains(oldTargetObject)) {
-                    LinkedMovement.Log("Remove parent for " + oldTargetObject.gameObject.name);
+                    LinkedMovement.Log("Reset old target " + oldTargetObject.gameObject.name);
                     oldTargetObject.transform.SetParent(null);
+                    SetChunkedMeshEnalbedIfPresent(oldTargetObject, true);
                 }
             }
         }

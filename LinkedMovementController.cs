@@ -65,14 +65,6 @@ namespace LinkedMovement {
 
         private Pairing targetPairing;
 
-        //public List<BuildableObject> animatedBuildableObjects { get; private set; }
-        //public void addAnimatedBuildableObject(BuildableObject bo) {
-        //    animatedBuildableObjects.Add(bo);
-        //}
-        //public void removeAnimatedBuildableObject(BuildableObject bo) {
-        //    animatedBuildableObjects.Remove(bo);
-        //}
-
         private Pairing pendingPairingForDeletion;
 
         private List<BuildableObject> queuedRemovalTargets = new List<BuildableObject>();
@@ -83,8 +75,6 @@ namespace LinkedMovement {
             LinkedMovement.Log("LinkedMovementController Awake");
             targetObjects = new List<BuildableObject>();
             
-            //animatedBuildableObjects = new List<BuildableObject>();
-
             windowManager = new WindowManager();
             selectionHandler = gameObject.AddComponent<SelectionHandler>();
             selectionHandler.controller = this;
@@ -132,10 +122,6 @@ namespace LinkedMovement {
             var mouseTool = GameController.Instance.getActiveMouseTool();
             // TODO: What is dis?
             if (mouseTool == null) return;
-
-            //foreach (var bo in animatedBuildableObjects) {
-            //    LMUtils.UpdateMouseColliders(bo);
-            //}
 
             foreach (var pairing in pairings) {
                 pairing.frameUpdate();
@@ -188,9 +174,7 @@ namespace LinkedMovement {
         public void setTargetPairing(Pairing pairing) {
             LinkedMovement.Log("Controller.setTargetPairing " + pairing.pairingName);
             targetPairing = pairing;
-            //if (targetPairing == null) return;
-            //LinkedMovement.Log("Controller.setTargetPairing " + pairing.pairingName);
-
+            
             pairing.disconnect();
 
             originObject = LMUtils.GetBuildableObjectFromGameObject(targetPairing.baseGO);
@@ -220,17 +204,13 @@ namespace LinkedMovement {
                 
                 // Reset parents for new targets
                 var originalTargets = LMUtils.GetBuildableObjectsFromGameObjects(targetPairing.targetGOs);
-                LMUtils.RemoveParentFromUnusedTargets(targetObjects, originalTargets);
+                LMUtils.ResetUnusedTargets(targetObjects, originalTargets);
 
                 LinkedMovement.Log("Reconnect targetPairing");
                 targetPairing.connect();
                 targetPairing = null;
-                LMUtils.SetChunkedMeshEnalbedIfPresent(originObject, true);
                 originObject = null;
 
-                foreach (var target in targetObjects) {
-                    LMUtils.SetChunkedMeshEnalbedIfPresent(target, true);
-                }
                 targetObjects.Clear();
             }
 
@@ -255,11 +235,8 @@ namespace LinkedMovement {
         }
 
         public Pairing findPairingByBaseGameObject(GameObject gameObject) {
-            //LinkedMovement.Log("Controller.findPairingByBaseGameObject, name: " + gameObject.name);
             foreach (var pairing in pairings) {
-                //LinkedMovement.Log("Checking pairing name: " + pairing.pairingName + ", id: " + pairing.pairingId + ", go id: " + pairing.baseGO.name);
                 if (pairing.baseGO == gameObject) {
-                    //LinkedMovement.Log($"Found pairing {pairing.pairingName} for GO origin");
                     return pairing;
                 }
             }
@@ -402,7 +379,6 @@ namespace LinkedMovement {
             if (targetPairing != null) {
                 killSampleSequence();
                 LMUtils.AttachTargetToBase(originObject.transform, bo.transform);
-                //bo.transform.SetParent(originObject.transform);
                 rebuildSampleSequence();
             }
         }
@@ -486,13 +462,6 @@ namespace LinkedMovement {
             // TODO: This is duplicating data
             animationParams.name = animatronicName;
 
-            //Pairing pairing;
-            //if (targetPairing != null) {
-            //    pairing = targetPairing;
-            //    pairing.setup(originObject.gameObject, targetGOs, animatronicName);
-            //} else {
-            //    pairing = new Pairing(originObject.gameObject, targetGOs, null, animatronicName);
-            //}
             var pairing = new Pairing(originObject.gameObject, targetGOs, null, animatronicName);
 
             // TODO: Eliminate origin offsets
@@ -516,12 +485,8 @@ namespace LinkedMovement {
             targetPairing.connect();
             targetPairing = null;
 
-            LMUtils.SetChunkedMeshEnalbedIfPresent(originObject, true);
             originObject = null;
             
-            foreach (var target in targetObjects) {
-                LMUtils.SetChunkedMeshEnalbedIfPresent(target, true);
-            }
             targetObjects.Clear();
 
             resetController();
@@ -592,9 +557,6 @@ namespace LinkedMovement {
 
         private void restartAssociated() {
             LinkedMovement.Log("Controller.restartAssociated");
-            //if (originObject.transform.parent != null && originObject.transform.parent.gameObject != null) {
-            //    LMUtils.RestartAssociatedAnimations(originObject.transform.parent.gameObject);
-            //}
             if (originObject.gameObject != null) {
                 LMUtils.RestartAssociatedAnimations(originObject.gameObject);
             }
@@ -631,7 +593,6 @@ namespace LinkedMovement {
             LinkedMovement.Log("Attach targets");
             // set targets parent
             foreach (var targetBO in targetObjects) {
-                //targetBO.transform.SetParent(originObject.transform);
                 LMUtils.AttachTargetToBase(originObject.transform, targetBO.transform);
             }
 

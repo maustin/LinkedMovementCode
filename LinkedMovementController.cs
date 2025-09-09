@@ -140,7 +140,7 @@ namespace LinkedMovement {
         public CreationSteps getCreationStep() { return creationStep; }
 
         public void setCreationStep(CreationSteps newStep) {
-            LinkedMovement.Log("setCreationStep " + newStep.ToString());
+            LinkedMovement.Log("Controller.setCreationStep " + newStep.ToString());
             if (newStep == creationStep) {
                 LinkedMovement.Log("Already in creation step " + newStep.ToString());
                 return;
@@ -198,10 +198,10 @@ namespace LinkedMovement {
         public void discardChanges() {
             LinkedMovement.Log("Controller.discardChanges");
             LMUtils.ResetObjectHighlights();
+            killSampleSequence();
+            restartAssociated();
+
             if (targetPairing != null) {
-                killSampleSequence();
-                restartAssociated();
-                
                 // Reset parents for new targets
                 var originalTargets = LMUtils.GetBuildableObjectsFromGameObjects(targetPairing.targetGOs);
                 LMUtils.ResetUnusedTargets(targetObjects, originalTargets);
@@ -388,12 +388,12 @@ namespace LinkedMovement {
         }
 
         public void queueRemoveTargetBuildableObject(BuildableObject bo) {
-            LinkedMovement.Log("queueRemoveTargetBuildableObject");
+            LinkedMovement.Log("Controller.queueRemoveTargetBuildableObject");
             queuedRemovalTargets.Add(bo);
         }
 
         private void removeTargetBuildableObject(BuildableObject bo) {
-            LinkedMovement.Log("removeTargetBuildableObject");
+            LinkedMovement.Log("Controller.removeTargetBuildableObject");
             if (bo == null) {
                 LinkedMovement.Log("null BuildableObject");
                 return;
@@ -497,7 +497,7 @@ namespace LinkedMovement {
         }
 
         public void tryToDeletePairing(Pairing pairing) {
-            LinkedMovement.Log("tryToDeletePairing " + pairing.getPairingName());
+            LinkedMovement.Log("Controller.tryToDeletePairing " + pairing.getPairingName());
 
             var found = hasPairing(pairing);
             if (!found) {
@@ -606,6 +606,7 @@ namespace LinkedMovement {
         private void exitAnimateState() {
             LinkedMovement.Log("Exit Animate State");
             killSampleSequence();
+            restartAssociated();
             foreach (var targetBO in targetObjects) {
                 targetBO.transform.SetParent(null);
             }

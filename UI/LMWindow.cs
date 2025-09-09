@@ -30,7 +30,7 @@ namespace LinkedMovement.UI {
                 windowManager.removeWindow(launcher as LMWindow);
                 // TODO: NEED a better way to do this
                 if (type == WindowManager.WindowType.CreateNewAnimatronic) {
-                    LinkedMovement.Log("New Animatronic Window closing");
+                    LinkedMovement.Log("CLOSE CreateNewAnimatronic window");
                     LinkedMovement.GetController().discardChanges();
                 }
                 if (type == WindowManager.WindowType.EditAnimatronic) {

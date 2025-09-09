@@ -10,6 +10,7 @@ namespace LinkedMovement.UI.Content {
         private IDoGUI animateSubContent;
 
         private Pairing pairing;
+        // These are the temporary params
         private LMAnimationParams animationParams;
         private bool selectUIOpen = false;
         private bool animateUIOpen = false;
@@ -17,11 +18,11 @@ namespace LinkedMovement.UI.Content {
         public EditAnimatronicContent(Pairing pairing) {
             controller = LinkedMovement.GetController();
             this.pairing = pairing;
-            this.animationParams = pairing.pairBase.animParams;
 
             controller.setTargetPairing(pairing);
+            animationParams = controller.animationParams;
 
-            foreach (var step in this.animationParams.animationSteps) {
+            foreach (var step in animationParams.animationSteps) {
                 step.uiIsOpen = false;
             }
 
@@ -35,22 +36,29 @@ namespace LinkedMovement.UI.Content {
             using (Scope.Vertical()) {
                 using (Scope.Horizontal()) {
                     Label("Name");
-                    var newPairingName = RGUI.Field(pairing.pairingName);
-                    if (newPairingName != pairing.pairingName) {
-                        pairing.pairingName = newPairingName;
-                        pairing.pairBase.pairName = newPairingName;
+                    var newPairingName = RGUI.Field(animationParams.name);
+                    if (newPairingName != animationParams.name) {
+                        animationParams.name = newPairingName;
+                        //pairing.pairingName = newPairingName;
+                        //pairing.pairBase.pairName = newPairingName;
                         title = "Edit Animatronic: " + newPairingName;
                     }
+                    //var newPairingName = RGUI.Field(pairing.pairingName);
+                    //if (newPairingName != pairing.pairingName) {
+                    //    pairing.pairingName = newPairingName;
+                    //    pairing.pairBase.pairName = newPairingName;
+                    //    title = "Edit Animatronic: " + newPairingName;
+                    //}
                 }
                 Space(5f);
 
-                using (Scope.GuiEnabled(false)) {
+                //using (Scope.GuiEnabled(false)) {
                     using (Scope.Horizontal()) {
                         if (Button($"{(selectUIOpen ? "▼" : "►")} Targets", RGUIStyle.flatButtonLeft)) {
                             selectUIOpen = !selectUIOpen;
                         }
                     }
-                }
+                //}
                 if (selectUIOpen) {
                     selectSubContent.DoGUI();
                 }

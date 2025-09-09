@@ -6,6 +6,7 @@ using static UnityEngine.GUILayout;
 
 namespace LinkedMovement.UI.Content {
     internal class ExistingAnimatronicsContent : LMWindowContent {
+        const char DEPTH_DASH = '―';// en –, em —, horiz bar ―
         private LinkedMovementController controller;
 
         private Vector2 targetsScrollPosition;
@@ -23,7 +24,7 @@ namespace LinkedMovement.UI.Content {
                 foreach (var pairing in pairings) {
                     var depth = LMUtils.GetPairingDepth(pairing);
                     using (Scope.Horizontal()) {
-                        string prefix = depth > 0 ? (new string('-', depth) + " ") : "";
+                        string prefix = depth > 0 ? (new string(DEPTH_DASH, depth) + " ") : "";
                         if (Button(prefix + pairing.pairingName, RGUIStyle.flatButtonLeft)) {
                             windowManager.removeWindow(this.window);
                             windowManager.createWindow(WindowManager.WindowType.EditAnimatronic, pairing);

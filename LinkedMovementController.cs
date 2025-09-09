@@ -32,6 +32,8 @@ namespace LinkedMovement {
 
         public WindowManager windowManager;
 
+        // TODO: I don't like having 'animationParams', 'targetObjects', and 'originObject' just hanging out
+        // as public props on the controller. Need some access controls and better naming.
         public LMAnimationParams animationParams;
         public List<BuildableObject> targetObjects { get; private set; }
 
@@ -55,6 +57,8 @@ namespace LinkedMovement {
             }
         }
         
+        // TODO: Love to eliminate this. Currently only used when creating new animatronic as there isn't
+        // an "animationParams" to carry the name until the "Animate" step.
         public string animatronicName = string.Empty;
 
         public Sequence sampleSequence;
@@ -68,11 +72,6 @@ namespace LinkedMovement {
         //public void removeAnimatedBuildableObject(BuildableObject bo) {
         //    animatedBuildableObjects.Remove(bo);
         //}
-
-        // TODO:
-        // - Existing animations UI
-        // - Timeline animations
-        // - Scale UI
 
         private Pairing pendingPairingForDeletion;
 
@@ -489,6 +488,7 @@ namespace LinkedMovement {
             LMUtils.ResetObjectHighlights();
             killSampleSequence();
             restartAssociated();
+            targetPairing.updatePairingName(animationParams.name);
             targetPairing.pairBase.animParams = animationParams;
             targetPairing.connect();
             targetPairing = null;

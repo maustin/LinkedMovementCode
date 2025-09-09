@@ -19,7 +19,9 @@ namespace LinkedMovement.UI.Content {
         public void DoGUI() {
             // TODO: Info! ⓘ
 
-            animationParams = controller.animationParams;
+            if (animationParams == null) {
+                animationParams = controller.animationParams;
+            }
 
             rebuildStepContents();
 

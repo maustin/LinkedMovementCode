@@ -9,8 +9,14 @@ using UnityEngine;
 namespace LinkedMovement.Utils {
     // TODO: Lots of UI stuff. Consider splitting UI stuff out to, like, UI.Utils
     static class LMUtils {
+        public enum AssociatedAnimationEditMode {
+            Stop,
+            Start,
+            Restart,
+        }
+
         private static Dictionary<BuildableObject, HighlightOverlayController.HighlightHandle> HighlightHandles;
-        private static HashSet<GameObject> baseGameObjectsReset;
+        private static HashSet<GameObject> associatedGameObjects;
 
         public static void LogBuildableObjectComponents(BuildableObject bo) {
             LinkedMovement.Log("LogBuildableObjectComponents:");
@@ -146,37 +152,109 @@ namespace LinkedMovement.Utils {
             return buildableObjects;
         }
 
-        public static void RestartAssociatedAnimations(List<GameObject> gameObjects) {
-            // Setup
-            LinkedMovement.Log($"LMUtils.RestartAssociatedAnimations START with {gameObjects.Count} gameObjets");
-            if (baseGameObjectsReset != null) {
-                throw new Exception("LMUtils.RestartAssociatedAnimations ALREADY RUNNING!");
+        private static void PrepAssociatedGameObjects() {
+            LinkedMovement.Log("LMUtils.PreAssociatedGameObjects");
+            if (associatedGameObjects != null) {
+                throw new Exception("LMUtils.PreAssociatedGameObjects ALREADY RUNNING!");
             }
-            baseGameObjectsReset = new HashSet<GameObject>();
-
-            // Do
-            foreach (GameObject go in gameObjects) {
-                RestartAssociatedAnimations(go);
-            }
-
-            // Cleanup
-            LinkedMovement.Log("RestartAssociatedAnimations END");
-            baseGameObjectsReset.Clear();
-            baseGameObjectsReset = null;
+            associatedGameObjects = new HashSet<GameObject>();
         }
 
-        private static void RestartAssociatedAnimations(GameObject gameObject) {
-            LinkedMovement.Log("LMUtils.RestartAssociatedAnimations for " + gameObject.name);
-            
-            var gameObjectHasBeenVisited = baseGameObjectsReset.Contains(gameObject);
+        private static void CleanupAssociateGameObjects() {
+            LinkedMovement.Log("LMUtils.CleanupAssociatedGameObjects");
+            associatedGameObjects.Clear();
+            associatedGameObjects = null;
+        }
+
+        public static void EditAssociatedAnimations(List<GameObject> gameObjects, AssociatedAnimationEditMode editMode, bool isEditing) {
+            LinkedMovement.Log($"LMUtils.EditAssociatedAnimations mode {editMode.ToString()} with {gameObjects.Count} gameObjects, isEditing: {isEditing.ToString()}");
+            PrepAssociatedGameObjects();
+            foreach (GameObject go in gameObjects) {
+                EditAssociatedAnimation(go, editMode, isEditing);
+            }
+            CleanupAssociateGameObjects();
+        }
+
+        private static void EditAssociatedAnimation(GameObject gameObject, AssociatedAnimationEditMode editMode, bool isEditing) {
+            LinkedMovement.Log("LMUtils.EditAssociatedAnimation for " + gameObject.name);
+            var gameObjectHasBeenVisited = associatedGameObjects.Contains(gameObject);
             if (gameObjectHasBeenVisited) {
                 LinkedMovement.Log("Already visited GameObject " + gameObject.name);
                 return;
             }
 
-            LinkedMovement.Log("Check GameObject " + gameObject.name);
-            baseGameObjectsReset.Add(gameObject);
+            associatedGameObjects.Add(gameObject);
 
+            switch (editMode) {
+                case AssociatedAnimationEditMode.Stop: {
+                        StopAssociatedAnimation(gameObject);
+                        break;
+                    }
+                case AssociatedAnimationEditMode.Start: {
+                        StartAssociatedAnimation(gameObject, isEditing);
+                        break;
+                    }
+                case AssociatedAnimationEditMode.Restart: {
+                        RestartAssociatedAnimation(gameObject);
+                        break;
+                    }
+            }
+
+            LinkedMovement.Log("Check children for " + gameObject.name);
+            for (int i = 0; i < gameObject.transform.childCount; i++) {
+                var childTransform = gameObject.transform.GetChild(i);
+                if (childTransform != null) {
+                    var childGO = childTransform.gameObject;
+                    if (childGO != null) {
+                        LinkedMovement.Log($"Try edit associated child for {gameObject.name}, index {i.ToString()}, name {childGO.name}");
+                        EditAssociatedAnimation(childGO, editMode, isEditing);
+                    }
+                }
+            }
+
+            LinkedMovement.Log("Check parent for " + gameObject.name);
+            if (gameObject.transform.parent != null && gameObject.transform.parent.gameObject != null) {
+                var parentGO = gameObject.transform.parent.gameObject;
+                LinkedMovement.Log($"Try edit associated parent for {gameObject.name}, parent: {parentGO.name}");
+                EditAssociatedAnimation(parentGO, editMode, isEditing);
+            } else {
+                LinkedMovement.Log("No parent");
+            }
+        }
+
+        private static void StopAssociatedAnimation(GameObject gameObject) {
+            LinkedMovement.Log("LMUtils.StopAssociatedAnimation for " + gameObject.name);
+            var pairing = LinkedMovement.GetController().findPairingByBaseGameObject(gameObject);
+            if (pairing != null) {
+                LinkedMovement.Log($"Found pairing name: {pairing.pairingName}, id: {pairing.pairingId}");
+                if (pairing.pairBase.sequence.isAlive) {
+                    LinkedMovement.Log("Stop sequence");
+                    pairing.pairBase.sequence.progress = 0f;
+                    pairing.pairBase.sequence.Stop();
+                    //pairing.pairBase.animParams.calculateRotationOffset();
+                } else {
+                    LinkedMovement.Log("Sequence not alive");
+                }
+            } else {
+                LinkedMovement.Log("No Pairing exists");
+            }
+        }
+
+        private static void StartAssociatedAnimation(GameObject gameObject, bool isEditing) {
+            LinkedMovement.Log("LMUtils.StartAssociatedAnimation for " + gameObject.name);
+            var pairing = LinkedMovement.GetController().findPairingByBaseGameObject(gameObject);
+            if (pairing != null) {
+                LinkedMovement.Log($"Found pairing name: {pairing.pairingName}, id: {pairing.pairingId}");
+                pairing.pairBase.animParams.setStartingValues(gameObject.transform);
+                pairing.pairBase.animParams.calculateRotationOffset();
+                pairing.pairBase.sequence = LMUtils.BuildAnimationSequence(pairing.baseGO.transform, pairing.pairBase.animParams);
+            } else {
+                LinkedMovement.Log("No Pairing exists");
+            }
+        }
+
+        private static void RestartAssociatedAnimation(GameObject gameObject) {
+            LinkedMovement.Log("LMUtils.RestartAssociatedAnimation for " + gameObject.name);
             var pairing = LinkedMovement.GetController().findPairingByBaseGameObject(gameObject);
             if (pairing != null) {
                 LinkedMovement.Log($"Found pairing name: {pairing.pairingName}, id: {pairing.pairingId}");
@@ -191,27 +269,6 @@ namespace LinkedMovement.Utils {
                 }
             } else {
                 LinkedMovement.Log("No Pairing exists");
-            }
-
-            LinkedMovement.Log("Check children for " + gameObject.name);
-            for (int i = 0; i < gameObject.transform.childCount; i++) {
-                var childTransform = gameObject.transform.GetChild(i);
-                if (childTransform != null) {
-                    var childGO = childTransform.gameObject;
-                    if (childGO != null) {
-                        LinkedMovement.Log($"Try restart associated child for {gameObject.name}, index {i.ToString()}, name {childGO.name}");
-                        RestartAssociatedAnimations(childGO);
-                    }
-                }
-            }
-
-            LinkedMovement.Log("Check parent for " + gameObject.name);
-            if (gameObject.transform.parent != null && gameObject.transform.parent.gameObject != null) {
-                var parentGO = gameObject.transform.parent.gameObject;
-                LinkedMovement.Log($"Try restart associated parent for {gameObject.name}, parent: {parentGO.name}");
-                RestartAssociatedAnimations(parentGO);
-            } else {
-                LinkedMovement.Log("No parent");
             }
         }
 

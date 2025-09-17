@@ -207,7 +207,7 @@ namespace LinkedMovement {
             LinkedMovement.Log("Controller.discardChanges");
             LMUtils.ResetObjectHighlights();
             killSampleSequence();
-            restartAssociated();
+            restartAssociatedAnimations(false);
 
             if (targetPairing != null) {
                 // Reset parents for new targets
@@ -278,7 +278,7 @@ namespace LinkedMovement {
 
             removeOrigin();
 
-            restartAssociated();
+            restartAssociatedAnimations(true);
 
             var originPosition = LMUtils.FindBuildObjectsCenterPosition(targetObjects);
             originObject = ScriptableSingleton<AssetManager>.Instance.instantiatePrefab<Deco>("98f0269770ff44247b38607fdb2cf837", originPosition, Quaternion.identity);
@@ -464,7 +464,8 @@ namespace LinkedMovement {
                 // "Officially" create the generated origin object
                 originObject.Initialize();
             }
-            restartAssociated();
+            // TODO: Change to stop/start ?
+            restartAssociatedAnimations(false);
 
             List<GameObject> targetGOs = new List<GameObject>();
             foreach (var bo in targetObjects) {
@@ -493,7 +494,7 @@ namespace LinkedMovement {
             LinkedMovement.Log("Controller.saveChanges");
             LMUtils.ResetObjectHighlights();
             killSampleSequence();
-            restartAssociated();
+            restartAssociatedAnimations(false);
 
             targetPairing.updatePairing(animationParams, targetObjects);
             targetPairing.connect();
@@ -566,31 +567,55 @@ namespace LinkedMovement {
                 return;
             }
 
-            restartAssociated();
+            restartAssociatedAnimations(true);
 
             sampleSequence = LMUtils.BuildAnimationSequence(originObject.transform, animationParams, true);
         }
 
-        private void restartAssociated() {
-            LinkedMovement.Log("Controller.restartAssociated");
-            var restartList = new List<GameObject>();
+        private List<GameObject> getAssociatedGameObjects() {
+            var associated = new List<GameObject>();
             if (originObject != null && originObject.gameObject != null) {
-                //LMUtils.RestartAssociatedAnimations(originObject.gameObject);
-                restartList.Add(originObject.gameObject);
+                //LMUtils.RestartAssociatedAnimation(originObject.gameObject);
+                associated.Add(originObject.gameObject);
             }
             if (targetObjects != null && targetObjects.Count > 0) {
                 foreach (var targetObject in targetObjects) {
                     if (targetObject.gameObject != null) {
-                        restartList.Add(targetObject.gameObject);
+                        associated.Add(targetObject.gameObject);
                     }
                 }
             }
+            LinkedMovement.Log($"Controller.getAssociatedGameObjects got {associated.Count} associated objects");
+            return associated;
+        }
 
-            if (restartList.Count == 0) {
-                LinkedMovement.Log("No objects to restart");
-            } else {
+        private void stopAssociatedAnimations(bool isEditing) {
+            LinkedMovement.Log("Controller.stopAssociatedAnimations");
+            var stopList = getAssociatedGameObjects();
+
+            if (stopList.Count > 0) {
+                LinkedMovement.Log($"Trying to stop {stopList.Count} objects");
+                LMUtils.EditAssociatedAnimations(stopList, LMUtils.AssociatedAnimationEditMode.Stop, isEditing);
+            }
+        }
+
+        private void startAssociatedAnimations(bool isEditing) {
+            LinkedMovement.Log("Controller.startAssociatedAnimations");
+            var startList = getAssociatedGameObjects();
+
+            if (startList.Count > 0) {
+                LinkedMovement.Log($"Trying to start {startList.Count} objects");
+                LMUtils.EditAssociatedAnimations(startList, LMUtils.AssociatedAnimationEditMode.Start, isEditing);
+            }
+        }
+
+        private void restartAssociatedAnimations(bool isEditing) {
+            LinkedMovement.Log("Controller.restartAssociatedAnimations");
+            var restartList = getAssociatedGameObjects();
+
+            if (restartList.Count > 0) {
                 LinkedMovement.Log($"Trying to restart {restartList.Count} objects");
-                LMUtils.RestartAssociatedAnimations(restartList);
+                LMUtils.EditAssociatedAnimations(restartList, LMUtils.AssociatedAnimationEditMode.Restart, isEditing);
             }
         }
 
@@ -615,18 +640,22 @@ namespace LinkedMovement {
             if (animationParams == null) {
                 animationParams = new LMAnimationParams();
             }
-            animationParams.setOriginalValues(originObject.transform);
 
             // Restart parent sequences so target is attached when parent is at starting location
-            restartAssociated();
+            //restartAssociatedAnimations(true);
+            stopAssociatedAnimations(true);
 
-            animationParams.setStartingValues(originObject.transform); //, LMUtils.IsGeneratedOrigin(originObject));
+            animationParams.setOriginalValues(originObject.transform);
+
+            animationParams.setStartingValues(originObject.transform);
 
             LinkedMovement.Log("Attach targets");
             // set targets parent
             foreach (var targetBO in targetObjects) {
                 LMUtils.AttachTargetToBase(originObject.transform, targetBO.transform);
             }
+
+            startAssociatedAnimations(true);
 
             rebuildSampleSequence();
 
@@ -636,7 +665,7 @@ namespace LinkedMovement {
         private void exitAnimateState() {
             LinkedMovement.Log("Exit Animate State");
             killSampleSequence();
-            restartAssociated();
+            restartAssociatedAnimations(true);
             foreach (var targetBO in targetObjects) {
                 targetBO.transform.SetParent(null);
             }

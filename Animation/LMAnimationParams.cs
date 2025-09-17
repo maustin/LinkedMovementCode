@@ -77,6 +77,7 @@ namespace LinkedMovement {
         public void calculateRotationOffset() {
             // When object is built rotated, we need to adjust the target position
             LinkedMovement.Log("LMAnimationParams.calculateRotatationOffset");
+            LinkedMovement.Log($"Starting startingRot: {startingLocalRotation.ToString()}, originalRot: {originalLocalRotation.ToString()}");
 
             Vector3 rotationOffset = startingLocalRotation - originalLocalRotation;
             LinkedMovement.Log("rotationOffset: " + rotationOffset.ToString());

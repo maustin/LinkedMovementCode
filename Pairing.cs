@@ -77,14 +77,11 @@ namespace LinkedMovement
 
             var baseBO = LMUtils.GetBuildableObjectFromGameObject(baseGO);
 
-            //LinkedMovement.GetController().removeAnimatedBuildableObject(baseBO);
-
             pairBase = LMUtils.GetPairBaseFromSerializedMonoBehaviour(baseBO);
 
             var baseAnimParams = pairBase.animParams;
             LinkedMovement.Log("Pair has animParams: " + (baseAnimParams != null));
             if (baseAnimParams != null) {
-                //LinkedMovement.Log("Anim target pos: " + baseAnimParams.targetPosition.ToString());
                 if (baseAnimParams.isTriggerable) {
                     baseBO.gameObject.AddComponent<LMTrigger>().animationParams = baseAnimParams;
                 } else {
@@ -94,11 +91,6 @@ namespace LinkedMovement
                 LinkedMovement.Log("NO animParams!!!");
                 return;
             }
-
-            //LinkedMovement.Log("Origin position: " + baseBO.transform.position.ToString());
-            //LinkedMovement.Log("Origin local position: " + baseBO.transform.localPosition.ToString());
-            //LinkedMovement.Log("Origin rotation: " + baseBO.transform.eulerAngles.ToString());
-            //LinkedMovement.Log("Origin local rotation: " + baseBO.transform.localEulerAngles.ToString());
 
             LinkedMovement.Log("connect iterate targetGOs");
             foreach (GameObject targetGO in targetGOs) {
@@ -117,8 +109,6 @@ namespace LinkedMovement
                 //}
 
                 var targetBO = LMUtils.GetBuildableObjectFromGameObject(targetGO);
-
-                //LinkedMovement.GetController().removeAnimatedBuildableObject(targetBO);
 
                 LMUtils.AttachTargetToBase(baseGO.transform, targetGO.transform);
             }

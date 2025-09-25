@@ -1,6 +1,7 @@
 ﻿using LinkedMovement.Animation;
 using System;
 using System.Collections.Generic;
+//using System.Diagnostics;
 using System.Text;
 using UnityEngine;
 
@@ -37,6 +38,10 @@ namespace LinkedMovement {
         [Serialized]
         public float initialStartDelayMax = 0f;
 
+        // TODO: Not entirely happy with how this is set (e.g. via enter/exit Create Animation state)
+        [Serialized]
+        public Vector3 rotationOffset = Vector3.zero;
+
         [Serialized]
         public List<LMAnimationStep> animationSteps = new List<LMAnimationStep>();
 
@@ -48,10 +53,18 @@ namespace LinkedMovement {
         }
 
         public void setOriginalValues(Transform originalTransform) {
-            LinkedMovement.Log("LMAnimationParams.setOriginalValues");
-            LinkedMovement.Log("original rotation: " + originalTransform.eulerAngles.ToString());
-            LinkedMovement.Log("original localRotation: " + originalTransform.localEulerAngles.ToString());
-            LinkedMovement.Log("original scale: " + originalTransform.localScale.ToString());
+            LinkedMovement.Log("LMAnimationParams.setOriginalValues for " + name);
+
+            //LinkedMovement.Log("CHECK ME setOriginalValues");
+            //LinkedMovement.Log(new StackTrace().ToString());
+
+            LinkedMovement.Log("NEW original rotation: " + originalTransform.eulerAngles.ToString());
+            LinkedMovement.Log("NEW original localRotation: " + originalTransform.localEulerAngles.ToString());
+            LinkedMovement.Log("NEW original scale: " + originalTransform.localScale.ToString());
+
+            LinkedMovement.Log("OLD original rotation: " + originalRotation.ToString());
+            LinkedMovement.Log("OLD original localRotation: " + originalLocalRotation.ToString());
+            LinkedMovement.Log("OLD original scale: " + originalScale.ToString());
             
             originalRotation = originalTransform.eulerAngles;
             originalLocalRotation = originalTransform.localEulerAngles;
@@ -59,12 +72,22 @@ namespace LinkedMovement {
         }
 
         public void setStartingValues(Transform startingTransform) {
-            LinkedMovement.Log("LMAnimationParams.setStartingValues");
-            LinkedMovement.Log("starting position: " + startingTransform.position.ToString());
-            LinkedMovement.Log("starting localPosition: " + startingTransform.localPosition.ToString());
-            LinkedMovement.Log("starting rotation: " + startingTransform.eulerAngles.ToString());
-            LinkedMovement.Log("starting localRotation: " + startingTransform.localEulerAngles.ToString());
-            LinkedMovement.Log("starting scale: " + startingTransform.localScale.ToString());
+            LinkedMovement.Log("LMAnimationParams.setStartingValues for " + name);
+
+            //LinkedMovement.Log("CHECK ME setStartingValues");
+            //LinkedMovement.Log(new StackTrace().ToString());
+
+            LinkedMovement.Log("NEW starting position: " + startingTransform.position.ToString());
+            LinkedMovement.Log("NEW starting localPosition: " + startingTransform.localPosition.ToString());
+            LinkedMovement.Log("NEW starting rotation: " + startingTransform.eulerAngles.ToString());
+            LinkedMovement.Log("NEW starting localRotation: " + startingTransform.localEulerAngles.ToString());
+            LinkedMovement.Log("NEW starting scale: " + startingTransform.localScale.ToString());
+
+            LinkedMovement.Log("OLD starting position: " + startingPosition.ToString());
+            LinkedMovement.Log("OLD starting localPosition: " + startingLocalPosition.ToString());
+            LinkedMovement.Log("OLD starting rotation: " + startingRotation.ToString());
+            LinkedMovement.Log("OLD starting localRotation: " + startingLocalRotation.ToString());
+            LinkedMovement.Log("OLD starting scale: " + startingLocalScale.ToString());
 
             startingPosition = startingTransform.position;
             startingLocalPosition = startingTransform.localPosition;
@@ -73,30 +96,16 @@ namespace LinkedMovement {
             startingLocalScale = startingTransform.localScale;
         }
 
-        // TODO: Do we need to ensure this only runs once?
+        // Calculate how the animation position target should 
         public void calculateRotationOffset() {
-            // When object is built rotated, we need to adjust the target position
             LinkedMovement.Log("LMAnimationParams.calculateRotatationOffset");
             LinkedMovement.Log($"Starting startingRot: {startingLocalRotation.ToString()}, originalRot: {originalLocalRotation.ToString()}");
 
-            Vector3 rotationOffset = startingLocalRotation - originalLocalRotation;
-            LinkedMovement.Log("rotationOffset: " + rotationOffset.ToString());
+            LinkedMovement.Log("OLD rotationOffset: " + rotationOffset.ToString());
 
-            foreach (var step in animationSteps) {
-                Vector3 rotatedPositionTarget = Quaternion.Euler(rotationOffset) * step.targetPosition;
-                LinkedMovement.Log("Original targetPosition: " + step.targetPosition.ToString());
-                LinkedMovement.Log("New targetPosition: " + rotatedPositionTarget.ToString());
-                step.targetPosition = rotatedPositionTarget;
-            }
+            rotationOffset = startingLocalRotation - originalLocalRotation;
+            LinkedMovement.Log("NEW rotationOffset: " + rotationOffset.ToString());
         }
-
-        //public bool isStepFirst(LMAnimationStep step) {
-        //    return animationSteps.IndexOf(step) == 0;
-        //}
-
-        //public bool isStepLast(LMAnimationStep step) {
-        //    return animationSteps.IndexOf(step) == animationSteps.Count - 1;
-        //}
 
         public void addNewAnimationStep() {
             animationSteps.Add(new LMAnimationStep());
@@ -165,6 +174,7 @@ namespace LinkedMovement {
             newAnimationParams.useInitialStartDelay = animationParams.useInitialStartDelay;
             newAnimationParams.initialStartDelayMin = animationParams.initialStartDelayMin;
             newAnimationParams.initialStartDelayMax = animationParams.initialStartDelayMax;
+            newAnimationParams.rotationOffset = animationParams.rotationOffset;
             newAnimationParams.animationSteps = new List<LMAnimationStep>();
             foreach (var step in animationParams.animationSteps) {
                 newAnimationParams.animationSteps.Add(LMAnimationStep.Duplicate(step));

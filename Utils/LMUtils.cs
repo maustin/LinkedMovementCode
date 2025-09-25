@@ -101,7 +101,17 @@ namespace LinkedMovement.Utils {
         }
 
         public static void AttachTargetToBase(Transform baseObject, Transform targetObject) {
-            LinkedMovement.Log("LMUtils.AttachTargetToBase, parent: " + baseObject.name + ", target: " + targetObject.name);
+            LinkedMovement.Log("LMUtils.AttachTargetToBase");
+            var oldParent = targetObject.parent;
+            var oldParentName = (oldParent != null) ? oldParent.name : "null";
+            LinkedMovement.Log("OLD PARENT: " + oldParentName);
+            if (baseObject == null) {
+                LinkedMovement.Log($"baseObject is null, clearing target {targetObject.name} parent");
+                targetObject.SetParent(null);
+                return;
+            }
+
+            LinkedMovement.Log("parent: " + baseObject.name + ", target: " + targetObject.name);
             var baseTransform = baseObject;
             if (targetObject.IsChildOf(baseTransform)) {
                 LinkedMovement.Log("ALREADY A CHILD!");
@@ -153,9 +163,9 @@ namespace LinkedMovement.Utils {
         }
 
         private static void PrepAssociatedGameObjects() {
-            LinkedMovement.Log("LMUtils.PreAssociatedGameObjects");
+            LinkedMovement.Log("LMUtils.PrepAssociatedGameObjects");
             if (associatedGameObjects != null) {
-                throw new Exception("LMUtils.PreAssociatedGameObjects ALREADY RUNNING!");
+                throw new Exception("LMUtils.PrepAssociatedGameObjects ALREADY RUNNING!");
             }
             associatedGameObjects = new HashSet<GameObject>();
         }
@@ -166,6 +176,7 @@ namespace LinkedMovement.Utils {
             associatedGameObjects = null;
         }
 
+        // TODO: "editMode" and "isEditing" names are ambiguous here
         public static void EditAssociatedAnimations(List<GameObject> gameObjects, AssociatedAnimationEditMode editMode, bool isEditing) {
             LinkedMovement.Log($"LMUtils.EditAssociatedAnimations mode {editMode.ToString()} with {gameObjects.Count} gameObjects, isEditing: {isEditing.ToString()}");
             PrepAssociatedGameObjects();
@@ -231,7 +242,6 @@ namespace LinkedMovement.Utils {
                     LinkedMovement.Log("Stop sequence");
                     pairing.pairBase.sequence.progress = 0f;
                     pairing.pairBase.sequence.Stop();
-                    //pairing.pairBase.animParams.calculateRotationOffset();
                 } else {
                     LinkedMovement.Log("Sequence not alive");
                 }
@@ -245,8 +255,11 @@ namespace LinkedMovement.Utils {
             var pairing = LinkedMovement.GetController().findPairingByBaseGameObject(gameObject);
             if (pairing != null) {
                 LinkedMovement.Log($"Found pairing name: {pairing.pairingName}, id: {pairing.pairingId}");
+
+                LinkedMovement.Log("DO RECALC");
                 pairing.pairBase.animParams.setStartingValues(gameObject.transform);
                 pairing.pairBase.animParams.calculateRotationOffset();
+
                 pairing.pairBase.sequence = LMUtils.BuildAnimationSequence(pairing.baseGO.transform, pairing.pairBase.animParams);
             } else {
                 LinkedMovement.Log("No Pairing exists");
@@ -262,8 +275,6 @@ namespace LinkedMovement.Utils {
                     LinkedMovement.Log("Reset sequence progress!");
                     pairing.pairBase.sequence.progress = 0f;
                     //pairing.pairBase.sequence.Stop();
-                    //pairing.pairBase.animParams.calculateRotationOffset();
-                    //pairing.pairBase.sequence = LMUtils.BuildAnimationSequence(pairing.baseGO.transform, pairing.pairBase.animParams);
                 } else {
                     LinkedMovement.Log("Sequence not alive");
                 }
@@ -274,12 +285,14 @@ namespace LinkedMovement.Utils {
 
         public static void ResetTransformLocals(Transform transform, Vector3 localPosition, Vector3 localRotation, Vector3 localScale) {
             LinkedMovement.Log("LMUtils.ResetTransformLocals");
-            LinkedMovement.Log($"FROM position: {transform.localPosition.ToString()}, rotation: {transform.localEulerAngles.ToString()}, scale: {transform.localScale.ToString()}");
-            LinkedMovement.Log($"TO position: {localPosition.ToString()}, rotation: {localRotation.ToString()}, scale: {localScale.ToString()}");
+            LinkedMovement.Log($"FROM pos: {transform.position.ToString()}, lPos: {transform.localPosition.ToString()}, rot: {transform.eulerAngles.ToString()}, lRot: {transform.localEulerAngles.ToString()}, scale: {transform.localScale.ToString()}");
+            LinkedMovement.Log($"TO lPos: {localPosition.ToString()}, lRot: {localRotation.ToString()}, scale: {localScale.ToString()}");
 
             transform.localPosition = localPosition;
             transform.localEulerAngles = localRotation;
             transform.localScale = localScale;
+
+            LinkedMovement.Log($"DONE pos: {transform.position.ToString()}, lPos: {transform.localPosition.ToString()}, rot: {transform.eulerAngles.ToString()}, lRot: {transform.localEulerAngles.ToString()}, scale: {transform.localScale.ToString()}");
         }
 
         private static Ease ParseStringToEase(string ease) {
@@ -308,14 +321,13 @@ namespace LinkedMovement.Utils {
             if (hasPositionChange || hasRotationChange || hasScaleChange) {
                 LinkedMovement.Log("Has change");
                 if (hasPositionChange) {
-                    //var newLocalPositionTarget = lastLocalPositionTarget + animationStep.targetPosition;
-                    //sequence.Group(Tween.LocalPosition(transform, lastLocalPositionTarget, newLocalPositionTarget, animationStep.duration, ease, default, default, animationStep.startDelay, animationStep.endDelay));
-                    //lastLocalPositionTarget = newLocalPositionTarget;
-                    sequence.Group(Tween.LocalPositionAdditive(transform, animationStep.targetPosition, animationStep.duration, ease, default, default, animationStep.startDelay, animationStep.endDelay)
-                        //.OnUpdate(target: transform, (target, tween) => {
-                        //    LinkedMovement.Log($"Update pos: {target.position.ToString()}, lPos: {target.localPosition.ToString()}, rot: {target.eulerAngles.ToString()}, lRot: {target.localEulerAngles.ToString()}");
-                        //})
-                    );
+                    Vector3 rotatedPositionTarget = Quaternion.Euler(animationParams.rotationOffset) * animationStep.targetPosition;
+                    sequence.Group(Tween.LocalPositionAdditive(transform, rotatedPositionTarget, animationStep.duration, ease, default, default, animationStep.startDelay, animationStep.endDelay));
+                    //sequence.Group(Tween.LocalPositionAdditive(transform, animationStep.targetPosition, animationStep.duration, ease, default, default, animationStep.startDelay, animationStep.endDelay)
+                    //.OnUpdate(target: transform, (target, tween) => {
+                    //    LinkedMovement.Log($"Update pos: {target.position.ToString()}, lPos: {target.localPosition.ToString()}, rot: {target.eulerAngles.ToString()}, lRot: {target.localEulerAngles.ToString()}");
+                    //})
+                    //);
                 }
                 if (hasRotationChange) {
                     var newRotationTarget = lastLocalRotationTarget + animationStep.targetRotation;
@@ -362,15 +374,16 @@ namespace LinkedMovement.Utils {
 
             Sequence sequence = Sequence.Create(cycles: loops, cycleMode: CycleMode.Restart);
 
-            //var lastLocalPositionTarget = animationParams.startingLocalPosition;
             var lastLocalRotationTarget = animationParams.startingLocalRotation;
             foreach (var animationStep in animationParams.animationSteps) {
                 BuildAnimationStep(transform, sequence, animationParams, animationStep, ref lastLocalRotationTarget);
             }
 
-            if (startingDelay > 0f) {
-                sequence.isPaused = true;
-                Tween.Delay(startingDelay, () => sequence.isPaused = false);
+            if (!isEditing) {
+                if (startingDelay > 0f) {
+                    sequence.isPaused = true;
+                    Tween.Delay(startingDelay, () => sequence.isPaused = false);
+                }
             }
 
             return sequence;

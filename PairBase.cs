@@ -59,6 +59,7 @@ namespace LinkedMovement
             this.positionOffset = positionOffset;
             this.rotationOffset = rotationOffset;
             this.animParams = animParams;
+            animParams.name = pairName;
         }
 
     }

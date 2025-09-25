@@ -24,13 +24,8 @@ namespace LinkedMovement {
 
         // TODO: !!! This needs to be split into a couple different classes
 
-        // TODO: 9-13
-        // Bug: Create an animation
-        // Create new animation
-        // Select original origin as a target
-        // Select new origin object
-        // Enter Animate panel
-        // Observe target moves incorrectly
+        // TODO: 9-17
+        // Still working on bug https://trello.com/c/VvFAgxYf/32-chaining-animations-together-as-in-using-animation-on-one-set-of-objects-and-then-using-another-set-of-animations-onto-the-origi
 
         private SelectionHandler selectionHandler;
         private bool selectionHandlerEnabled {
@@ -207,7 +202,9 @@ namespace LinkedMovement {
             LinkedMovement.Log("Controller.discardChanges");
             LMUtils.ResetObjectHighlights();
             killSampleSequence();
-            restartAssociatedAnimations(false);
+
+            //restartAssociatedAnimations(false);
+            stopAssociatedAnimations(true);
 
             if (targetPairing != null) {
                 // Reset parents for new targets
@@ -218,9 +215,16 @@ namespace LinkedMovement {
                 targetPairing.connect();
                 targetPairing = null;
                 originObject = null;
-
-                targetObjects.Clear();
+                //targetObjects.Clear();
             }
+
+            foreach (var targetBO in targetObjects) {
+                //targetBO.transform.SetParent(null);
+                LMUtils.AttachTargetToBase(null, targetBO.transform);
+            }
+            startAssociatedAnimations(true);
+            // TODO: Keep this or leave to resetController?
+            targetObjects.Clear();
 
             resetController();
         }
@@ -573,14 +577,16 @@ namespace LinkedMovement {
         }
 
         private List<GameObject> getAssociatedGameObjects() {
+            LinkedMovement.Log("Controller.getAssociatedGameObjects");
             var associated = new List<GameObject>();
             if (originObject != null && originObject.gameObject != null) {
-                //LMUtils.RestartAssociatedAnimation(originObject.gameObject);
+                LinkedMovement.Log("Add associated origin " + originObject.gameObject.name);
                 associated.Add(originObject.gameObject);
             }
             if (targetObjects != null && targetObjects.Count > 0) {
                 foreach (var targetObject in targetObjects) {
                     if (targetObject.gameObject != null) {
+                        LinkedMovement.Log("Add associated target " + targetObject.gameObject.name);
                         associated.Add(targetObject.gameObject);
                     }
                 }
@@ -619,6 +625,23 @@ namespace LinkedMovement {
             }
         }
 
+        private void resetTransformLocalsForAssociatedTargets() {
+            LinkedMovement.Log("Controller.resetTransformLocalsForAssociatedTargets");
+            if (targetObjects.Count == 0) {
+                LinkedMovement.Log("No targets");
+                return;
+            }
+            
+            foreach (var targetObject in targetObjects) {
+                var pairBase = LMUtils.GetPairBaseFromSerializedMonoBehaviour(targetObject);
+                if (pairBase != null) {
+                    LinkedMovement.Log($"Found PairBase name: {pairBase.pairName}, id: {pairBase.pairId}");
+                    var animationParams = pairBase.animParams;
+                    LMUtils.ResetTransformLocals(targetObject.transform, animationParams.startingLocalPosition, animationParams.startingLocalRotation, animationParams.startingLocalScale);
+                }
+            }
+        }
+
         private void enableSelectionHandler() {
             if (!selectionHandlerEnabled)
                 selectionHandlerEnabled = true;
@@ -641,12 +664,9 @@ namespace LinkedMovement {
                 animationParams = new LMAnimationParams();
             }
 
-            // Restart parent sequences so target is attached when parent is at starting location
-            //restartAssociatedAnimations(true);
             stopAssociatedAnimations(true);
 
             animationParams.setOriginalValues(originObject.transform);
-
             animationParams.setStartingValues(originObject.transform);
 
             LinkedMovement.Log("Attach targets");
@@ -663,12 +683,18 @@ namespace LinkedMovement {
         }
 
         private void exitAnimateState() {
-            LinkedMovement.Log("Exit Animate State");
+            LinkedMovement.Log("Controller.exitAnimateState START");
             killSampleSequence();
-            restartAssociatedAnimations(true);
+            stopAssociatedAnimations(true);
+
+            // reset targets parent to null
             foreach (var targetBO in targetObjects) {
-                targetBO.transform.SetParent(null);
+                LMUtils.AttachTargetToBase(null, targetBO.transform);
             }
+            
+            startAssociatedAnimations(true);
+
+            LinkedMovement.Log("Controller.exitAnimateState FINISH");
         }
 
         private void finishAnimatronic() {

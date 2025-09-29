@@ -24,17 +24,9 @@ namespace LinkedMovement {
 
         // TODO: !!! This needs to be split into a couple different classes
 
-        // TODO: 9/25
-        // - Fixed issues with building animations "top-down" 
-        // Now finding problems with building "bottom-up"
-        // Repro:
-        // Create animation with Step changing position -1 z
-        // Create animation with previous target as base
-        // Create Step and set position to -1 z
-        // Target and Origin stay put while original origin moves
-        // Expected new Target and Origin should move -1 z (so total -2 z with original animation)
-        // Likely rotation offset not correct
-        // NOTE: Affects x and z but not y
+        // TODO: 9/29
+        // Seems correct when building directly
+        // Issue now is when building Blueprints
 
         private SelectionHandler selectionHandler;
         private bool selectionHandlerEnabled {
@@ -279,6 +271,15 @@ namespace LinkedMovement {
                 }
             }
             LinkedMovement.Log("No pairings found");
+            return null;
+        }
+
+        public Pairing findPairingByTargetGameObject(GameObject gameObject) {
+            foreach (var pairing in pairings) {
+                if (pairing.targetGOs.Contains(gameObject)) {
+                    return pairing;
+                }
+            }
             return null;
         }
 

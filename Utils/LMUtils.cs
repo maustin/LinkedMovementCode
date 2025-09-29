@@ -380,9 +380,9 @@ namespace LinkedMovement.Utils {
                     LinkedMovement.Log("FORWARD: " + animationParams.forward.ToString());
                     Vector3 forwardEuler = animationParams.forward.eulerAngles;
                     LinkedMovement.Log("FORWARD euler: " + forwardEuler.ToString());
-                    //Vector3 parentLocalRotationOffset = GetCumulativeParentLocalRotation(transform, Vector3.zero);
+                    Vector3 parentLocalRotationOffset = GetCumulativeParentLocalRotation(transform, Vector3.zero);
                     //Vector3 parentLocalRotationOffset = GetCumulativeParentLocalRotation(transform, orientationOffset);
-                    Vector3 parentLocalRotationOffset = Vector3.zero;
+                    //Vector3 parentLocalRotationOffset = Vector3.zero;
                     LinkedMovement.Log("parenLocalRotationOffset: " + parentLocalRotationOffset.ToString());
                     Vector3 combinedOffset = forwardEuler - parentLocalRotationOffset;
                     LinkedMovement.Log("combinedOffset: " + combinedOffset.ToString());

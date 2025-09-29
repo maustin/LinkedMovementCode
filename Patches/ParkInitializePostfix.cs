@@ -15,6 +15,7 @@ class ParkInitializePostfix {
         return methodBase;
     }
 
+    // TODO: This necessary?
     [HarmonyPostfix]
     static void Initialize() {
         LinkedMovement.LinkedMovement.Log("Park.Initialize Postfix");

@@ -148,9 +148,11 @@ namespace LinkedMovement {
 
             var mouseTool = GameController.Instance.getActiveMouseTool();
             // TODO: What is dis?
+            // Think this skips the pairing update when mouse is not in selection mode
             if (mouseTool == null) return;
 
             // TODO: Likely resource intensive, consider how to reduce calls
+            // Maybe only update when mouse tool is active (is this already the case? see above)
             // Maybe only update X number of Pairings per Y delta time
             foreach (var pairing in pairings) {
                 pairing.frameUpdate();

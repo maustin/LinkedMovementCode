@@ -30,6 +30,8 @@ class ParkEventFixedStartPostfix {
         // Have to reverse so animations are built in the correct order
         sos = sos.AsEnumerable().Reverse().ToList();
 
+        var createdPairings = new List<Pairing>();
+
         for (int i = sos.Count - 1; i >= 0; i--) {
             var so = sos[i];
             PairBase pairBase = LMUtils.GetPairBaseFromSerializedMonoBehaviour(so);
@@ -46,12 +48,17 @@ class ParkEventFixedStartPostfix {
                     LinkedMovement.LinkedMovement.Log($"Creating Pairing with {pairTargetGOs.Count} targets");
                     var pairing = new Pairing(so.gameObject, pairTargetGOs, pairBase.pairId, pairBase.pairName);
                     pairBase.animParams.setStartingValues(so.transform);
-                    pairing.connect();
+                    pairing.connect(false);
+                    createdPairings.Add(pairing);
                 } else {
                     LinkedMovement.LinkedMovement.Log("No pair matches found, remove PairBase");
                     so.removeCustomData<PairBase>();
                 }
             }
+        }
+
+        foreach (var pairing in createdPairings) {
+            pairing.createSequence();
         }
         // TODO: Do we need to find orphaned PairTargets?
     }

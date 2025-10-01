@@ -41,6 +41,8 @@ namespace LinkedMovement {
 
         public WindowManager windowManager;
 
+        public bool showGeneratedOrigins = false;
+
         // TODO: I don't like having 'animationParams', 'targetObjects', and 'originObject' just hanging out
         // as public props on the controller. Need some access controls and better naming.
         public LMAnimationParams animationParams;
@@ -295,6 +297,7 @@ namespace LinkedMovement {
                 return;
             }
             pairings.Add(pairing);
+            LMUtils.UpdateGeneratedOriginRendering();
         }
 
         public bool removePairing(Pairing pairing) {

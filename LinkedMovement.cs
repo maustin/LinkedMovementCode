@@ -28,6 +28,10 @@ namespace LinkedMovement {
         private static LinkedMovementController Controller;
         private static bool KeybindsRegistered;
 
+        public static bool HasController() {
+            return Controller != null;
+        }
+
         public static LinkedMovementController GetController() {
             // TODO: This needs to prevent creation of controller when not appropriate
             if (Controller == null) {

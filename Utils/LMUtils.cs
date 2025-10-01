@@ -653,5 +653,27 @@ namespace LinkedMovement.Utils {
             return associated;
         }
 
+        public static void UpdateGameMouseMode(bool mouseToolActive) {
+            // Mouse tool changes can happen before the park has fully loaded. Skip updates in this case.
+            if (!LinkedMovement.HasController()) return;
+
+            LinkedMovement.Log("LMUtils.UpdateGameMouseMode: " + mouseToolActive);
+            LinkedMovement.GetController().showGeneratedOrigins = mouseToolActive;
+            UpdateGeneratedOriginRendering();
+        }
+
+        public static void UpdateGeneratedOriginRendering() {
+            var shouldRender = LinkedMovement.GetController().showGeneratedOrigins;
+            var pairings = LinkedMovement.GetController().getPairings();
+
+            foreach (var pairing in pairings) {
+                var baseGO = pairing.baseGO;
+                var baseBO = GetBuildableObjectFromGameObject(baseGO);
+                if (IsGeneratedOrigin(baseBO)) {
+                    baseGO.GetComponent<Renderer>().enabled = shouldRender;
+                }
+            }
+        }
+
     }
 }

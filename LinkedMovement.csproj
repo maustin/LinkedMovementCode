@@ -38,6 +38,8 @@
     <Compile Include="Animation\LMAnimationStep.cs" />
     <Compile Include="Animation\LMTrigger.cs" />
     <Compile Include="Patches\BuilderUpdatePrefix.cs" />
+    <Compile Include="Patches\GameControllerEnableMouseToolPostfix.cs" />
+    <Compile Include="Patches\GameControllerRemoveMouseToolPostfix.cs" />
     <Compile Include="Patches\SerializedMonoBehaviourInitializePostfix.cs" />
     <Compile Include="Patches\SerializedMonoBehaviourOnDestroyPostfix.cs" />
     <Compile Include="PrimeTween\Easing.cs" />

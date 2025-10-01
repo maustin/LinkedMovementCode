@@ -25,7 +25,10 @@ namespace LinkedMovement {
         // TODO: !!! This needs to be split into a couple different classes
 
         // TODO: 10/1
-        // So far, so good!
+        // Check if starting or origin values can be removed from AnimationParams
+        // Some plants not visually updating
+        // Add Reverse step
+        //
         // NOTE: Generated origins are built with zero rotation offset.
         // This can cause apparent inconsistencies when an animation is built with a generated origin vs not.
         // Animations rotate around the origin's local rotation.

@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace LinkedMovement {
     public class LinkedMovement : AbstractMod {
-        public const string VERSION_NUMBER = "beta 9-09";
+        public const string VERSION_NUMBER = "beta 10-01";
         //public override string getIdentifier() => "artex.linkedMovement";
         //public override string getIdentifier() => "com.themeparkitect.LinkedMovement";
         public override string getIdentifier() => "com.themeparkitect.LinkedMovementCode";

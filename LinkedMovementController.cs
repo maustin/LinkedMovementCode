@@ -24,12 +24,9 @@ namespace LinkedMovement {
 
         // TODO: !!! This needs to be split into a couple different classes
 
-        // TODO: 9/29
-        // Seems correct when building directly
-        // Issue now is when building Blueprints
-        // *9/30 Not happening with just position change
-        // Current thought is (at least when building from blueprints) startingLocalRotation is unreliable
-
+        // TODO: 10/1
+        // So far, so good!
+        
         private SelectionHandler selectionHandler;
         private bool selectionHandlerEnabled {
             get => selectionHandler.enabled;
@@ -65,7 +62,6 @@ namespace LinkedMovement {
         
         // TODO: Love to eliminate this. Currently only used when creating new animatronic as there isn't
         // an "animationParams" to carry the name until the "Animate" step.
-        //public string animatronicName = string.Empty;
         private string _animatronicName = string.Empty;
         public string animatronicName {
             get {
@@ -164,6 +160,7 @@ namespace LinkedMovement {
 
         public CreationSteps getCreationStep() { return creationStep; }
 
+        // TODO: Rename. "step" is already associated with AnimationStep. "creationMode"?
         public void setCreationStep(CreationSteps newStep) {
             LinkedMovement.Log("Controller.setCreationStep " + newStep.ToString());
             if (newStep == creationStep) {
@@ -421,11 +418,7 @@ namespace LinkedMovement {
                 LinkedMovement.Log("BuildableObject already added");
                 return;
             }
-            //LinkedMovement.Log($"BO name: {bo.name}, BO getName: {bo.getName()}, GO name: {bo.gameObject.name}");
-
-            //LinkedMovement.Log($"TARGET POS: {bo.transform.position.ToString()}, lPOS: {bo.transform.localPosition.ToString()}");
-            //LinkedMovement.Log($"TARGET ROT: {bo.transform.eulerAngles.ToString()}, lRot: {bo.transform.localEulerAngles.ToString()}");
-
+            
             LMUtils.LogDetails(bo);
 
             targetObjects.Add(bo);
@@ -499,7 +492,7 @@ namespace LinkedMovement {
             clearTargetPairing();
         }
 
-        // Only use when creating a new Pairing
+        // Only used when creating a new Pairing
         private void joinObjects() {
             LinkedMovement.Log("Controller.joinObjects");
 
@@ -516,9 +509,6 @@ namespace LinkedMovement {
             }
             LinkedMovement.Log($"Join {targetGOs.Count} targets");
             targetObjects.Clear();
-
-            // TODO: This is duplicating data
-            //animationParams.name = animatronicName;
 
             var pairing = new Pairing(originObject.gameObject, targetGOs, null, animatronicName);
 
@@ -618,22 +608,7 @@ namespace LinkedMovement {
 
         private List<GameObject> getAssociatedGameObjects() {
             LinkedMovement.Log("Controller.getAssociatedGameObjects");
-            var associated = LMUtils.GetAssociatedGameObjects(originObject, targetObjects);
-            //var associated = new List<GameObject>();
-            //if (originObject != null && originObject.gameObject != null) {
-            //    LinkedMovement.Log("Add associated origin " + originObject.gameObject.name);
-            //    associated.Add(originObject.gameObject);
-            //}
-            //if (targetObjects != null && targetObjects.Count > 0) {
-            //    foreach (var targetObject in targetObjects) {
-            //        if (targetObject.gameObject != null) {
-            //            LinkedMovement.Log("Add associated target " + targetObject.gameObject.name);
-            //            associated.Add(targetObject.gameObject);
-            //        }
-            //    }
-            //}
-            //LinkedMovement.Log($"Controller.getAssociatedGameObjects got {associated.Count} associated objects");
-            return associated;
+            return LMUtils.GetAssociatedGameObjects(originObject, targetObjects);
         }
 
         private void stopAssociatedAnimations(bool isEditing) {
@@ -658,8 +633,6 @@ namespace LinkedMovement {
 
         private void restartAssociatedAnimations(bool isEditing) {
             LinkedMovement.Log("Controller.restartAssociatedAnimations");
-            //stopAssociatedAnimations(isEditing);
-            //startAssociatedAnimations(isEditing);
             var restartList = getAssociatedGameObjects();
 
             if (restartList.Count > 0) {
@@ -668,22 +641,22 @@ namespace LinkedMovement {
             }
         }
 
-        private void resetTransformLocalsForAssociatedTargets() {
-            LinkedMovement.Log("Controller.resetTransformLocalsForAssociatedTargets");
-            if (targetObjects.Count == 0) {
-                LinkedMovement.Log("No targets");
-                return;
-            }
+        //private void resetTransformLocalsForAssociatedTargets() {
+        //    LinkedMovement.Log("Controller.resetTransformLocalsForAssociatedTargets");
+        //    if (targetObjects.Count == 0) {
+        //        LinkedMovement.Log("No targets");
+        //        return;
+        //    }
             
-            foreach (var targetObject in targetObjects) {
-                var pairBase = LMUtils.GetPairBaseFromSerializedMonoBehaviour(targetObject);
-                if (pairBase != null) {
-                    LinkedMovement.Log($"Found PairBase name: {pairBase.pairName}, id: {pairBase.pairId}");
-                    var animationParams = pairBase.animParams;
-                    LMUtils.ResetTransformLocals(targetObject.transform, animationParams.startingLocalPosition, animationParams.startingLocalRotation, animationParams.startingLocalScale);
-                }
-            }
-        }
+        //    foreach (var targetObject in targetObjects) {
+        //        var pairBase = LMUtils.GetPairBaseFromSerializedMonoBehaviour(targetObject);
+        //        if (pairBase != null) {
+        //            LinkedMovement.Log($"Found PairBase name: {pairBase.pairName}, id: {pairBase.pairId}");
+        //            var animationParams = pairBase.animParams;
+        //            LMUtils.ResetTransformLocals(targetObject.transform, animationParams.startingLocalPosition, animationParams.startingLocalRotation, animationParams.startingLocalScale);
+        //        }
+        //    }
+        //}
 
         private void enableSelectionHandler() {
             if (!selectionHandlerEnabled)
@@ -717,12 +690,6 @@ namespace LinkedMovement {
             // set targets parent
             foreach (var targetBO in targetObjects) {
                 LMUtils.AttachTargetToBase(originObject.transform, targetBO.transform);
-
-                //var pairBase = LMUtils.GetPairBaseFromSerializedMonoBehaviour(targetBO);
-                //if (pairBase != null) {
-                //    pairBase.animParams.setOriginalValues(targetBO.transform);
-                //    pairBase.animParams.setStartingValues(targetBO.transform);
-                //}
             }
 
             startAssociatedAnimations(true);
@@ -740,12 +707,6 @@ namespace LinkedMovement {
             // reset targets parent to null
             foreach (var targetBO in targetObjects) {
                 LMUtils.AttachTargetToBase(null, targetBO.transform);
-
-                //var pairBase = LMUtils.GetPairBaseFromSerializedMonoBehaviour(targetBO);
-                //if (pairBase != null) {
-                //    pairBase.animParams.setOriginalValues(targetBO.transform);
-                //    pairBase.animParams.setStartingValues(targetBO.transform);
-                //}
             }
             
             startAssociatedAnimations(true);

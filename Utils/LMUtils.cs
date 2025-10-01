@@ -95,8 +95,6 @@ namespace LinkedMovement.Utils {
             if (targets.Count > 0) {
                 LinkedMovement.Log("Create Pairing " + pairBase.pairName);
                 pairBase.animParams.setStartingValues(originObject.transform);
-                pairBase.animParams.calculateRotationOffset();
-
                 pairBase.animParams.setBuiltOrientation(originObject.transform.localEulerAngles);
                 pairBase.animParams.forwardVec = forward;
                 pairBase.animParams.forward = Quaternion.LookRotation(forward);
@@ -109,14 +107,9 @@ namespace LinkedMovement.Utils {
                 }
                 var targetGameObjects = targets.Select(t => t.gameObject).ToList();
 
-                //var associated = GetAssociatedGameObjects(possibleOriginBO, targets);
-                //EditAssociatedAnimations(associated, AssociatedAnimationEditMode.Stop, false);
-
                 var pairing = new Pairing(originObject.gameObject, targetGameObjects, newPairingId, pairBase.pairName);
                 pairing.connect(false);
                 createdPairings.Add(pairing);
-
-                //EditAssociatedAnimations(associated, AssociatedAnimationEditMode.Start, false);
             }
         }
 
@@ -137,21 +130,12 @@ namespace LinkedMovement.Utils {
                 return;
             }
 
-            LinkedMovement.Log("baseObject");
-            LogDetails(GetBuildableObjectFromGameObject(baseObject.gameObject));
-            LinkedMovement.Log("targetObject (PRE JOIN)");
-            LogDetails(GetBuildableObjectFromGameObject(targetObject.gameObject));
-
-            LinkedMovement.Log("parent: " + baseObject.name + ", target: " + targetObject.name);
             var baseTransform = baseObject;
             if (targetObject.IsChildOf(baseTransform)) {
                 LinkedMovement.Log("ALREADY A CHILD!");
             } else {
                 LinkedMovement.Log("Making child");
-                //LinkedMovement.Log($"Pre Make Child position: {targetObject.position.ToString()}, localPosition: {targetObject.localPosition.ToString()} localRotation: {targetObject.localEulerAngles.ToString()}");
                 targetObject.SetParent(baseTransform);
-                //LinkedMovement.Log($"Post Make Child position: {targetObject.position.ToString()}, localPosition: {targetObject.localPosition.ToString()} localRotation: {targetObject.localEulerAngles.ToString()}");
-                LinkedMovement.Log("targetObject (POST JOIN)");
                 LogDetails(GetBuildableObjectFromGameObject(targetObject.gameObject));
             }
         }
@@ -291,7 +275,6 @@ namespace LinkedMovement.Utils {
 
                 LinkedMovement.Log("DO RECALC");
                 pairing.pairBase.animParams.setStartingValues(gameObject.transform);
-                //pairing.pairBase.animParams.calculateRotationOffset();
 
                 pairing.pairBase.sequence = LMUtils.BuildAnimationSequence(pairing.baseGO.transform, pairing.pairBase.animParams);
             } else {
@@ -376,95 +359,28 @@ namespace LinkedMovement.Utils {
                 if (hasPositionChange) {
                     Vector3 positionTarget = animationStep.targetPosition;
                     LinkedMovement.Log("Position target: " + positionTarget.ToString());
-                    Vector3 orientationOffset = animationParams.orientationOffset;
-                    LinkedMovement.Log("Orientation offset: " + orientationOffset.ToString());
-                    LinkedMovement.Log("FORWARD: " + animationParams.forward.ToString());
+                    
                     Vector3 forwardEuler = animationParams.forward.eulerAngles;
                     LinkedMovement.Log("FORWARD euler: " + forwardEuler.ToString());
+                    
                     Vector3 parentLocalRotationOffset = GetCumulativeParentLocalRotation(transform, Vector3.zero);
-                    //Vector3 parentLocalRotationOffset = GetCumulativeParentLocalRotation(transform, orientationOffset);
-                    //Vector3 parentLocalRotationOffset = Vector3.zero;
                     LinkedMovement.Log("parenLocalRotationOffset: " + parentLocalRotationOffset.ToString());
+                    
                     Vector3 combinedOffset = forwardEuler - parentLocalRotationOffset;
                     LinkedMovement.Log("combinedOffset: " + combinedOffset.ToString());
-                    //Vector3 newPositionTarget = Quaternion.Euler(parentLocalRotationOffset) * positionTarget;
+                    
                     Vector3 newPositionTarget = Quaternion.Euler(combinedOffset) * positionTarget;
 
-                    //newPositionTarget = animationParams.forward * newPositionTarget;
-                    //LinkedMovement.Log("NEW FORWARD-ADJUSTED target: " + newPositionTarget.ToString());
                     positionTarget = newPositionTarget;
                     LinkedMovement.Log("Final positionTarget: " + positionTarget.ToString());
 
-                    //if (transform.parent != null) {
-                    //    LinkedMovement.Log("Has parent");
-                    //    Vector3 parentRotation = transform.parent.localEulerAngles;
-                    //    LinkedMovement.Log("Parent local rotation: " + parentRotation.ToString());
-                    //    Vector3 newPositionTarget = Quaternion.Euler(parentRotation) * positionTarget;
-                    //    LinkedMovement.Log("New position target: " + newPositionTarget.ToString());
-                    //    positionTarget = newPositionTarget;
-                    //}
                     sequence.Group(Tween.LocalPositionAdditive(transform, positionTarget, animationStep.duration, ease, default, default, animationStep.startDelay, animationStep.endDelay));
-                    //Vector3 positionTarget = animationStep.targetPosition;
-                    //LinkedMovement.Log("Target position: " + positionTarget.ToString());
-                    //LinkedMovement.Log("Own lRot: " + transform.localEulerAngles.ToString());
-                    ////LinkedMovement.Log("staring lRot: " + animationParams.startingLocalRotation.ToString());
-                    //Vector3 rotationOffset = animationParams.rotationOffset;
-                    //LinkedMovement.Log("rotationOffset: " + rotationOffset.ToString());
-                    //Vector3 parentLocalRotation = Vector3.zero;
-                    //GetParentRot(transform, ref parentLocalRotation);
-                    ////var tParent = transform.parent;
-                    ////if (tParent != null && tParent.gameObject != null) {
-                    ////    LinkedMovement.Log("Has parent");
-                    ////    //LinkedMovement.Log("Parent lRot: " + tParent.localEulerAngles.ToString());
-
-                    ////    //var rotDiff = transform.localEulerAngles - tParent.localEulerAngles;
-                    ////    //LinkedMovement.Log("rotDiff: " + rotDiff.ToString());
-                    ////    //var newPositionTarget = Quaternion.Euler(rotDiff) * positionTarget;
-                    ////    //LinkedMovement.Log("NEW target position: " + newPositionTarget.ToString());
-                    ////    //positionTarget = newPositionTarget;
-
-                    ////    //parentLocalRotation = tParent.localEulerAngles;
-
-                    ////    var parentBO = GetBuildableObjectFromGameObject(tParent.gameObject);
-                    ////    if (parentBO != null) {
-                    ////        var parentPairBase = GetPairBaseFromSerializedMonoBehaviour(parentBO);
-                    ////        if (parentPairBase != null) {
-                    ////            LinkedMovement.Log("Parent is PairBase");
-                    ////            parentLocalRotation = parentPairBase.animParams.rotationOffset;
-                    ////            LinkedMovement.Log("Parent rotationOffset: " + parentLocalRotation.ToString());
-                    ////        } else {
-                    ////            parentLocalRotation = tParent.localEulerAngles;
-                    ////        }
-                    ////    }
-                    ////}
-
-                    ////Vector3 rotationDifference = transform.localEulerAngles + animationParams.startingLocalRotation + parentLocalRotation;
-                    ////Vector3 rotationDifference = transform.localEulerAngles - animationParams.startingLocalRotation - parentLocalRotation;
-                    //Vector3 rotationDifference = rotationOffset + parentLocalRotation;
-                    ////Vector3 rotationDifference = transform.localEulerAngles - parentLocalRotation;
-                    //LinkedMovement.Log("rotationDifference: " + rotationDifference.ToString());
-                    //Vector3 newPositionTarget = Quaternion.Euler(rotationDifference) * positionTarget;
-                    //LinkedMovement.Log("NEW target position: " + newPositionTarget.ToString());
-                    //positionTarget = newPositionTarget;
-
-                    ////LinkedMovement.Log("rotationOffset: " + animationParams.rotationOffset.ToString());
-                    ////LinkedMovement.Log("ORIG targetPosition: " + animationStep.targetPosition.ToString());
-                    ////Vector3 rotatedPositionTarget = Quaternion.Euler(animationParams.rotationOffset) * animationStep.targetPosition;
-                    //////rotatedPositionTarget = animationStep.targetPosition * animationParams.rotationOffset;
-                    ////LinkedMovement.Log("ADJU targetPosition: " + rotatedPositionTarget.ToString());
-
-                    //sequence.Group(Tween.LocalPositionAdditive(transform, positionTarget, animationStep.duration, ease, default, default, animationStep.startDelay, animationStep.endDelay));
-                    //// TODO: Seems like outer in bottom-up isn't getting correct rotationOffset
-                    ////if (animationStep.name != "os1") {
-                    ////    sequence.Group(Tween.LocalPositionAdditive(transform, rotatedPositionTarget, animationStep.duration, ease, default, default, animationStep.startDelay, animationStep.endDelay));
-                    ////} else {
-                    ////    rotatedPositionTarget = Quaternion.Euler(new Vector3(0, -180, 0)) * animationStep.targetPosition;
+                    
                     ////    sequence.Group(Tween.LocalPositionAdditive(transform, rotatedPositionTarget, animationStep.duration, ease, default, default, animationStep.startDelay, animationStep.endDelay)
                     ////    .OnUpdate(target: transform, (target, tween) => {
                     ////        LinkedMovement.Log($"os1 Update pos: {target.position.ToString()}, lPos: {target.localPosition.ToString()}, rot: {target.eulerAngles.ToString()}, lRot: {target.localEulerAngles.ToString()}");
                     ////    })
                     ////    );
-                    ////}
                 }
                 if (hasRotationChange) {
                     // Can't be additive because rotation on multiple axes will cause object to reset to incorrect rotation
@@ -475,7 +391,6 @@ namespace LinkedMovement.Utils {
                 if (hasScaleChange) {
                     // TODO: Does this also need last update fix?
                     var newScaleTarget = new Vector3(animationStep.targetScale.x * animationParams.startingLocalScale.x, animationStep.targetScale.y * animationParams.startingLocalScale.y, animationStep.targetScale.z * animationParams.startingLocalScale.z);
-                    //LinkedMovement.Log("Scale change: " + newScaleTarget.ToString());
                     sequence.Group(Tween.ScaleAdditive(transform, newScaleTarget, animationStep.duration, ease, default, default, animationStep.startDelay, animationStep.endDelay));
                 }
                 // Add ChainDelay to "close" the current Sequence Group
@@ -508,27 +423,6 @@ namespace LinkedMovement.Utils {
 
             Sequence sequence = Sequence.Create(cycles: loops, cycleMode: CycleMode.Restart);
 
-            //Vector3 parentLocalRotationOffset = GetCumulativeParentLocalRotation(transform, Vector3.zero);
-            //var lastLocalRotationTarget = animationParams.startingLocalRotation;
-
-            //LinkedMovement.Log("startingLocalRotation: " + animationParams.startingLocalRotation.ToString());
-            //var lastLocalRotationTarget = GetCumulativeParentLocalRotation(transform, animationParams.startingLocalRotation);
-
-            //LinkedMovement.Log("cumulative rotation: " + lastLocalRotationTarget.ToString());
-            //Vector3 forwardEuler = animationParams.forward.eulerAngles;
-            //LinkedMovement.Log("FORWARD euler: " + forwardEuler.ToString());
-            //Vector3 combinedOffset = forwardEuler - lastLocalRotationTarget;
-            //LinkedMovement.Log("combinedOffset: " + combinedOffset.ToString());
-            //lastLocalRotationTarget = combinedOffset;
-
-            //LinkedMovement.Log("lastLocalRotationTarget: " + lastLocalRotationTarget.ToString());
-            //Vector3 forwardEuler = animationParams.forward.eulerAngles;
-            //LinkedMovement.Log("FORWARD euler: " + forwardEuler.ToString());
-            //Vector3 combinedOffset = forwardEuler - lastLocalRotationTarget;
-            //LinkedMovement.Log("combinedOffset: " + combinedOffset.ToString());
-            //lastLocalRotationTarget = combinedOffset;
-
-            //var lastLocalRotationTarget = GetCumulativeParentLocalRotation(transform, animationParams.orientationOffset);
             var lastLocalRotationTarget = transform.localEulerAngles;
             foreach (var animationStep in animationParams.animationSteps) {
                 BuildAnimationStep(transform, sequence, animationParams, animationStep, ref lastLocalRotationTarget);

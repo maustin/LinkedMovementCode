@@ -22,7 +22,7 @@ class BlueprintBuilderImplementationOnAfterBuildPostfix {
     [HarmonyPostfix]
     static void onAfterBuild(BlueprintBuilderImplementation __instance, List<BuildableObject> builtObjectInstances) {
         LinkedMovement.LinkedMovement.Log("BlueprintBuilderImplementation.onAfterBuild post @ " + DateTime.Now);
-        //Quaternion Angle = Quaternion.LookRotation(builderImplementation.data.forward);
+        
         var forward = __instance.data.forward;
         Quaternion Angle = Quaternion.LookRotation(forward);
         LinkedMovement.LinkedMovement.Log("FORWARD: " + forward.ToString());

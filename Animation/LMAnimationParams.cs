@@ -1,8 +1,6 @@
 ﻿using LinkedMovement.Animation;
 using System;
 using System.Collections.Generic;
-//using System.Diagnostics;
-using System.Text;
 using UnityEngine;
 
 namespace LinkedMovement {
@@ -25,8 +23,6 @@ namespace LinkedMovement {
         [Serialized]
         public Vector3 originalScale = Vector3.one;
 
-        //[NonSerialized]
-        //private Vector3 builtOrientation = Vector3.zero;
         [Serialized]
         public Vector3 orientationOffset = Vector3.zero;
 
@@ -49,10 +45,6 @@ namespace LinkedMovement {
         [Serialized]
         public float initialStartDelayMax = 0f;
 
-        // TODO: Not entirely happy with how this is set (e.g. via enter/exit Create Animation state)
-        [Serialized]
-        public Vector3 rotationOffset = Vector3.zero;
-
         [Serialized]
         public List<LMAnimationStep> animationSteps = new List<LMAnimationStep>();
 
@@ -64,87 +56,48 @@ namespace LinkedMovement {
         }
 
         public void setBuiltOrientation(Vector3 builtOrientation) {
-            LinkedMovement.Log($"LMAnimationParams.setBuiltOrientation {builtOrientation} for sequence: {name}");
-            //this.builtOrientation = builtOrientation;
+            LinkedMovement.Log($"LMAnimationParams.setBuiltOrientation of {builtOrientation} for sequence: {name}");
             orientationOffset = builtOrientation - originalLocalRotation;
-            LinkedMovement.Log("originalLocalRotation: " + originalLocalRotation.ToString());
-            LinkedMovement.Log("orientationOffset: " + orientationOffset.ToString());
+            //LinkedMovement.Log("originalLocalRotation: " + originalLocalRotation.ToString());
+            LinkedMovement.Log("new orientationOffset: " + orientationOffset.ToString());
         }
 
         public void setOriginalValues(Transform originalTransform) {
             LinkedMovement.Log("LMAnimationParams.setOriginalValues for " + name);
 
-            //LinkedMovement.Log("CHECK ME setOriginalValues");
-            //LinkedMovement.Log(new StackTrace().ToString());
+            //LinkedMovement.Log("OLD original rotation: " + originalRotation.ToString());
+            //LinkedMovement.Log("OLD original localRotation: " + originalLocalRotation.ToString());
+            //LinkedMovement.Log("OLD original scale: " + originalScale.ToString());
 
-            LinkedMovement.Log("OLD original rotation: " + originalRotation.ToString());
-            LinkedMovement.Log("OLD original localRotation: " + originalLocalRotation.ToString());
-            LinkedMovement.Log("OLD original scale: " + originalScale.ToString());
-
-            LinkedMovement.Log("NEW original rotation: " + originalTransform.eulerAngles.ToString());
-            LinkedMovement.Log("NEW original localRotation: " + originalTransform.localEulerAngles.ToString());
-            LinkedMovement.Log("NEW original scale: " + originalTransform.localScale.ToString());
+            //LinkedMovement.Log("NEW original rotation: " + originalTransform.eulerAngles.ToString());
+            //LinkedMovement.Log("NEW original localRotation: " + originalTransform.localEulerAngles.ToString());
+            //LinkedMovement.Log("NEW original scale: " + originalTransform.localScale.ToString());
 
             originalRotation = originalTransform.eulerAngles;
             originalLocalRotation = originalTransform.localEulerAngles;
             originalScale = originalTransform.localScale;
-
-            //newCalculateRotationOffset();
         }
 
         public void setStartingValues(Transform startingTransform) {
             LinkedMovement.Log("LMAnimationParams.setStartingValues for " + name);
 
-            //LinkedMovement.Log("CHECK ME setStartingValues");
-            //LinkedMovement.Log(new StackTrace().ToString());
+            //LinkedMovement.Log("OLD starting position: " + startingPosition.ToString());
+            //LinkedMovement.Log("OLD starting localPosition: " + startingLocalPosition.ToString());
+            //LinkedMovement.Log("OLD starting rotation: " + startingRotation.ToString());
+            //LinkedMovement.Log("OLD starting localRotation: " + startingLocalRotation.ToString());
+            //LinkedMovement.Log("OLD starting scale: " + startingLocalScale.ToString());
 
-            LinkedMovement.Log("OLD starting position: " + startingPosition.ToString());
-            LinkedMovement.Log("OLD starting localPosition: " + startingLocalPosition.ToString());
-            LinkedMovement.Log("OLD starting rotation: " + startingRotation.ToString());
-            LinkedMovement.Log("OLD starting localRotation: " + startingLocalRotation.ToString());
-            LinkedMovement.Log("OLD starting scale: " + startingLocalScale.ToString());
-
-            LinkedMovement.Log("NEW starting position: " + startingTransform.position.ToString());
-            LinkedMovement.Log("NEW starting localPosition: " + startingTransform.localPosition.ToString());
-            LinkedMovement.Log("NEW starting rotation: " + startingTransform.eulerAngles.ToString());
-            LinkedMovement.Log("NEW starting localRotation: " + startingTransform.localEulerAngles.ToString());
-            LinkedMovement.Log("NEW starting scale: " + startingTransform.localScale.ToString());
+            //LinkedMovement.Log("NEW starting position: " + startingTransform.position.ToString());
+            //LinkedMovement.Log("NEW starting localPosition: " + startingTransform.localPosition.ToString());
+            //LinkedMovement.Log("NEW starting rotation: " + startingTransform.eulerAngles.ToString());
+            //LinkedMovement.Log("NEW starting localRotation: " + startingTransform.localEulerAngles.ToString());
+            //LinkedMovement.Log("NEW starting scale: " + startingTransform.localScale.ToString());
 
             startingPosition = startingTransform.position;
             startingLocalPosition = startingTransform.localPosition;
             startingRotation = startingTransform.eulerAngles;
             startingLocalRotation = startingTransform.localEulerAngles;
             startingLocalScale = startingTransform.localScale;
-
-            newCalculateRotationOffset();
-        }
-
-        private void newCalculateRotationOffset() {
-            LinkedMovement.Log("NEW LMAnimationParams.calculateRotatationOffset for " + name);
-
-            //LinkedMovement.Log($"startingRot: {startingLocalRotation.ToString()}, originalRot: {originalLocalRotation.ToString()}");
-
-            LinkedMovement.Log($"Original localRotation: {originalLocalRotation.ToString()}, starting localRotation: {startingLocalRotation.ToString()}");
-
-            LinkedMovement.Log("OLD rotationOffset: " + rotationOffset.ToString());
-
-            rotationOffset = startingLocalRotation - originalLocalRotation;
-            //rotationOffset = startingLocalRotation;
-            //rotationOffset = originalLocalRotation - startingLocalRotation;
-            LinkedMovement.Log("NEW rotationOffset: " + rotationOffset.ToString());
-        }
-
-        // Calculate how the animation position target should 
-        public void calculateRotationOffset() {
-            LinkedMovement.Log("OLD LMAnimationParams.calculateRotatationOffset for " + name);
-            // SKIP!
-            return;
-            //LinkedMovement.Log($"Starting startingRot: {startingLocalRotation.ToString()}, originalRot: {originalLocalRotation.ToString()}");
-
-            //LinkedMovement.Log("OLD rotationOffset: " + rotationOffset.ToString());
-
-            //rotationOffset = startingLocalRotation - originalLocalRotation;
-            //LinkedMovement.Log("NEW rotationOffset: " + rotationOffset.ToString());
         }
 
         public void addNewAnimationStep() {
@@ -179,25 +132,25 @@ namespace LinkedMovement {
             return true;
         }
 
-        public override string ToString() {
-            var sb = new StringBuilder("LMAnimationParams\n");
-            sb.AppendLine("name: " + name);
-            sb.AppendLine("startingPosition: " + startingPosition.ToString());
-            sb.AppendLine("startingRotation: " + startingRotation.ToString());
-            //sb.AppendLine("targetPosition: " + targetPosition.ToString());
-            //sb.AppendLine("targetRotation: " + targetRotation.ToString());
-            //sb.AppendLine("isTriggerable: " + isTriggerable.ToString());
-            //sb.AppendLine("toDuration: " + toDuration.ToString());
-            //sb.AppendLine("toEase: " + toEase);
-            //sb.AppendLine("fromDelay: " + fromDelay.ToString());
-            //sb.AppendLine("fromDuration: " + fromDuration.ToString());
-            //sb.AppendLine("fromEase: " + fromEase);
-            //sb.AppendLine("restartDelay: " + restartDelay.ToString());
-            sb.AppendLine("useInitialStartDelay: " + useInitialStartDelay.ToString());
-            sb.AppendLine("initialStartDelayMin: " + initialStartDelayMin.ToString());
-            sb.AppendLine("initialStartDelayMax: " + initialStartDelayMax.ToString());
-            return sb.ToString();
-        }
+        //public override string ToString() {
+        //    var sb = new StringBuilder("LMAnimationParams\n");
+        //    sb.AppendLine("name: " + name);
+        //    sb.AppendLine("startingPosition: " + startingPosition.ToString());
+        //    sb.AppendLine("startingRotation: " + startingRotation.ToString());
+        //    //sb.AppendLine("targetPosition: " + targetPosition.ToString());
+        //    //sb.AppendLine("targetRotation: " + targetRotation.ToString());
+        //    //sb.AppendLine("isTriggerable: " + isTriggerable.ToString());
+        //    //sb.AppendLine("toDuration: " + toDuration.ToString());
+        //    //sb.AppendLine("toEase: " + toEase);
+        //    //sb.AppendLine("fromDelay: " + fromDelay.ToString());
+        //    //sb.AppendLine("fromDuration: " + fromDuration.ToString());
+        //    //sb.AppendLine("fromEase: " + fromEase);
+        //    //sb.AppendLine("restartDelay: " + restartDelay.ToString());
+        //    sb.AppendLine("useInitialStartDelay: " + useInitialStartDelay.ToString());
+        //    sb.AppendLine("initialStartDelayMin: " + initialStartDelayMin.ToString());
+        //    sb.AppendLine("initialStartDelayMax: " + initialStartDelayMax.ToString());
+        //    return sb.ToString();
+        //}
 
         public static LMAnimationParams Duplicate(LMAnimationParams animationParams) {
             var newAnimationParams = new LMAnimationParams();
@@ -206,15 +159,17 @@ namespace LinkedMovement {
             newAnimationParams.startingRotation = animationParams.startingRotation;
             newAnimationParams.startingLocalRotation = animationParams.startingLocalRotation;
             newAnimationParams.startingLocalScale = animationParams.startingLocalScale;
-            //newAnimationParams.originalRotation = animationParams.originalRotation;
-            //newAnimationParams.originalLocalRotation = animationParams.originalLocalRotation;
-            //newAnimationParams.originalScale = animationParams.originalScale;
+            newAnimationParams.originalRotation = animationParams.originalRotation;
+            newAnimationParams.originalLocalRotation = animationParams.originalLocalRotation;
+            newAnimationParams.originalScale = animationParams.originalScale;
+            newAnimationParams.orientationOffset = animationParams.orientationOffset;
+            newAnimationParams.forward = animationParams.forward;
+            newAnimationParams.forwardVec = animationParams.forwardVec;
             newAnimationParams.name = animationParams.name;
             newAnimationParams.isTriggerable = animationParams.isTriggerable;
             newAnimationParams.useInitialStartDelay = animationParams.useInitialStartDelay;
             newAnimationParams.initialStartDelayMin = animationParams.initialStartDelayMin;
             newAnimationParams.initialStartDelayMax = animationParams.initialStartDelayMax;
-            newAnimationParams.rotationOffset = animationParams.rotationOffset;
             newAnimationParams.animationSteps = new List<LMAnimationStep>();
             foreach (var step in animationParams.animationSteps) {
                 newAnimationParams.animationSteps.Add(LMAnimationStep.Duplicate(step));

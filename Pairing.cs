@@ -117,12 +117,7 @@ namespace LinkedMovement
             } else {
                 LinkedMovement.Log("Skip createSequence");
             }
-            //if (baseAnimParams.isTriggerable) {
-            //    baseBO.gameObject.AddComponent<LMTrigger>().animationParams = baseAnimParams;
-            //} else {
-            //    pairBase.sequence = LMUtils.BuildAnimationSequence(baseBO.transform, baseAnimParams);
-            //}
-
+            
             connected = true;
         }
 

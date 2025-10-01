@@ -22,8 +22,6 @@ class SerializedMonoBehaviourOnDestroyPostfix {
         if (bo == null) return;
         if (bo.isPreview) return;
 
-        //LinkedMovement.LinkedMovement.GetController().removeAnimatedBuildableObject(bo);
-
         PairBase pairBase = LMUtils.GetPairBaseFromSerializedMonoBehaviour(bo);
 
         if (pairBase != null) {

@@ -31,10 +31,20 @@ namespace LinkedMovement.Utils {
         // while we're modifying animations that affect their GameObject.
         // Disable when creating and modifying. Re-enable when finished.
         public static void SetChunkedMeshEnalbedIfPresent(BuildableObject bo, bool enalbed) {
+            LinkedMovement.Log($"LMUtils.SetChunkedMeshEnalbedIfPresent for {bo.getName()} set to {enalbed.ToString()}");
+            //Component[] components = bo.gameObject.GetComponents<Component>();
+            //foreach (var component in components) {
+            //    LinkedMovement.Log($"Component type: {component.GetType().Name}, name: {component.name}");
+            //}
+
             var chunker = bo.GetComponent<ChunkedMesh>();
             if (chunker != null) {
-                LinkedMovement.Log($"ChunkedMesh for {bo.getName()} set to {enalbed.ToString()}");
+                //LinkedMovement.Log($"LMUtils.SetChunkedMeshEnalbedIfPresent for {bo.getName()} set to {enalbed.ToString()}");
+                LinkedMovement.Log("Has ChunkedMesh");
                 chunker.enabled = enalbed;
+            } else {
+                //LinkedMovement.Log($"LMUtils.SetChunkedMeshEnalbedIfPresent for {bo.getName()} does NOT have ChunkedMesh component");
+                LinkedMovement.Log("NO ChunkedMesh");
             }
         }
 

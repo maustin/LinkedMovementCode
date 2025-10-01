@@ -511,15 +511,16 @@ namespace LinkedMovement.Utils {
             //Vector3 parentLocalRotationOffset = GetCumulativeParentLocalRotation(transform, Vector3.zero);
             //var lastLocalRotationTarget = animationParams.startingLocalRotation;
 
-            LinkedMovement.Log("startingLocalRotation: " + animationParams.startingLocalRotation.ToString());
-            var lastLocalRotationTarget = GetCumulativeParentLocalRotation(transform, animationParams.startingLocalRotation);
+            //LinkedMovement.Log("startingLocalRotation: " + animationParams.startingLocalRotation.ToString());
+            //var lastLocalRotationTarget = GetCumulativeParentLocalRotation(transform, animationParams.startingLocalRotation);
+
             //LinkedMovement.Log("cumulative rotation: " + lastLocalRotationTarget.ToString());
             //Vector3 forwardEuler = animationParams.forward.eulerAngles;
             //LinkedMovement.Log("FORWARD euler: " + forwardEuler.ToString());
             //Vector3 combinedOffset = forwardEuler - lastLocalRotationTarget;
             //LinkedMovement.Log("combinedOffset: " + combinedOffset.ToString());
             //lastLocalRotationTarget = combinedOffset;
-            
+
             //LinkedMovement.Log("lastLocalRotationTarget: " + lastLocalRotationTarget.ToString());
             //Vector3 forwardEuler = animationParams.forward.eulerAngles;
             //LinkedMovement.Log("FORWARD euler: " + forwardEuler.ToString());
@@ -528,6 +529,7 @@ namespace LinkedMovement.Utils {
             //lastLocalRotationTarget = combinedOffset;
 
             //var lastLocalRotationTarget = GetCumulativeParentLocalRotation(transform, animationParams.orientationOffset);
+            var lastLocalRotationTarget = transform.localEulerAngles;
             foreach (var animationStep in animationParams.animationSteps) {
                 BuildAnimationStep(transform, sequence, animationParams, animationStep, ref lastLocalRotationTarget);
             }

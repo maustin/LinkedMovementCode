@@ -241,26 +241,15 @@ namespace LinkedMovement {
             stopAssociatedAnimations(false);
 
             if (targetPairing != null) {
-                // Reset parents for new targets
-                //var originalTargets = LMUtils.GetBuildableObjectsFromGameObjects(targetPairing.targetGOs);
-                //LMUtils.ResetUnusedTargets(targetObjects, originalTargets);
-
-                //LinkedMovement.Log("Reconnect targetPairing");
-                //targetPairing.connect();
                 targetPairing = null;
                 originObject = null;
-                //targetObjects.Clear();
             } else {
                 foreach (var targetBO in targetObjects) {
                     LMUtils.AttachTargetToBase(null, targetBO.transform);
                 }
             }
 
-            //foreach (var targetBO in targetObjects) {
-            //    LMUtils.AttachTargetToBase(null, targetBO.transform);
-            //}
             startAssociatedAnimations(false);
-            // TODO: Keep this or leave to resetController?
             targetObjects.Clear();
 
             resetController();

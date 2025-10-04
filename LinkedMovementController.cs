@@ -91,8 +91,8 @@ namespace LinkedMovement {
             }
         }
 
-        public Sequence sampleSequence;
-
+        private Sequence sampleSequence;
+        
         private Pairing targetPairing;
 
         private Pairing pendingPairingForDeletion;
@@ -210,7 +210,7 @@ namespace LinkedMovement {
             LinkedMovement.Log("Controller.setTargetPairing " + pairing.pairingName);
             targetPairing = pairing;
             
-            pairing.disconnect();
+            //pairing.disconnect();
 
             originObject = LMUtils.GetBuildableObjectFromGameObject(targetPairing.baseGO);
             targetObjects = LMUtils.GetBuildableObjectsFromGameObjects(targetPairing.targetGOs);
@@ -219,6 +219,9 @@ namespace LinkedMovement {
             foreach (var target in targetObjects) {
                 LMUtils.AddObjectHighlight(target, Color.yellow);
             }
+
+            targetPairing.pairBase.sequence.progress = 0;
+            targetPairing.pairBase.sequence.Stop();
 
             animationParams = LMAnimationParams.Duplicate(targetPairing.pairBase.animParams);
             
@@ -239,11 +242,11 @@ namespace LinkedMovement {
 
             if (targetPairing != null) {
                 // Reset parents for new targets
-                var originalTargets = LMUtils.GetBuildableObjectsFromGameObjects(targetPairing.targetGOs);
-                LMUtils.ResetUnusedTargets(targetObjects, originalTargets);
+                //var originalTargets = LMUtils.GetBuildableObjectsFromGameObjects(targetPairing.targetGOs);
+                //LMUtils.ResetUnusedTargets(targetObjects, originalTargets);
 
-                LinkedMovement.Log("Reconnect targetPairing");
-                targetPairing.connect();
+                //LinkedMovement.Log("Reconnect targetPairing");
+                //targetPairing.connect();
                 targetPairing = null;
                 originObject = null;
                 //targetObjects.Clear();
@@ -598,10 +601,15 @@ namespace LinkedMovement {
 
             if (sampleSequence.isAlive) {
                 LinkedMovement.Log("Sequence is alive, stop!");
+                sampleSequence.progress = 0;
                 sampleSequence.Stop();
             }
             
             if (originObject == null || animationParams == null) {
+                return;
+            }
+
+            if (targetPairing != null) {
                 return;
             }
 

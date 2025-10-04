@@ -210,8 +210,6 @@ namespace LinkedMovement {
             LinkedMovement.Log("Controller.setTargetPairing " + pairing.pairingName);
             targetPairing = pairing;
             
-            //pairing.disconnect();
-
             originObject = LMUtils.GetBuildableObjectFromGameObject(targetPairing.baseGO);
             targetObjects = LMUtils.GetBuildableObjectsFromGameObjects(targetPairing.targetGOs);
 

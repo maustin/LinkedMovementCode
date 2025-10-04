@@ -239,6 +239,8 @@ namespace LinkedMovement {
             stopAssociatedAnimations(false);
 
             if (targetPairing != null) {
+                var originalTargetBOs = LMUtils.GetBuildableObjectsFromGameObjects(targetPairing.targetGOs);
+                LMUtils.ResetUnusedTargets(targetObjects, originalTargetBOs);
                 targetPairing = null;
                 originObject = null;
             } else {

@@ -449,6 +449,13 @@ namespace LinkedMovement {
             queuedRemovalTargets.Add(bo);
         }
 
+        public void queueRemoveAllTargetBuildableObjects() {
+            LinkedMovement.Log("Controller.queueRemoveAllTargetBuildableObjects");
+            foreach (var bo in targetObjects) {
+                queuedRemovalTargets.Add(bo);
+            }
+        }
+
         private void removeTargetBuildableObject(BuildableObject bo) {
             LinkedMovement.Log("Controller.removeTargetBuildableObject");
             if (bo == null) {

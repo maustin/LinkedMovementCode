@@ -114,6 +114,11 @@ namespace LinkedMovement {
             return true;
         }
 
+        public void addDuplicateAnimationStep(LMAnimationStep step) {
+            var newStep = LMAnimationStep.Duplicate(step);
+            addNewAnimationStep(newStep);
+        }
+
         public void addInverseAnimationStep(LMAnimationStep step) {
             var newStep = LMAnimationStep.CreateInvertedStep(step);
             addNewAnimationStep(newStep);

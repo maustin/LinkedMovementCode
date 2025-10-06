@@ -1,5 +1,4 @@
 ﻿using LinkedMovement.UI.Utils;
-using LinkedMovement.Utils;
 using RapidGUI;
 using UnityEngine;
 using static UnityEngine.GUILayout;
@@ -36,7 +35,6 @@ namespace LinkedMovement.UI.Content {
                     }
                 }
 
-                //var targetObjects = LMUtils.GetBuildableObjectsFromGameObjects(pairing.targetGOs);
                 var targetObjects = controller.targetObjects;
                 targetsScrollPosition = BeginScrollView(targetsScrollPosition, Height(300f));
                 foreach (var targetObject in targetObjects) {
@@ -47,6 +45,16 @@ namespace LinkedMovement.UI.Content {
                     }
                 }
                 EndScrollView();
+
+                // TODO
+                //FlexibleSpace();
+                //using (Scope.Horizontal()) {
+                //    using (Scope.GuiEnabled(controller.targetObjects.Count > 0)) {
+                //        if (Button("Remove All")) {
+                //            controller.queueRemoveAllTargetBuildableObjects();
+                //        }
+                //    }
+                //}
             }
         }
     }

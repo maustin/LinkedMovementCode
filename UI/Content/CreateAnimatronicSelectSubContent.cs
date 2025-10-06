@@ -43,6 +43,15 @@ namespace LinkedMovement.UI.Content {
                     }
                 }
                 EndScrollView();
+
+                FlexibleSpace();
+                using (Scope.Horizontal()) {
+                    using (Scope.GuiEnabled(controller.targetObjects.Count > 0)) {
+                        if (Button("Remove All")) {
+                            controller.queueRemoveAllTargetBuildableObjects();
+                        }
+                    }
+                }
             }
         }
     }

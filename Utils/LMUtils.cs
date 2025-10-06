@@ -18,14 +18,6 @@ namespace LinkedMovement.Utils {
         private static Dictionary<BuildableObject, HighlightOverlayController.HighlightHandle> HighlightHandles;
         private static HashSet<GameObject> AssociatedGameObjects;
 
-        //public static void LogBuildableObjectComponents(BuildableObject bo) {
-        //    LinkedMovement.Log("LogBuildableObjectComponents:");
-        //    Component[] components = bo.GetComponents<Component>();
-        //    foreach (var component in components) {
-        //        LinkedMovement.Log(component.GetType().ToString());
-        //    }
-        //    LinkedMovement.Log("End list");
-        //}
 
         // Built-in objects have a ChunkedMesh component. This component can prevent visual updates
         // while we're modifying animations that affect their GameObject.
@@ -575,14 +567,6 @@ namespace LinkedMovement.Utils {
             LinkedMovement.Log("LMUtils.AddPairingAndTargets from " + pairing.pairingName);
             if (!pairings.Contains(pairing)) {
                 pairings.Add(pairing);
-
-                //foreach (var targetGO in pairing.targetGOs) {
-                //    //var parentPairing = LinkedMovement.GetController().findPairingByTargetGameObject(targetGO);
-                //    var parentPairing = LinkedMovement.GetController().findPairingByBaseGameObject(targetGO);
-                //    if (parentPairing != null) {
-                //        AddPairingAndTargets(parentPairing, pairings);
-                //    }
-                //}
             }
             // TODO: Skip all targets if pairing already added?
             foreach (var targetGO in pairing.targetGOs) {

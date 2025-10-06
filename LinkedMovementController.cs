@@ -550,39 +550,73 @@ namespace LinkedMovement {
             resetController();
         }
 
-        public void tryToDeletePairing(Pairing pairing) {
-            LinkedMovement.Log("Controller.tryToDeletePairing " + pairing.getPairingName());
+        public void handleBuildableObjectDestroy(BuildableObject bo) {
+            PairBase pairBase = LMUtils.GetPairBaseFromSerializedMonoBehaviour(bo);
+            PairTarget pairTarget = LMUtils.GetPairTargetFromSerializedMonoBehaviour(bo);
 
-            var found = hasPairing(pairing);
-            if (!found) {
-                LinkedMovement.Log("Pairing already removed from controller");
+            if (pairBase == null && pairTarget == null) {
+                // Nothing to do
                 return;
             }
 
-            var hasBase = pairing.baseGO != null;
-            var hasTargets = pairing.targetGOs.Count > 0;
+            LinkedMovement.Log("handleBuildableObjectDestroy");
 
-            if (hasBase && hasTargets) {
-                LinkedMovement.Log("Pairing still valid, don't delete");
+            // Find any Pairing so we can build associated list
+            Pairing firstAssociatedPairing;
+            if (pairBase != null) {
+                firstAssociatedPairing = findPairingByBaseGameObject(bo.gameObject);
+            } else {
+                firstAssociatedPairing = findPairingByTargetGameObject(bo.gameObject);
+            }
+
+            if (firstAssociatedPairing == null) {
+                LinkedMovement.Log("ERROR: handleBuildableObjectDestroy couldn't find associated Pairing!");
                 return;
             }
 
-            // Remove the pairing now so we don't try to destroy things multiple times
-            removePairing(pairing);
+            var pairingOriginBuildableObject = LMUtils.GetBuildableObjectFromGameObject(firstAssociatedPairing.baseGO);
+            var pairingTargetBuildableObjects = LMUtils.GetBuildableObjectsFromGameObjects(firstAssociatedPairing.targetGOs);
 
-            if (hasBase) {
-                LinkedMovement.Log("Destroy base object");
-                GameObject.Destroy(pairing.baseGO);
-                pairing.baseGO = null;
-            }
-            if (hasTargets) {
-                LinkedMovement.Log("Destroy target objects");
-                var cloneTargetGOs = new List<GameObject>(pairing.targetGOs);
-                foreach (var targetGO in cloneTargetGOs) {
-                    GameObject.Destroy(targetGO);
+            var associatedGameObjects = getAssociatedGameObjects(pairingOriginBuildableObject, pairingTargetBuildableObjects);
+            LinkedMovement.Log("handleBuildableObjectDestroy stop associated");
+            stopAssociatedAnimations(false, associatedGameObjects);
+            associatedGameObjects.Remove(bo.gameObject);
+
+            if (pairBase != null) {
+                // Object is origin of Pairing
+                var pairingFromOrigin = findPairingByBaseGameObject(bo.gameObject);
+                if (pairingFromOrigin == null) {
+                    LinkedMovement.Log("ERROR: handleBuildableObjectDestroy couldn't find expected Pairing from object as origin");
+                } else {
+                    var targets = pairingFromOrigin.targetGOs;
+                    var targetBOs = LMUtils.GetBuildableObjectsFromGameObjects(targets);
+                    foreach (var targetBO in targetBOs) {
+                        LMUtils.AttachTargetToBase(null, targetBO.transform);
+                        targetBO.removeCustomData<PairTarget>();
+                    }
+                    removePairing(pairingFromOrigin);
                 }
-                pairing.targetGOs.Clear();
             }
+
+            if (pairTarget != null) {
+                // Object is target of Pairing
+                var pairingFromTarget = findPairingByTargetGameObject(bo.gameObject);
+                if (pairingFromTarget == null) {
+                    LinkedMovement.Log("ERROR: handleBuildableObjectDestroy couldn't find expected Pairing from object as target");
+                } else {
+                    pairingFromTarget.removePairTarget(bo.gameObject);
+
+                    if (pairingFromTarget.targetGOs.Count == 0) {
+                        // Pairing no longer has targets, destroy it
+                        var originBO = LMUtils.GetBuildableObjectFromGameObject(pairingFromTarget.baseGO);
+                        originBO.removeCustomData<PairBase>();
+                        removePairing(pairingFromTarget);
+                    }
+                }
+            }
+            
+            LinkedMovement.Log("handleBuildableObjectDestroy start associated");
+            startAssociatedAnimations(false, associatedGameObjects);
         }
 
         public void killSampleSequence() {
@@ -620,14 +654,25 @@ namespace LinkedMovement {
             LinkedMovement.Log("Controller.rebuildSampleSequence FINISH");
         }
 
-        private List<GameObject> getAssociatedGameObjects() {
+        private List<GameObject> getAssociatedGameObjects(BuildableObject originBuildableObject = null, List<BuildableObject> targetBuildableObjects = null) {
             LinkedMovement.Log("Controller.getAssociatedGameObjects");
-            return LMUtils.GetAssociatedGameObjects(originObject, targetObjects);
+
+            if (originBuildableObject == null) {
+                originBuildableObject = originObject;
+            }
+            if (targetBuildableObjects == null) {
+                targetBuildableObjects = targetObjects;
+            }
+
+            return LMUtils.GetAssociatedGameObjects(originBuildableObject, targetBuildableObjects);
         }
 
-        private void stopAssociatedAnimations(bool isEditing) {
+        private void stopAssociatedAnimations(bool isEditing, List<GameObject> stopList = null) {
             LinkedMovement.Log("Controller.stopAssociatedAnimations");
-            var stopList = getAssociatedGameObjects();
+            
+            if (stopList == null) {
+                stopList = getAssociatedGameObjects();
+            }
 
             if (stopList.Count > 0) {
                 LinkedMovement.Log($"Trying to stop {stopList.Count} objects");
@@ -635,9 +680,12 @@ namespace LinkedMovement {
             }
         }
 
-        private void startAssociatedAnimations(bool isEditing) {
+        private void startAssociatedAnimations(bool isEditing, List<GameObject> startList = null) {
             LinkedMovement.Log("Controller.startAssociatedAnimations");
-            var startList = getAssociatedGameObjects();
+
+            if (startList == null) {
+                startList = getAssociatedGameObjects();
+            }
 
             if (startList.Count > 0) {
                 LinkedMovement.Log($"Trying to start {startList.Count} objects");
@@ -645,32 +693,18 @@ namespace LinkedMovement {
             }
         }
 
-        private void restartAssociatedAnimations(bool isEditing) {
+        private void restartAssociatedAnimations(bool isEditing, List<GameObject> restartList = null) {
             LinkedMovement.Log("Controller.restartAssociatedAnimations");
-            var restartList = getAssociatedGameObjects();
+
+            if (restartList == null) {
+                restartList = getAssociatedGameObjects();
+            }
 
             if (restartList.Count > 0) {
                 LinkedMovement.Log($"Trying to restart {restartList.Count} objects");
                 LMUtils.EditAssociatedAnimations(restartList, LMUtils.AssociatedAnimationEditMode.Restart, isEditing);
             }
         }
-
-        //private void resetTransformLocalsForAssociatedTargets() {
-        //    LinkedMovement.Log("Controller.resetTransformLocalsForAssociatedTargets");
-        //    if (targetObjects.Count == 0) {
-        //        LinkedMovement.Log("No targets");
-        //        return;
-        //    }
-            
-        //    foreach (var targetObject in targetObjects) {
-        //        var pairBase = LMUtils.GetPairBaseFromSerializedMonoBehaviour(targetObject);
-        //        if (pairBase != null) {
-        //            LinkedMovement.Log($"Found PairBase name: {pairBase.pairName}, id: {pairBase.pairId}");
-        //            var animationParams = pairBase.animParams;
-        //            LMUtils.ResetTransformLocals(targetObject.transform, animationParams.startingLocalPosition, animationParams.startingLocalRotation, animationParams.startingLocalScale);
-        //        }
-        //    }
-        //}
 
         private void enableSelectionHandler() {
             if (!selectionHandlerEnabled)

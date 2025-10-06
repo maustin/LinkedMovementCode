@@ -5,26 +5,6 @@ using UnityEngine;
 namespace LinkedMovement
 {
     public class PairBase : SerializedRawObject {
-        public static void Destroy(BuildableObject bo, PairBase pairBase) {
-            LinkedMovement.Log("PairBase.Destroy");
-            if (bo == null) {
-                LinkedMovement.Log("ERROR: BuildableObject is null");
-                return;
-            }
-
-            bo.removeCustomData<PairBase>();
-
-            var pairing = LinkedMovement.GetController().findPairingByID(pairBase.pairId);
-            if (pairing == null) {
-                LinkedMovement.Log("Couldn't find pairing with ID: " + pairBase.pairId + ", likely already removing");
-                return;
-            }
-
-            pairing.baseGO = null;
-
-            LinkedMovement.GetController().tryToDeletePairing(pairing);
-        }
-
         [Serialized]
         public string pairId;
 

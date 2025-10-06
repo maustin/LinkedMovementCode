@@ -1,5 +1,4 @@
 ﻿using LinkedMovement.Animation;
-using LinkedMovement.UI.Components;
 using LinkedMovement.UI.Utils;
 using RapidGUI;
 using UnityEngine;
@@ -45,7 +44,9 @@ namespace LinkedMovement.UI.Content {
                 }
 
                 if (animationStep.uiIsOpen) {
-                    doOpenGUI();
+                    using (new GUILayout.VerticalScope(RGUIStyle.animationStep)) {
+                        doOpenGUI();
+                    }
                 }
 
             }

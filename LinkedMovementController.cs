@@ -25,7 +25,7 @@ namespace LinkedMovement {
         // TODO: !!! This needs to be split into a couple different classes
 
         // TODO: 10/4
-        // Edit -> Discard not properly resetting (tested with pos)
+        // (Can't repro) Edit -> Discard not properly resetting (tested with pos)
         //
         // Check if starting or origin values can be removed from AnimationParams
         // Some plants not visually updating

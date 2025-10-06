@@ -16,6 +16,8 @@ namespace RapidGUI
         public static GUIStyle warningLabel;
         public static GUIStyle warningLabelNoStyle;
 
+        public static GUIStyle animationStep;
+
         // GUIStyleState.background will be null 
         // if it set after secound scene load and don't use a few frame
         // to keep textures, set it to other member. at unity2019
@@ -24,6 +26,7 @@ namespace RapidGUI
         public static Texture2D popupTex;
         public static Texture2D darkWindowTexNormal;
         public static Texture2D darkWindowTexOnNormal;
+        public static Texture2D animationStepTex;
 
         static RGUIStyle()
         {
@@ -42,6 +45,7 @@ namespace RapidGUI
             CreateAlignLeftBox();
             CreateWarningLabel();
             CreateWarningLabelNoStyle();
+            CreateAnimationStep();
         }
 
         static void CreateFlatButton()
@@ -106,6 +110,21 @@ namespace RapidGUI
             style.normal.textColor = Color.yellow;
 
             popupFlatButtonSelected = style;
+        }
+
+        static void CreateAnimationStep() {
+            var style = new GUIStyle(GUI.skin.box) {
+                border = new RectOffset()
+            };
+
+            animationStepTex = new Texture2D(1, 1);
+            animationStepTex.SetPixels(new[] { new Color(0.2f, 0.2f, 0.25f, 0.9f)});
+            animationStepTex.Apply();
+
+            style.normal.background = style.hover.background = animationStepTex;
+
+            style.name = nameof(animationStep);
+            animationStep = style;
         }
 
         static void CreatePopup()

@@ -93,5 +93,15 @@ namespace LinkedMovement.UI {
                 }
             }
         }
+
+        public int getNumberOfWindowsOfType(WindowType type) {
+            int count = 0;
+            foreach (var window in activeWindows) {
+                if (window.type == type) {
+                    count++;
+                }
+            }
+            return count;
+        }
     }
 }

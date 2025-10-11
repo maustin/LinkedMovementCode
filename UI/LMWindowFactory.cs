@@ -7,6 +7,7 @@ namespace LinkedMovement.UI {
     internal static class LMWindowFactory {
         private const int VERTICAL_PADDING = 75;
         private const int HORIZONTAL_PADDING = 100;
+        private const int EXISTING_WINDOW_OFFSET = 15;
 
         public static LMWindow BuildWindow(WindowManager.WindowType type, object data, WindowManager windowManager) {
             LinkedMovement.Log("LMWindowFactory build " + type.ToString());
@@ -63,6 +64,7 @@ namespace LinkedMovement.UI {
                     title = "Information";
                     width = 400;
                     position = getWindowPositionCenter(width, 75);
+                    position = modifyPositionByOffset(position, windowManager.getNumberOfWindowsOfType(WindowManager.WindowType.Information));
                     alwaysRender = true;
                     content = new InfoContent(data as string);
                     allowMultiple = true;
@@ -96,8 +98,10 @@ namespace LinkedMovement.UI {
 
         private static Vector2 getWindowPositionCenter(int width, int height) {
             //LinkedMovement.Log($"getWindowPositionCenter width: {width.ToString()}, height: {height.ToString()}");
-            var positionX = Screen.width * 0.5f / Settings.Instance.uiScale - width * 0.5f;
-            var positionY = Screen.height * 0.5f / Settings.Instance.uiScale - height * 0.5f;
+            //var positionX = Screen.width * 0.5f / Settings.Instance.uiScale - width * 0.5f;
+            //var positionY = Screen.height * 0.5f / Settings.Instance.uiScale - height * 0.5f;
+            var positionX = Screen.width * 0.5f / Settings.Instance.uiScale - width * 0.5f / Settings.Instance.uiScale;
+            var positionY = Screen.height * 0.5f / Settings.Instance.uiScale - height * 0.5f / Settings.Instance.uiScale;
             //LinkedMovement.Log($"position x: {positionX.ToString()}, y: {positionY.ToString()}");
             return new Vector2 { x = positionX, y = positionY };
         }
@@ -108,6 +112,12 @@ namespace LinkedMovement.UI {
             var positionY = VERTICAL_PADDING / Settings.Instance.uiScale;
             //LinkedMovement.Log($"position x: {positionX.ToString()}, y: {positionY.ToString()}");
             return new Vector2 { x = positionX,y = positionY };
+        }
+
+        private static Vector2 modifyPositionByOffset(Vector2 position, int offsetMultiplier) {
+            var offsetAmount = offsetMultiplier * EXISTING_WINDOW_OFFSET * Settings.Instance.uiScale;
+            //LinkedMovement.Log($"!!! offsetModifer: {offsetMultiplier.ToString()}, offsetAmount: {offsetAmount.ToString()}");
+            return new Vector2(position.x + offsetAmount,position.y + offsetAmount);
         }
 
         private static float getUIScaledValue(float value) {

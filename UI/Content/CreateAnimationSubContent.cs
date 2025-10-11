@@ -28,7 +28,7 @@ namespace LinkedMovement.UI.Content {
             using (Scope.Vertical()) {
                 using (Scope.Horizontal()) {
                     // TODO
-                    //InfoPopper.DoInfoPopper();
+                    InfoPopper.DoInfoPopper(LMStringKey.ANIMATE_IS_TRIGGERABLE);
                     GUILayout.Label("Is Triggerable");
                     var newIsTriggerable = RGUI.Field(animationParams.isTriggerable);
                     if (newIsTriggerable != animationParams.isTriggerable) {
@@ -65,7 +65,10 @@ namespace LinkedMovement.UI.Content {
 
                 Space(5f);
 
-                GUILayout.Label("Animation Steps");
+                using (Scope.Horizontal()) {
+                    InfoPopper.DoInfoPopper(LMStringKey.ANIMATE_STEPS_INTRO);
+                    GUILayout.Label("Animation Steps");
+                }
 
                 if (Button("Add Step")) {
                     animationParams.addNewAnimationStep();

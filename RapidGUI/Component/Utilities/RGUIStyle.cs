@@ -18,6 +18,7 @@ namespace RapidGUI
 
         public static GUIStyle animationStep;
         public static GUIStyle dimText;
+        public static GUIStyle infoText;
 
         // GUIStyleState.background will be null 
         // if it set after secound scene load and don't use a few frame
@@ -48,6 +49,7 @@ namespace RapidGUI
             CreateWarningLabelNoStyle();
             CreateAnimationStep();
             CreateDimText();
+            CreateInfoText();
         }
 
         static void CreateFlatButton()
@@ -79,6 +81,19 @@ namespace RapidGUI
 
             style.name = nameof(dimText);
             dimText = style;
+        }
+
+        static void CreateInfoText() {
+            var style = new GUIStyle(GUI.skin.label) {
+                richText = true,
+                name = nameof(infoText),
+            };
+
+            style.normal.textColor = new Color(0.9f, 0.9f, 0.9f);
+            style.hover.textColor = new Color(0.9f, 0.9f, 0.9f);
+
+            style.name = nameof(infoText);
+            infoText = style;
         }
 
         static void CreateFlatButtonLeft() {
@@ -126,7 +141,9 @@ namespace RapidGUI
 
         static void CreateAnimationStep() {
             var style = new GUIStyle(GUI.skin.box) {
-                border = new RectOffset()
+                //margin = new RectOffset(0, 0, -10, 0),
+                border = new RectOffset(0, 0, -15, 0),
+                //padding = new RectOffset(0, 0, -10, 0),
             };
 
             animationStepTex = new Texture2D(1, 1);

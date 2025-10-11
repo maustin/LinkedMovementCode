@@ -26,7 +26,7 @@ namespace LinkedMovement.UI.Content {
 
             using (Scope.Vertical()) {
                 using (Scope.Horizontal()) {
-                    //InfoPopper.DoInfoPopper();
+                    InfoPopper.DoInfoPopper(LMStringKey.CREATE_NEW_ANIM_NAME);
                     Label("Name");
                     controller.animatronicName = RGUI.Field(controller.animatronicName);
                 }

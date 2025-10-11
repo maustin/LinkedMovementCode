@@ -61,7 +61,7 @@ namespace LinkedMovement.UI {
                     break;
                 case WindowManager.WindowType.Information:
                     title = "Information";
-                    width = 300;
+                    width = 400;
                     position = getWindowPositionCenter(width, 75);
                     alwaysRender = true;
                     content = new InfoContent(data as string);
@@ -69,7 +69,7 @@ namespace LinkedMovement.UI {
                     break;
                 case WindowManager.WindowType.Error:
                     title = "Error";
-                    width = 300;
+                    width = 400;
                     position = getWindowPositionCenter(width, 75);
                     alwaysRender = true;
                     content = new InfoContent(data as string);

@@ -15,7 +15,7 @@ namespace LinkedMovement.UI.InGame {
         override public void DoGUI() {
             base.DoGUI();
             using (Scope.Vertical()) {
-                Label(message);
+                Label(message, RGUIStyle.infoText);
             }
         }
     }

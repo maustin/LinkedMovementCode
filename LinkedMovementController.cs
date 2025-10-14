@@ -24,11 +24,23 @@ namespace LinkedMovement {
 
         // TODO: !!! This needs to be split into a couple different classes
 
-        // TODO: 10/11
-        // Started info popups
+        // TODO: 10/14
+        // - Started working out end of Target-Origin system
         //
-        // Check if starting or origin values can be removed from AnimationParams
+        // Controller modes
+        // - Create animation
+        // - Edit animation
+        // - Create link
+        // - Edit link
         //
+        // Picking modes
+        // - Pick single
+        // - Pick multiple (with box - diff mode?)
+        //
+        // Selection controller?
+        // - Handle the current selection set?
+
+
         // NOTE: Generated origins are built with zero rotation offset.
         // This can cause apparent inconsistencies when an animation is built with a generated origin vs not.
         // Animations rotate around the origin's local rotation.
@@ -137,7 +149,8 @@ namespace LinkedMovement {
 
             if (InputManager.getKeyUp("LM_toggleGUI") && !windowManager.uiPresent()) {
                 LinkedMovement.Log("Toggle GUI");
-                windowManager.createWindow(WindowManager.WindowType.ModeDetermination, null);
+                //windowManager.createWindow(WindowManager.WindowType.ModeDetermination, null);
+                windowManager.createWindow(WindowManager.WindowType.ModeDeterminationNew, null);
             }
 
             if (queuedRemovalTargets.Count > 0) {

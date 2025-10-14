@@ -34,9 +34,11 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Animation\LMAnimation.cs" />
     <Compile Include="Animation\LMAnimationParams.cs" />
     <Compile Include="Animation\LMAnimationStep.cs" />
     <Compile Include="Animation\LMTrigger.cs" />
+    <Compile Include="LMController.cs" />
     <Compile Include="Patches\GameControllerEnableMouseToolPostfix.cs" />
     <Compile Include="Patches\GameControllerRemoveMouseToolPostfix.cs" />
     <Compile Include="Patches\SerializedMonoBehaviourOnDestroyPostfix.cs" />
@@ -83,6 +85,9 @@
     <Compile Include="UI\LMWindow.cs" />
     <Compile Include="UI\LMWindowContent.cs" />
     <Compile Include="UI\LMWindowFactory.cs" />
+    <Compile Include="UI\NewContent\CreateAnimationContentNew.cs" />
+    <Compile Include="UI\NewContent\ModeDeterminationContentNew.cs" />
+    <Compile Include="UI\NewContent\SelectAnimationTargetSubContentNew.cs" />
     <Compile Include="UI\Utils\CollapsibleWindow.cs" />
     <Compile Include="UI\Utils\Controls.cs" />
     <Compile Include="UI\Components\InfoPopper.cs" />

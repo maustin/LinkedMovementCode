@@ -1,5 +1,5 @@
 ﻿using LinkedMovement.UI.Content;
-using LinkedMovement.UI.InGame;
+using LinkedMovement.UI.NewContent;
 using System;
 using UnityEngine;
 
@@ -21,6 +21,18 @@ namespace LinkedMovement.UI {
             bool allowMultiple = false;
 
             switch(type) {
+                case WindowManager.WindowType.ModeDeterminationNew:
+                    width = 300;
+                    position = getWindowPositionCenter(width, 100);
+                    content = new ModeDeterminationContentNew();
+                    break;
+                case WindowManager.WindowType.CreateAnimationNew:
+                    title = "Create Animation";
+                    width = 450;
+                    position = getWindowPositionRight(width);
+                    content = new CreateAnimationContentNew();
+                    break;
+                //
                 case WindowManager.WindowType.ModeDetermination:
                     width = 300;
                     position = getWindowPositionCenter(width, 100);

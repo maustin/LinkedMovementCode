@@ -23,10 +23,15 @@ namespace LinkedMovement {
         public static LinkedMovement Instance;
         public static Harmony Harmony;
         private static LinkedMovementController Controller;
+        private static LMController LMController;
         private static bool KeybindsRegistered;
 
         public static bool HasController() {
             return Controller != null;
+        }
+
+        public static bool HasLMController() {
+            return LMController != null;
         }
 
         public static LinkedMovementController GetController() {
@@ -40,10 +45,30 @@ namespace LinkedMovement {
             return Controller;
         }
 
+        public static LMController GetLMController() {
+            if (LMController == null) {
+                Log("Create LMController");
+                GameObject go = new GameObject();
+                go.name = "LMController";
+                LMController = go.AddComponent<LMController>();
+            }
+            return LMController;
+        }
+
         public static void ClearController() {
             Log("ClearController");
-            GameObject.Destroy(Controller);
-            Controller = null;
+            if (Controller != null) {
+                GameObject.Destroy(Controller);
+                Controller = null;
+            }
+        }
+
+        public static void ClearLMController() {
+            Log("ClearLMController");
+            if (LMController != null) {
+                GameObject.Destroy(LMController);
+                LMController = null;
+            }
         }
 
         private KeybindManager _keybindManager;
@@ -127,20 +152,13 @@ namespace LinkedMovement {
         public override void onDisabled() {
             Log("onDisabled");
             unregisterHotkeys();
-            destroyController();
+            ClearController();
+            ClearLMController();
 
             if (Harmony == null)
                 return;
             Harmony.UnpatchAll(getIdentifier());
             Harmony = null;
-        }
-
-        private void destroyController() {
-            Log("destroyController");
-            if (Controller != null) {
-                GameObject.Destroy(Controller.gameObject);
-                Controller = null;
-            }
         }
 
         private void registerHotkeys() {

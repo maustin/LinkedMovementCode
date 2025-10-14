@@ -1,5 +1,4 @@
-﻿using LinkedMovement.UI.InGame;
-using RapidGUI;
+﻿using RapidGUI;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -16,6 +15,12 @@ namespace LinkedMovement.UI {
             Information,
             Error,
             ConfirmAction,
+            //
+            ModeDeterminationNew,
+            CreateAnimationNew,
+            EditAnimationNew,
+            CreateLinkNew,
+            EditLinkNew,
         }
 
         private List<LMWindow> activeWindows = new List<LMWindow>();

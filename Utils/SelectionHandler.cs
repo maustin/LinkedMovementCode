@@ -11,6 +11,10 @@ namespace LinkedMovement {
 
         internal Calc calc;
 
+        public delegate void BuildableObjectSelected(BuildableObject buildableObject);
+        public event BuildableObjectSelected OnAddBuildableObject;
+        public event BuildableObjectSelected OnRemoveBuildableObject;
+
         public readonly Options Options = new();
         public bool ShowGui = true;
         public LinkedMovementController controller;
@@ -128,7 +132,10 @@ namespace LinkedMovement {
             }
 
             LinkedMovement.Log($"OnAdd: {o.GetType().Name} -- {o.getName()}");
-            controller.handleAddObjectSelection(o);
+            if (controller != null)
+                controller.handleAddObjectSelection(o);
+
+            OnAddBuildableObject?.Invoke(o);
         }
         private void OnRemovedSelectedObject(BuildableObject o) {
             LinkedMovement.Log("SelectionHandler.OnRemovedSelectedObject");
@@ -137,7 +144,10 @@ namespace LinkedMovement {
             }
 
             LinkedMovement.Log($"OnRemove: {o.GetType().Name} -- {o.getName()}");
-            controller.handleRemoveObjectSelection(o);
+            if (controller != null)
+                controller.handleRemoveObjectSelection(o);
+
+            OnRemoveBuildableObject?.Invoke(o);
         }
         public void DeselectAll() {
             LinkedMovement.Log("SelectionHandler DeselectAll");

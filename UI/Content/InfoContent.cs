@@ -3,7 +3,7 @@ using RapidGUI;
 using UnityEngine;
 using static UnityEngine.GUILayout;
 
-namespace LinkedMovement.UI.InGame {
+namespace LinkedMovement.UI.Content {
     internal sealed class InfoContent : LMWindowContent {
         private string message;
 

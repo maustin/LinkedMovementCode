@@ -146,6 +146,7 @@ namespace LinkedMovement
         // TODO: Probably resource intensive. See when we can skip.
         // Can we determine if the objects are off-screen and skip?
         // Also consider only running X number of updates per Y delta time
+        // TODO: Need a list of objects to update so we don't update the same ones multiple times per frame
         public void frameUpdate() {
             if (!connected || !pairBase.sequence.isAlive || pairBase.sequence.isPaused) return;
             

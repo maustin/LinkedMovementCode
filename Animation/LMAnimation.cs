@@ -1,7 +1,5 @@
 ﻿using LinkedMovement.Utils;
 using PrimeTween;
-using System;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace LinkedMovement.Animation {

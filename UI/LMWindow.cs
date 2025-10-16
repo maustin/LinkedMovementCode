@@ -35,6 +35,10 @@ namespace LinkedMovement.UI {
                     LinkedMovement.Log("CLOSE CreateAnimationNew window");
                     LinkedMovement.GetLMController().clearEditMode();
                 }
+                if (type == WindowManager.WindowType.CreateLinkNew) {
+                    LinkedMovement.Log("CLOSE CreateLinkNew window");
+                    LinkedMovement.GetLMController().clearEditMode();
+                }
 
                 // OLD UI
                 if (type == WindowManager.WindowType.CreateNewAnimatronic) {

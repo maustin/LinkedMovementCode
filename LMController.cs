@@ -1,4 +1,5 @@
 ﻿using LinkedMovement.Animation;
+using LinkedMovement.Links;
 using LinkedMovement.UI;
 using LinkedMovement.Utils;
 using Parkitect.UI;
@@ -15,17 +16,27 @@ namespace LinkedMovement {
             LINK,
         }
 
+        public enum PickerMode {
+            NONE,
+            ANIMATION_TARGET,
+            LINK_PARENT,
+            LINK_TARGETS,
+        }
+
         // TODO: 10-16
         // Implement Links
 
         public LMAnimation currentAnimation { get; private set; }
-        // TODO: currentLink
+        public LMLink currentLink { get; private set; }
 
         private EditMode editMode;
+        private PickerMode pickerMode;
 
         private SelectionHandler selectionHandler;
 
         private List<LMAnimation> animations = new List<LMAnimation>();
+        private List<LMLink> links = new List<LMLink>();
+
         private HashSet<BuildableObject> buildableObjectsToUpdate = new HashSet<BuildableObject>();
 
         private void Awake() {
@@ -88,9 +99,14 @@ namespace LinkedMovement {
                 currentAnimation.discardChanges();
                 currentAnimation = null;
             }
-            // TODO: currentLink
+            if (currentLink != null) {
+                currentLink.discardChanges();
+                currentLink = null;
+            }
 
             editMode = EditMode.NONE;
+            pickerMode = PickerMode.NONE;
+            selectionHandler.enabled = false;
         }
 
         public LMAnimation addAnimation(LMAnimationParams animationParams, GameObject target) {
@@ -112,6 +128,8 @@ namespace LinkedMovement {
             animations.Add(animation);
         }
 
+        // TODO: Add link
+
         public void editAnimation(LMAnimation animation = null) {
             LinkedMovement.Log("LMController.editAnimation");
             clearEditMode();
@@ -129,11 +147,18 @@ namespace LinkedMovement {
             editMode = EditMode.ANIMATION;
         }
 
-        public void editLink() {
+        public void editLink(LMLink link = null) {
             LinkedMovement.Log("LMController.editLink");
             clearEditMode();
 
-            // TODO
+            if (link != null) {
+                currentLink = link;
+            } else {
+                // TODO: set new link name
+                currentLink = new LMLink();
+            }
+
+            currentLink.IsEditing = true;
 
             editMode = EditMode.LINK;
         }
@@ -145,7 +170,10 @@ namespace LinkedMovement {
                 currentAnimation.saveChanges();
                 currentAnimation = null;
             }
-            // TODO: currentLink
+            if (currentLink != null) {
+                currentLink.saveChanges();
+                currentLink = null;
+            }
 
             clearEditMode();
         }
@@ -160,18 +188,40 @@ namespace LinkedMovement {
             currentAnimation.buildSequence();
         }
 
-        public void enableObjectPicker() {
+        public void enableObjectPicker(PickerMode pickerMode, Selection.Mode newMode) {
+            LinkedMovement.Log($"LMController.enableObjectPicker pickerMode: {pickerMode.ToString()}, newMode: {newMode.ToString()}");
+            this.pickerMode = pickerMode;
+
             var options = selectionHandler.Options;
-            options.Mode = Selection.Mode.Individual;
+
+            if (options.Mode == newMode) {
+                LinkedMovement.Log("Set picker mode NONE");
+                options.Mode = Selection.Mode.None;
+                selectionHandler.enabled = false;
+                return;
+            }
+
+            //options.Mode = Selection.Mode.Individual;
+            options.Mode = newMode;
             selectionHandler.enabled = true;
         }
 
         private void handlePickerAddObject(BuildableObject buildableObject) {
             LinkedMovement.Log("LMController.handlePickerAddObject");
-            // TODO
+            
             if (editMode == EditMode.ANIMATION) {
                 currentAnimation.setTarget(buildableObject);
                 selectionHandler.enabled = false;
+            }
+            if (editMode == EditMode.LINK) {
+                if (pickerMode == PickerMode.LINK_PARENT) {
+                    currentLink.setParentObject(buildableObject);
+                    selectionHandler.enabled = false;
+                }
+                if (pickerMode == PickerMode.LINK_TARGETS) {
+                    // Add target
+                    currentLink.addTargetObject(buildableObject);
+                }
             }
         }
 
@@ -180,6 +230,10 @@ namespace LinkedMovement {
             // TODO
 
             // Note, currentAnimation target cannot be removed this way
+
+            if (editMode == EditMode.LINK && pickerMode == PickerMode.LINK_TARGETS) {
+                currentLink.removeTargetObject(buildableObject);
+            }
         }
     }
 }

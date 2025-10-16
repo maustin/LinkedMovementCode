@@ -17,6 +17,9 @@ namespace LinkedMovement {
 
         [Serialized]
         public string name = string.Empty;
+        // TODO: Support ID
+        [Serialized]
+        public string id = string.Empty;
         
         [Serialized]
         public bool isTriggerable = false;

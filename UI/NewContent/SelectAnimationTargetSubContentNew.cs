@@ -34,7 +34,7 @@ namespace LinkedMovement.UI.NewContent {
 
                 using (Scope.GuiEnabled(!hasTarget)) {
                     if (Button("Select Target")) {
-                        controller.enableObjectPicker();
+                        controller.enableObjectPicker(LMController.PickerMode.ANIMATION_TARGET, Selection.Mode.Individual);
                     }
                 }
             }

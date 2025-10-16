@@ -23,7 +23,7 @@ namespace LinkedMovement.UI {
             switch(type) {
                 case WindowManager.WindowType.ModeDeterminationNew:
                     width = 300;
-                    position = getWindowPositionCenter(width, 100);
+                    position = getWindowPositionCenter(width, 300);
                     content = new ModeDeterminationContentNew();
                     break;
                 case WindowManager.WindowType.CreateAnimationNew:
@@ -32,6 +32,14 @@ namespace LinkedMovement.UI {
                     position = getWindowPositionRight(width);
                     content = new CreateAnimationContentNew();
                     break;
+                case WindowManager.WindowType.CreateLinkNew:
+                    title = "Create Link";
+                    width = 450;
+                    position = getWindowPositionRight(width);
+                    content = new CreateLinkContentNew();
+                    break;
+                //
+                //
                 //
                 case WindowManager.WindowType.ModeDetermination:
                     width = 300;

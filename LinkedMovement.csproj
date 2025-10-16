@@ -38,6 +38,9 @@
     <Compile Include="Animation\LMAnimationParams.cs" />
     <Compile Include="Animation\LMAnimationStep.cs" />
     <Compile Include="Animation\LMTrigger.cs" />
+    <Compile Include="Links\LMLink.cs" />
+    <Compile Include="Links\LMLinkParent.cs" />
+    <Compile Include="Links\LMLinkTarget.cs" />
     <Compile Include="LMController.cs" />
     <Compile Include="Patches\GameControllerEnableMouseToolPostfix.cs" />
     <Compile Include="Patches\GameControllerRemoveMouseToolPostfix.cs" />
@@ -88,8 +91,11 @@
     <Compile Include="UI\NewContent\CreateAnimationContentNew.cs" />
     <Compile Include="UI\NewContent\CreateAnimationStepSubContentNew.cs" />
     <Compile Include="UI\NewContent\CreateAnimationSubContentNew.cs" />
+    <Compile Include="UI\NewContent\CreateLinkContentNew.cs" />
     <Compile Include="UI\NewContent\ModeDeterminationContentNew.cs" />
     <Compile Include="UI\NewContent\SelectAnimationTargetSubContentNew.cs" />
+    <Compile Include="UI\NewContent\SelectLinkParentSubContentNew.cs" />
+    <Compile Include="UI\NewContent\SelectLinkTargetsSubContentNew.cs" />
     <Compile Include="UI\Utils\CollapsibleWindow.cs" />
     <Compile Include="UI\Utils\Controls.cs" />
     <Compile Include="UI\Components\InfoPopper.cs" />

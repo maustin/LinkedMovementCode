@@ -58,6 +58,11 @@ namespace LinkedMovement.Animation {
             return targetGameObject != null;
         }
 
+        public bool isValid() {
+            var animationParams = getAnimationParams();
+            return hasTarget() && animationParams.animationSteps.Count > 0;
+        }
+
         public void setTarget(BuildableObject buildableObject) {
             LinkedMovement.Log("LMAnimation.setTarget");
             removeTarget();
@@ -101,7 +106,16 @@ namespace LinkedMovement.Animation {
 
         public void saveChanges() {
             LinkedMovement.Log("LMAnimation.saveChanges");
-            // TODO
+
+            LMUtils.RemoveObjectHighlight(targetBuildableObject);
+
+            stopSequence();
+            animationParams = tempAnimationParams;
+
+            IsEditing = false;
+            isNewAnimation = false;
+
+            buildSequence();
         }
 
         // Remove the animation from the target

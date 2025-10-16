@@ -42,14 +42,14 @@ namespace LinkedMovement.UI.NewContent {
                 HorizontalLine.DrawHorizontalLine(Color.grey);
 
                 using (Scope.Horizontal()) {
-                    var canFinish = false;
+                    var canFinish = controller.currentAnimation.isValid();
                     FlexibleSpace();
                     using (Scope.GuiEnabled(canFinish)) {
                         if (Button("Save ✓", Width(65))) {
+                            controller.commitEdit();
+
                             // TODO: Can this call be moved to LMWindowContent?
                             windowManager.removeWindow(window);
-
-                            controller.commitEdit();
                         }
                     }
                 }

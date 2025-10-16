@@ -109,7 +109,16 @@ namespace LinkedMovement {
 
         public void commitEdit() {
             LinkedMovement.Log("LMController.commitEdit");
-            // TODO save changes to animation and rebuild
+            
+            if (currentAnimation != null) {
+                if (!animations.Contains(currentAnimation)) {
+                    animations.Add(currentAnimation);
+                }
+
+                currentAnimation.saveChanges();
+                currentAnimation = null;
+            }
+            // TODO: currentLink
 
             clearEditMode();
         }

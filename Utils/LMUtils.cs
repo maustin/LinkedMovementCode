@@ -79,6 +79,22 @@ namespace LinkedMovement.Utils {
             }
         }
 
+        public static void BuildLinksAndAnimationsFromBlueprint(List<BuildableObject> builtObjectInstances, Vector3 forward) {
+            LinkedMovement.Log("LMUtils.BuildLinksAndAnimationsFromBlueprint");
+
+            // TODO: Links
+
+            var createdAnimations = new List<LMAnimation>();
+            foreach (var buildableObject in builtObjectInstances) {
+                TryToBuildAnimationFromBlueprintObject(buildableObject, forward, createdAnimations);
+            }
+
+            LinkedMovement.Log($"Built {createdAnimations.Count} animations from blueprint");
+            foreach (var animation in createdAnimations) {
+                animation.buildSequence();
+            }
+        }
+
         private static void BuildingBlueprintTryToBuildPairingFromBuildableObject(BuildableObject possibleOriginBO, List<BuildableObject> builtObjectInstances, Vector3 forward, ref List<Pairing> createdPairings) {
             PairBase pairBase = GetPairBaseFromSerializedMonoBehaviour(possibleOriginBO);
             if (pairBase == null) return;
@@ -116,6 +132,22 @@ namespace LinkedMovement.Utils {
                 pairing.connect(false);
                 createdPairings.Add(pairing);
             }
+        }
+
+        private static void TryToBuildAnimationFromBlueprintObject(BuildableObject buildableObject, Vector3 forward, List<LMAnimation> createdAnimations) {
+            LMAnimationParams animationParams = GetAnimationParamsFromSerializedMonoBehaviour(buildableObject);
+            if (animationParams == null) {
+                return;
+            }
+
+            LinkedMovement.Log("LMUtils.TryToBuildAnimationFromBlueprintObject for " + buildableObject.getName());
+
+            // TODO: Animation ID
+            LMAnimation animation = new LMAnimation(animationParams, buildableObject.gameObject);
+            animationParams.forward = Quaternion.LookRotation(forward);
+
+            LinkedMovement.GetLMController().addAnimation(animation);
+            createdAnimations.Add(animation);
         }
 
         public static void LogDetails(BuildableObject bo) {

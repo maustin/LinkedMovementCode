@@ -39,5 +39,7 @@ class BlueprintBuilderImplementationOnAfterBuildPostfix {
 
         LinkedMovement.LinkedMovement.Log("# created instances: " + builtObjectInstances.Count);
         LMUtils.BuildingBlueprintTryToBuildPairingFromBuiltObjects(builtObjectInstances, forward);
+
+        LMUtils.BuildLinksAndAnimationsFromBlueprint(builtObjectInstances, forward);
     }
 }

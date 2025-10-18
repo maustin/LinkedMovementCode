@@ -256,7 +256,7 @@ namespace LinkedMovement {
                 originObject = null;
             } else {
                 foreach (var targetBO in targetObjects) {
-                    LMUtils.SetTargetParentToBase(null, targetBO.transform);
+                    LMUtils.SetTargetParent(null, targetBO.transform);
                 }
             }
 
@@ -466,7 +466,7 @@ namespace LinkedMovement {
                 LinkedMovement.Log("Has target Pairing, reset sequences and attach");
                 killSampleSequence();
                 rebuildSampleSequence();
-                LMUtils.SetTargetParentToBase(originObject.transform, bo.transform);
+                LMUtils.SetTargetParent(originObject.transform, bo.transform);
             }
         }
 
@@ -628,7 +628,7 @@ namespace LinkedMovement {
                     var targets = pairingFromOrigin.targetGOs;
                     var targetBOs = LMUtils.GetBuildableObjectsFromGameObjects(targets);
                     foreach (var targetBO in targetBOs) {
-                        LMUtils.SetTargetParentToBase(null, targetBO.transform);
+                        LMUtils.SetTargetParent(null, targetBO.transform);
                         targetBO.removeCustomData<PairTarget>();
                     }
                     removePairing(pairingFromOrigin);
@@ -773,7 +773,7 @@ namespace LinkedMovement {
             LinkedMovement.Log("Attach targets");
             // set targets parent
             foreach (var targetBO in targetObjects) {
-                LMUtils.SetTargetParentToBase(originObject.transform, targetBO.transform);
+                LMUtils.SetTargetParent(originObject.transform, targetBO.transform);
             }
 
             startAssociatedAnimations(true);
@@ -790,7 +790,7 @@ namespace LinkedMovement {
 
             // reset targets parent to null
             foreach (var targetBO in targetObjects) {
-                LMUtils.SetTargetParentToBase(null, targetBO.transform);
+                LMUtils.SetTargetParent(null, targetBO.transform);
             }
             
             startAssociatedAnimations(true);

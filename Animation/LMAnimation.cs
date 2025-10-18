@@ -176,7 +176,7 @@ namespace LinkedMovement.Animation {
             LMUtils.ResetTransformLocals(targetGameObject.transform, animationParams.startingLocalPosition, animationParams.startingLocalRotation, animationParams.startingLocalScale);
         }
 
-        public void buildSequence() {
+        public void buildSequence(bool passedIsEditing = false) {
             LinkedMovement.Log("LMAnimation.buildSequence");
 
             if (targetGameObject == null) {
@@ -184,8 +184,10 @@ namespace LinkedMovement.Animation {
                 return;
             }
 
+            var isEditing = passedIsEditing || IsEditing;
+
             var animationParams = getAnimationParams();
-            if (!IsEditing && animationParams.isTriggerable) {
+            if (!isEditing && animationParams.isTriggerable) {
                 LinkedMovement.Log("Create trigger");
                 targetGameObject.AddComponent<LMTrigger>().animationParams = animationParams;
                 return;
@@ -195,7 +197,7 @@ namespace LinkedMovement.Animation {
 
             // TODO: Restart associated
 
-            sequence = LMUtils.BuildAnimationSequence(targetGameObject.transform, animationParams, IsEditing);
+            sequence = LMUtils.BuildAnimationSequence(targetGameObject.transform, animationParams, true);
         }
 
         public void reset() {

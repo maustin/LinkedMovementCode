@@ -156,18 +156,18 @@ namespace LinkedMovement.Utils {
             LinkedMovement.Log($"ROT: {bo.transform.eulerAngles.ToString()}, lRot: {bo.transform.localEulerAngles.ToString()}");
         }
 
-        public static void SetTargetParentToBase(Transform baseObject, Transform targetObject) {
-            LinkedMovement.Log("LMUtils.SetTargetParentToBase");
+        public static void SetTargetParent(Transform parentTransform, Transform targetObject) {
+            LinkedMovement.Log("LMUtils.SetTargetParent");
             var oldParent = targetObject.parent;
             var oldParentName = (oldParent != null) ? oldParent.name : "null";
             LinkedMovement.Log("OLD PARENT: " + oldParentName);
-            if (baseObject == null) {
-                LinkedMovement.Log($"baseObject is null, clearing target {targetObject.name} parent");
+            if (parentTransform == null) {
+                LinkedMovement.Log($"parentTransform is null, clearing target {targetObject.name} parent");
                 targetObject.SetParent(null);
                 return;
             }
 
-            var baseTransform = baseObject;
+            var baseTransform = parentTransform;
             if (targetObject.IsChildOf(baseTransform)) {
                 LinkedMovement.Log("ALREADY A CHILD!");
             } else {
@@ -299,6 +299,22 @@ namespace LinkedMovement.Utils {
 
         private static void StopAssociatedAnimation(GameObject gameObject) {
             LinkedMovement.Log("LMUtils.StopAssociatedAnimation for " + gameObject.name);
+            // NEW
+            var animation = LinkedMovement.GetLMController().findAnimationByGameObject(gameObject);
+            if (animation != null) {
+                LinkedMovement.Log("Found Animation");
+                animation.stopSequence();
+                // TODO: Think this should use LMAnimation.stopSequence()
+                //if (animation.sequence.isAlive) {
+                //    LinkedMovement.Log("Stop sequence");
+                //    animation.sequence.progress = 0;
+                //    animation.sequence.Stop();
+                //}
+            } else {
+                LinkedMovement.Log("No Animation found");
+            }
+
+            // OLD
             var pairing = LinkedMovement.GetController().findPairingByBaseGameObject(gameObject);
             if (pairing != null) {
                 LinkedMovement.Log($"Found pairing name: {pairing.pairingName}, id: {pairing.pairingId}");
@@ -310,12 +326,33 @@ namespace LinkedMovement.Utils {
                     LinkedMovement.Log("Sequence not alive");
                 }
             } else {
-                LinkedMovement.Log("No Pairing exists");
+                LinkedMovement.Log("No Pairing found");
             }
         }
 
         private static void StartAssociatedAnimation(GameObject gameObject, bool isEditing) {
             LinkedMovement.Log("LMUtils.StartAssociatedAnimation for " + gameObject.name);
+
+            // NEW
+            var animation = LinkedMovement.GetLMController().findAnimationByGameObject(gameObject);
+            if (animation != null) {
+                LinkedMovement.Log("Found Animation");
+                // TODO: Is this actually needed?
+                //LinkedMovement.Log("DO RECALC");
+                animation.getAnimationParams().setStartingValues(gameObject.transform);
+
+                animation.buildSequence(true);
+
+                // TODO: Think this should use LMAnimation.buildSequence()
+
+                // TODO: Is this actually needed?
+                //LinkedMovement.Log("DO RECALC");
+                //animation.getAnimationParams().setStartingValues(gameObject.transform);
+            } else {
+                LinkedMovement.Log("No Animation found");
+            }
+
+            // OLD
             var pairing = LinkedMovement.GetController().findPairingByBaseGameObject(gameObject);
             if (pairing != null) {
                 LinkedMovement.Log($"Found pairing name: {pairing.pairingName}, id: {pairing.pairingId}");
@@ -325,12 +362,28 @@ namespace LinkedMovement.Utils {
 
                 pairing.pairBase.sequence = LMUtils.BuildAnimationSequence(pairing.baseGO.transform, pairing.pairBase.animParams);
             } else {
-                LinkedMovement.Log("No Pairing exists");
+                LinkedMovement.Log("No Pairing found");
             }
         }
 
         private static void RestartAssociatedAnimation(GameObject gameObject) {
             LinkedMovement.Log("LMUtils.RestartAssociatedAnimation for " + gameObject.name);
+
+            // NEW
+            var animation = LinkedMovement.GetLMController().findAnimationByGameObject(gameObject);
+            if (animation != null) {
+                LinkedMovement.Log("Found Animation");
+                if (animation.sequence.isAlive) {
+                    LinkedMovement.Log("Reset sequence progress");
+                    animation.sequence.progress = 0f;
+                } else {
+                    LinkedMovement.Log("Sequence not alive");
+                }
+            } else {
+                LinkedMovement.Log("No Animation found");
+            }
+
+            // OLD
             var pairing = LinkedMovement.GetController().findPairingByBaseGameObject(gameObject);
             if (pairing != null) {
                 LinkedMovement.Log($"Found pairing name: {pairing.pairingName}, id: {pairing.pairingId}");

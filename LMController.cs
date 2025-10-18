@@ -89,6 +89,17 @@ namespace LinkedMovement {
             //editMode = EditMode.NONE;
         }
 
+        public LMAnimation findAnimationByGameObject(GameObject gameObject) {
+            LinkedMovement.Log("LMController.findAnimationByGameObject");
+            foreach (var animation in animations) {
+                if (animation.targetGameObject == gameObject) {
+                    return animation;
+                }
+            }
+            LinkedMovement.Log("No animation found");
+            return null;
+        }
+
         public LMAnimation addAnimation(LMAnimationParams animationParams, GameObject target) {
             LinkedMovement.Log("LMController.addAnimation from LMAnimationParams");
             

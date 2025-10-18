@@ -6,10 +6,14 @@ using UnityEngine;
 
 namespace LinkedMovement {
     public class LMController : MonoBehaviour {
-        
+
         // TODO: 10-18
         // Test layering
-        
+        // Create animation on obj2
+        // Create link, parent obj1, target obj2
+        // Save link
+        // obj2 position is incorrect
+        // - Think something with LMLink.saveChanges
 
         public LMAnimation currentAnimation { get; private set; }
         public LMLink currentLink { get; private set; }

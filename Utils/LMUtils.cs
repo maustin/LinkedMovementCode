@@ -448,7 +448,8 @@ namespace LinkedMovement.Utils {
 
         // CONV: Reused as-is
         public static void ResetTransformLocals(Transform transform, Vector3 localPosition, Vector3 localRotation, Vector3 localScale) {
-            LinkedMovement.Log("LMUtils.ResetTransformLocals");
+            LinkedMovement.Log("LMUtils.ResetTransformLocals for: " + transform.gameObject.name);
+            
             LinkedMovement.Log($"FROM pos: {transform.position.ToString()}, lPos: {transform.localPosition.ToString()}, rot: {transform.eulerAngles.ToString()}, lRot: {transform.localEulerAngles.ToString()}, scale: {transform.localScale.ToString()}");
             LinkedMovement.Log($"TO lPos: {localPosition.ToString()}, lRot: {localRotation.ToString()}, scale: {localScale.ToString()}");
 

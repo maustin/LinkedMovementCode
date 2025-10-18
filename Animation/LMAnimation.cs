@@ -1,6 +1,7 @@
 ﻿using LinkedMovement.Utils;
 using PrimeTween;
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace LinkedMovement.Animation {
@@ -213,9 +214,7 @@ namespace LinkedMovement.Animation {
 
             stopSequence();
 
-            // TODO: Restart associated
-
-            sequence = LMUtils.BuildAnimationSequence(targetGameObject.transform, animationParams, true);
+            sequence = LMUtils.BuildAnimationSequence(targetGameObject.transform, animationParams, isEditing);
         }
 
         public void reset() {

@@ -8,7 +8,8 @@ namespace LinkedMovement {
     public class LMController : MonoBehaviour {
         
         // TODO: 10-18
-        // Create blueprint with link stops parent animation (targets still animate)
+        // Test layering
+        
 
         public LMAnimation currentAnimation { get; private set; }
         public LMLink currentLink { get; private set; }
@@ -171,6 +172,7 @@ namespace LinkedMovement {
             LinkedMovement.Log("LMController.commitEdit");
             
             if (currentAnimation != null) {
+                LMUtils.EditAssociatedAnimations(new List<GameObject>() { currentAnimation.targetGameObject }, LMUtils.AssociatedAnimationEditMode.Restart, true);
                 currentAnimation.saveChanges();
                 currentAnimation = null;
             }
@@ -189,6 +191,8 @@ namespace LinkedMovement {
             // - Muddies control flow
 
             // Animation was updated, rebuild
+            LMUtils.EditAssociatedAnimations(new List<GameObject>() { currentAnimation.targetGameObject }, LMUtils.AssociatedAnimationEditMode.Restart, true);
+
             currentAnimation.buildSequence();
         }
 

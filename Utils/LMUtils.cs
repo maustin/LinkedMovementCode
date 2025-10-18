@@ -299,6 +299,7 @@ namespace LinkedMovement.Utils {
 
         private static void EditAssociatedAnimation(GameObject gameObject, AssociatedAnimationEditMode editMode, bool isEditing) {
             LinkedMovement.Log("LMUtils.EditAssociatedAnimation for " + gameObject.name);
+
             var gameObjectHasBeenVisited = AssociatedGameObjects.Contains(gameObject);
             if (gameObjectHasBeenVisited) {
                 LinkedMovement.Log("Already visited GameObject " + gameObject.name);

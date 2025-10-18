@@ -119,7 +119,7 @@ namespace LinkedMovement.Animation {
 
             if (IsEditing) {
                 LMUtils.AddObjectHighlight(targetBuildableObject, Color.red);
-                LMUtils.SetChunkedMeshEnalbedIfPresent(targetBuildableObject, false);
+                UnityEngine.Object.Destroy(targetBuildableObject.GetComponent<ChunkedMesh>());
             }
 
             buildSequence();

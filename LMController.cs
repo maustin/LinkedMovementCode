@@ -6,19 +6,9 @@ using UnityEngine;
 
 namespace LinkedMovement {
     public class LMController : MonoBehaviour {
-        //public enum EditMode {
-        //    NONE,
-        //    ANIMATION,
-        //    LINK,
-        //}
-
-        // TODO: 10-16
-        // Implement Links
-        // - Need to implement actual parenting
-        // - Rebuild animations on parenting changed
-        // - Support save/load cycle
-        // - Support blueprint creation
-        // - Affect associated
+        
+        // TODO: 10-18
+        // Create blueprint with link stops parent animation (targets still animate)
 
         public LMAnimation currentAnimation { get; private set; }
         public LMLink currentLink { get; private set; }

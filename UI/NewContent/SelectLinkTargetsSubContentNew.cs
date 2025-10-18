@@ -52,7 +52,7 @@ namespace LinkedMovement.UI.NewContent {
                 FlexibleSpace();
                 using (Scope.Horizontal()) {
                     using (Scope.GuiEnabled(targetObjects != null && targetObjects.Count > 0)) {
-                        if (Button("Remove All")) {
+                        if (Button("Remove All Targets")) {
                             // TODO
                         }
                     }

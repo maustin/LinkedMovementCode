@@ -130,7 +130,9 @@ namespace LinkedMovement.Links {
         }
 
         public bool isValid() {
-            return hasParent() && targets != null && targets.Count > 0;
+            // This should only be checked in edit mode
+            //return hasParent() && targets != null && targets.Count > 0;
+            return tempParentGameObject != null && tempTargetGameObjects != null && tempTargetGameObjects.Count > 0;
         }
 
         // TODO: Necessary? Just make clearSelectionHandler public?

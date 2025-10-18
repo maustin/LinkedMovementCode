@@ -51,6 +51,23 @@ namespace LinkedMovement.UI.NewContent {
                 using (Scope.GuiEnabled(hasParent)) {
                     selectTargetsSubContent.DoGUI();
                 }
+
+                FlexibleSpace();
+
+                HorizontalLine.DrawHorizontalLine(Color.grey);
+
+                using (Scope.Horizontal()) {
+                    var canFinish = controller.currentLink.isValid();
+                    FlexibleSpace();
+                    using (Scope.GuiEnabled(canFinish)) {
+                        if (Button("Save ✓", Width(65))) {
+                            controller.commitEdit();
+
+                            // TODO: Can this call be moved to LMWindowContent?
+                            windowManager.removeWindow(window);
+                        }
+                    }
+                }
             }
         }
     }

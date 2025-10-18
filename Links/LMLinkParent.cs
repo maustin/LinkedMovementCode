@@ -1,5 +1,4 @@
 ﻿using LinkedMovement.Utils;
-using PrimeTween;
 using System;
 using UnityEngine;
 
@@ -16,11 +15,27 @@ namespace LinkedMovement.Links {
         [NonSerialized]
         public BuildableObject targetBuildableObject;
 
-        // TODO: Name
-        // TODO: ID
-
         public LMLinkParent() {
             LinkedMovement.Log("LMLinkParent constructor");
+        }
+
+        public LMLinkParent(string name, string id, BuildableObject buildableObject) {
+            LinkedMovement.Log("LMLinkParent contructor with params");
+
+            this.name = name;
+            this.id = id;
+            this.targetGameObject = buildableObject.gameObject;
+            this.targetBuildableObject = buildableObject;
+        }
+
+        public void setTarget(BuildableObject buildableObject) {
+            this.targetGameObject = buildableObject.gameObject;
+            this.targetBuildableObject = buildableObject;
+        }
+
+        public void setTarget(GameObject gameObject) {
+            this.targetGameObject = gameObject;
+            this.targetBuildableObject = LMUtils.GetBuildableObjectFromGameObject(gameObject);
         }
     }
 }

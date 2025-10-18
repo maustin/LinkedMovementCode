@@ -1,6 +1,6 @@
 ﻿using HarmonyLib;
 using LinkedMovement;
-using LinkedMovement.Animation;
+using LinkedMovement.Links;
 using LinkedMovement.Utils;
 using System.Collections.Generic;
 using System.Reflection;
@@ -26,22 +26,39 @@ class ParkEventFixedStartPostfix {
         LinkedMovement.LinkedMovement.Log("Park.eventFixedStart Postfix");
         // Ensure Controller has been created
         LinkedMovement.LinkedMovement.GetController();
+        // Ensure LMController has been created
+        LinkedMovement.LinkedMovement.GetLMController();
+
+        // TODO: Too much happening here, move to controller(s)
 
         var sos = GameController.Instance.getSerializedObjects();
         LinkedMovement.LinkedMovement.Log("SerializedObjects count: " + sos.Count);
         
         var createdPairings = new List<Pairing>();
-        var createdAnimations = new List<LMAnimation>();
+
+        var createdLinkParents = new List<LMLinkParent>();
+        var createdLinkTargets = new List<LMLinkTarget>();
 
         for (int i = sos.Count - 1; i >= 0; i--) {
             var so = sos[i];
 
             // NEW
+            LMLinkParent linkParent = LMUtils.GetLinkParentFromSerializedMonoBehaviour(so);
+            if (linkParent != null) {
+                LinkedMovement.LinkedMovement.Log("Found LinkParent");
+                linkParent.setTarget(so.gameObject);
+                createdLinkParents.Add(linkParent);
+            }
+            LMLinkTarget linkTarget = LMUtils.GetLinkTargetFromSerializedMonoBehaviour(so);
+            if (linkTarget != null) {
+                LinkedMovement.LinkedMovement.Log("Found LinkTarget");
+                linkTarget.setTarget(so.gameObject);
+                createdLinkTargets.Add(linkTarget);
+            }
             LMAnimationParams animationParams = LMUtils.GetAnimationParamsFromSerializedMonoBehaviour(so);
             if (animationParams != null) {
                 LinkedMovement.LinkedMovement.Log("Found animationParams");
-                var animation = LinkedMovement.LinkedMovement.GetLMController().addAnimation(animationParams, so.gameObject);
-                createdAnimations.Add(animation);
+                LinkedMovement.LinkedMovement.GetLMController().addAnimation(animationParams, so.gameObject);
             }
 
             // OLD
@@ -70,6 +87,7 @@ class ParkEventFixedStartPostfix {
         }
 
         // NEW
+        LinkedMovement.LinkedMovement.GetLMController().setupLinks(createdLinkParents, createdLinkTargets);
         LinkedMovement.LinkedMovement.GetLMController().onParkStarted();
 
         // OLD

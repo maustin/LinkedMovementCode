@@ -8,14 +8,14 @@ namespace LinkedMovement.Links {
         private string _name = string.Empty;
         public string name {
             get {
-                if (parent != null) {
-                    return parent.name;
+                if (linkParent != null) {
+                    return linkParent.name;
                 }
                 return _name;
             }
             set {
-                if (parent != null) {
-                    parent.name = value;
+                if (linkParent != null) {
+                    linkParent.name = value;
                 }
                 _name = value;
             }
@@ -24,21 +24,21 @@ namespace LinkedMovement.Links {
         private string _id = string.Empty;
         public string id {
             get {
-                if (parent != null) {
-                    return parent.id;
+                if (linkParent != null) {
+                    return linkParent.id;
                 }
                 return _id;
             }
             set {
-                if (parent != null) {
-                    parent.id = value;
+                if (linkParent != null) {
+                    linkParent.id = value;
                 }
                 _id = value;
             }
         }
 
-        private LMLinkParent parent;
-        private List<LMLinkTarget> targets;
+        private LMLinkParent linkParent;
+        private List<LMLinkTarget> linkTargets;
 
         private GameObject tempParentGameObject;
         private BuildableObject tempParentBuildableObject;
@@ -52,19 +52,18 @@ namespace LinkedMovement.Links {
         public bool IsEditing {
             get => _isEditing;
             set {
-                LinkedMovement.Log("LMLink.IsEditing SET to " + value.ToString());
                 _isEditing = value;
 
                 if (_isEditing) {
                     // create temps
-                    if (parent != null) {
-                        tempParentGameObject = parent.targetGameObject;
-                        tempParentBuildableObject = parent.targetBuildableObject;
+                    if (linkParent != null) {
+                        tempParentGameObject = linkParent.targetGameObject;
+                        tempParentBuildableObject = linkParent.targetBuildableObject;
                     }
 
                     tempTargetGameObjects = new List<GameObject>();
                     tempTargetBuildableObjects = new List<BuildableObject>();
-                    foreach (var target in targets) {
+                    foreach (var target in linkTargets) {
                         tempTargetGameObjects.Add(target.targetGameObject);
                         tempTargetBuildableObjects.Add(target.targetBuildableObject);
                     }
@@ -82,23 +81,51 @@ namespace LinkedMovement.Links {
 
         public LMLink() {
             LinkedMovement.Log("LMLink base constructor");
-            targets = new List<LMLinkTarget>();
+            linkTargets = new List<LMLinkTarget>();
             _name = "New Link";
             _id = Guid.NewGuid().ToString();
         }
 
+        public LMLink(LMLinkParent linkParent, List<LMLinkTarget> linkTargets) {
+            LinkedMovement.Log("LMLink constructor with params");
+
+            this.linkParent = linkParent;
+            this.linkTargets = linkTargets;
+
+            _name = linkParent.name;
+            _id = linkParent.id;
+        }
+
+        public void initializeWith(BuildableObject parentBuildableObject, List<BuildableObject> targetBuildableObjects) {
+            LinkedMovement.Log("LMLink.initializeWith");
+
+            removeCustomData();
+
+            var newParent = new LMLinkParent(_name, _id, parentBuildableObject);
+            linkParent = newParent;
+
+            var newTargets = new List<LMLinkTarget>();
+            foreach (var target in targetBuildableObjects) {
+                var newTarget = new LMLinkTarget(_id, target);
+                newTargets.Add(newTarget);
+            }
+            linkTargets = newTargets;
+
+            setCustomData();
+        }
+
         public GameObject getParentGameObject() {
             if (tempParentGameObject != null) return tempParentGameObject;
-            if (parent != null) {
-                return parent.targetGameObject;
+            if (linkParent != null) {
+                return linkParent.targetGameObject;
             }
             return null;
         }
 
         public BuildableObject getParentBuildableObject() {
             if (tempParentBuildableObject != null) return tempParentBuildableObject;
-            if (parent != null) {
-                return parent.targetBuildableObject;
+            if (linkParent != null) {
+                return linkParent.targetBuildableObject;
             }
             return null;
         }
@@ -108,7 +135,7 @@ namespace LinkedMovement.Links {
                 return tempTargetGameObjects;
             }
             var targetGOs = new List<GameObject>();
-            foreach (var target in targets) {
+            foreach (var target in linkTargets) {
                 targetGOs.Add(target.targetGameObject);
             }
             return targetGOs;
@@ -119,19 +146,19 @@ namespace LinkedMovement.Links {
                 return tempTargetBuildableObjects;
             }
             var targetBOs = new List<BuildableObject>();
-            foreach (var target in targets) {
+            foreach (var target in linkTargets) {
                 targetBOs.Add(target.targetBuildableObject);
             }
             return targetBOs;
         }
 
         public bool hasParent() {
-            return parent != null || tempParentGameObject != null;
+            return linkParent != null || tempParentGameObject != null;
         }
 
         public bool isValid() {
             // This should only be checked in edit mode
-            //return hasParent() && targets != null && targets.Count > 0;
+            //return hasParent() && linkTargets != null && linkTargets.Count > 0;
             return tempParentGameObject != null && tempTargetGameObjects != null && tempTargetGameObjects.Count > 0;
         }
 
@@ -256,13 +283,45 @@ namespace LinkedMovement.Links {
         public void saveChanges() {
             LinkedMovement.Log("LMLink.saveChanges");
 
-            // TODO
+            stopPicking();
+
+            if (tempParentBuildableObject != null) {
+                LMUtils.RemoveObjectHighlight(tempParentBuildableObject);
+            }
+
+            foreach (var buildableObject in tempTargetBuildableObjects) {
+                LMUtils.RemoveObjectHighlight(buildableObject);
+                removeTargetObject(buildableObject, true);
+            }
+
+            initializeWith(tempParentBuildableObject, tempTargetBuildableObjects);
+
+            IsEditing = false;
+
+            LinkedMovement.GetLMController().addLink(this);
+
+            rebuildLink();
         }
 
         public void removeLink() {
             LinkedMovement.Log("LMLink.removeLink");
 
             // TODO
+        }
+
+        public void rebuildLink(bool skipRestartAnimations = false) {
+            LinkedMovement.Log("LMLink.rebuildLink");
+
+            var parentTransform = linkParent.targetGameObject.transform;
+            foreach (var targetLink in linkTargets) {
+                LMUtils.SetTargetParent(parentTransform, targetLink.targetGameObject.transform);
+            }
+
+            if (!skipRestartAnimations) {
+                //LMUtils.EditAssociatedAnimations(new List<GameObject>() { linkParent.targetGameObject }, LMUtils.AssociatedAnimationEditMode.Restart, false);
+                LMUtils.EditAssociatedAnimations(new List<GameObject>() { linkParent.targetGameObject }, LMUtils.AssociatedAnimationEditMode.Stop, false);
+                LMUtils.EditAssociatedAnimations(new List<GameObject>() { linkParent.targetGameObject }, LMUtils.AssociatedAnimationEditMode.Start, false);
+            }
         }
 
         private void handlePickerAddObjectAsParent(BuildableObject buildableObject) {
@@ -307,13 +366,27 @@ namespace LinkedMovement.Links {
         private void setCustomData() {
             LinkedMovement.Log("LMLink.setCustomData");
 
-            // TODO
+            linkParent.targetBuildableObject.addCustomData(linkParent);
+
+            foreach (var linkTarget in linkTargets) {
+                linkTarget.targetBuildableObject.addCustomData(linkTarget);
+            }
         }
 
         private void removeCustomData() {
             LinkedMovement.Log("LMLink.removeCustomData");
 
-            // TODO
+            if (linkParent != null && linkParent.targetBuildableObject != null) {
+                linkParent.targetBuildableObject.removeCustomData<LMLinkParent>();
+            }
+            
+            if (linkTargets != null && linkTargets.Count > 0) {
+                foreach (var target in linkTargets) {
+                    if (target.targetBuildableObject != null) {
+                        target.targetBuildableObject.removeCustomData<LMLinkTarget>();
+                    }
+                }
+            }
         }
     }
 }

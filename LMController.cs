@@ -23,8 +23,6 @@ namespace LinkedMovement {
         public LMAnimation currentAnimation { get; private set; }
         public LMLink currentLink { get; private set; }
         
-        //private EditMode editMode;
-
         private List<LMAnimation> animations = new List<LMAnimation>();
         private List<LMLink> links = new List<LMLink>();
 
@@ -66,9 +64,28 @@ namespace LinkedMovement {
             }
         }
 
+        public void setupLinks(List<LMLinkParent> linkParents, List<LMLinkTarget> linkTargets) {
+            LinkedMovement.Log("LMController.setupLinks");
+
+            foreach (var linkParent in linkParents) {
+                LinkedMovement.Log($"Find targets for {linkParent.name}, id {linkParent.id}");
+                var matchingTargets = getLinkTargetsById(linkParent.id, linkTargets);
+                LinkedMovement.Log($"Found {matchingTargets.Count} matching targets");
+                if (matchingTargets.Count > 0) {
+                    var link = new LMLink(linkParent, matchingTargets);
+                    links.Add(link);
+                } else {
+                    // TODO: Handle this
+                }
+            }
+        }
+
         public void onParkStarted() {
             LinkedMovement.Log("LMController.onParkStarted");
-            // TODO: Links
+
+            foreach (var link in links) {
+                link.rebuildLink(true);
+            }
 
             foreach (var animation in animations) {
                 animation.buildSequence();
@@ -85,8 +102,6 @@ namespace LinkedMovement {
                 currentLink.discardChanges();
                 currentLink = null;
             }
-
-            //editMode = EditMode.NONE;
         }
 
         public LMAnimation findAnimationByGameObject(GameObject gameObject) {
@@ -119,7 +134,16 @@ namespace LinkedMovement {
             animations.Add(animation);
         }
 
-        // TODO: Add link
+        public void addLink(LMLink link) {
+            LinkedMovement.Log("LMController.addLink from LMLink");
+
+            if (links.Contains(link)) {
+                LinkedMovement.Log("Link already in controller list");
+                return;
+            }
+
+            links.Add(link);
+        }
 
         public void editAnimation(LMAnimation animation = null) {
             LinkedMovement.Log("LMController.editAnimation");
@@ -134,8 +158,6 @@ namespace LinkedMovement {
             }
 
             currentAnimation.IsEditing = true;
-
-            //editMode = EditMode.ANIMATION;
         }
 
         public void editLink(LMLink link = null) {
@@ -152,8 +174,6 @@ namespace LinkedMovement {
             }
 
             currentLink.IsEditing = true;
-
-            //editMode = EditMode.LINK;
         }
 
         public void commitEdit() {
@@ -179,6 +199,18 @@ namespace LinkedMovement {
 
             // Animation was updated, rebuild
             currentAnimation.buildSequence();
+        }
+
+        private List<LMLinkTarget> getLinkTargetsById(string id, List<LMLinkTarget> targets) {
+            LinkedMovement.Log("LMController.getLinkTargetsById: " + id);
+            var matchingTargets = new List<LMLinkTarget>();
+
+            foreach (var target in targets) {
+                if (target.id == id) matchingTargets.Add(target);
+            }
+
+            LinkedMovement.Log($"Got {matchingTargets.Count} targets");
+            return matchingTargets;
         }
 
     }

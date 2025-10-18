@@ -28,7 +28,6 @@ namespace LinkedMovement.Animation {
         public bool IsEditing {
             get => _isEditing;
             set {
-                LinkedMovement.Log("LMAnimation.IsEditing SET to " + value.ToString());
                 _isEditing = value;
 
                 if (_isEditing) {

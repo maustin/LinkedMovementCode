@@ -1,5 +1,6 @@
 ﻿// ATTRIB: TransformAnarchy
 using LinkedMovement.Animation;
+using LinkedMovement.Links;
 using PrimeTween;
 using System;
 using System.Collections.Generic;
@@ -200,6 +201,18 @@ namespace LinkedMovement.Utils {
             LMAnimationParams animationParams;
             smb.tryGetCustomData(out animationParams);
             return animationParams;
+        }
+
+        public static LMLinkParent GetLinkParentFromSerializedMonoBehaviour(SerializedMonoBehaviour smb) {
+            LMLinkParent linkParent;
+            smb.tryGetCustomData(out linkParent);
+            return linkParent;
+        }
+
+        public static LMLinkTarget GetLinkTargetFromSerializedMonoBehaviour(SerializedMonoBehaviour smb) {
+            LMLinkTarget linkTarget;
+            smb.tryGetCustomData(out linkTarget);
+            return linkTarget;
         }
 
         public static PairBase GetPairBaseFromSerializedMonoBehaviour(SerializedMonoBehaviour smb) {

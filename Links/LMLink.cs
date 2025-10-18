@@ -1,5 +1,4 @@
 ﻿using LinkedMovement.Utils;
-using PrimeTween;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -13,6 +12,8 @@ namespace LinkedMovement.Links {
 
         private List<GameObject> tempTargetGameObjects;
         private List<BuildableObject> tempTargetBuildableObjects;
+
+        private SelectionHandler selectionHandler;
 
         private bool _isEditing;
         public bool IsEditing {
@@ -97,6 +98,41 @@ namespace LinkedMovement.Links {
             return hasParent() && targets != null && targets.Count > 0;
         }
 
+        // TODO: Necessary? Just make clearSelectionHandler public?
+        public void stopPicking() {
+            LinkedMovement.Log("LMLink.stopPicking");
+
+            clearSelectionHandler();
+        }
+
+        public void startPickingParent() {
+            LinkedMovement.Log("LMLink.startPickingParent");
+
+            clearSelectionHandler();
+
+            selectionHandler = LinkedMovement.GetLMController().gameObject.AddComponent<SelectionHandler>();
+            selectionHandler.OnAddBuildableObject += handlePickerAddObjectAsParent;
+            // No OnRemove handler as this is not supported in parent-picking mode
+
+            var options = selectionHandler.Options;
+            options.Mode = Selection.Mode.Individual;
+            selectionHandler.enabled = true;
+        }
+
+        public void startPickingTargets(Selection.Mode selectionMode) {
+            LinkedMovement.Log("LMLink.startPickingTargets");
+
+            clearSelectionHandler();
+
+            selectionHandler = LinkedMovement.GetLMController().gameObject.AddComponent<SelectionHandler>();
+            selectionHandler.OnAddBuildableObject += handlePickerAddObjectAsTarget;
+            selectionHandler.OnRemoveBuildableObject += handlePickerRemoveObjectAsTarget;
+
+            var options = selectionHandler.Options;
+            options.Mode = selectionMode;
+            selectionHandler.enabled = true;
+        }
+
         public void setParentObject(BuildableObject buildableObject) {
             LinkedMovement.Log("LMLink.setParentObject");
 
@@ -127,6 +163,8 @@ namespace LinkedMovement.Links {
             LinkedMovement.Log("LMLink.addTargetObject");
 
             // TODO: Possibly cache target original parent
+            // Actually think this should be fine. If changes are discarded, reset temp targets parent to null
+            // then rebuild original linkage.
             tempTargetBuildableObjects.Add(buildableObject);
             tempTargetGameObjects.Add(buildableObject.gameObject);
             LMUtils.AddObjectHighlight(buildableObject, Color.yellow);
@@ -153,6 +191,8 @@ namespace LinkedMovement.Links {
         public void discardChanges() {
             LinkedMovement.Log("LMLink.discardChanges");
 
+            stopPicking();
+
             if (tempParentBuildableObject != null) {
                 LMUtils.RemoveObjectHighlight(tempParentBuildableObject);
             }
@@ -173,6 +213,43 @@ namespace LinkedMovement.Links {
             LinkedMovement.Log("LMLink.removeLink");
 
             // TODO
+        }
+
+        private void handlePickerAddObjectAsParent(BuildableObject buildableObject) {
+            LinkedMovement.Log("LMLink.handlePickerAddObjectAsParent");
+
+            // TODO: Validate
+
+            setParentObject(buildableObject);
+            stopPicking();
+        }
+
+        private void handlePickerAddObjectAsTarget(BuildableObject buildableObject) {
+            LinkedMovement.Log("LMLink.handlePickerAddObjectAsTarget");
+
+            // TODO: Validate
+
+            addTargetObject(buildableObject);
+        }
+
+        private void handlePickerRemoveObjectAsTarget(BuildableObject buildableObject) {
+            LinkedMovement.Log("LMLink.handlePickerRemoveObjectAsTarget");
+
+            // TODO: Validate
+
+            removeTargetObject(buildableObject);
+        }
+
+        private void clearSelectionHandler() {
+            if (selectionHandler != null) {
+                selectionHandler.enabled = false;
+                selectionHandler.OnAddBuildableObject -= handlePickerAddObjectAsParent;
+                selectionHandler.OnAddBuildableObject -= handlePickerAddObjectAsTarget;
+                selectionHandler.OnRemoveBuildableObject -= handlePickerRemoveObjectAsTarget;
+
+                GameObject.Destroy(selectionHandler);
+                selectionHandler = null;
+            }
         }
 
         private void setCustomData() {

@@ -26,7 +26,6 @@ namespace LinkedMovement.UI.NewContent {
                         Label(name);
                         if (Button("✕", Width(40f))) {
                             controller.currentLink.removeParentObject();
-                            controller.disableObjectPicker();
                         }
                     }
                 }
@@ -35,7 +34,7 @@ namespace LinkedMovement.UI.NewContent {
 
                 using (Scope.GuiEnabled(!hasParent)) {
                     if (Button("Select Parent")) {
-                        controller.enableObjectPicker(LMController.PickerMode.LINK_PARENT, Selection.Mode.Individual);
+                        controller.currentLink.startPickingParent();
                     }
                 }
             }

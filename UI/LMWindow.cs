@@ -27,7 +27,8 @@ namespace LinkedMovement.UI {
             this.Add(content.DoGUI);
             this.Open();
             this.onClose += (WindowLauncher launcher) => {
-                windowManager.removeWindow(launcher as LMWindow);
+                //windowManager.removeWindow(launcher as LMWindow);
+                LinkedMovement.Log("LMWindow.onClose");
                 
                 // TODO: Refactor so controller subscribes to onClose and handles this
 
@@ -49,6 +50,8 @@ namespace LinkedMovement.UI {
                     LinkedMovement.Log("CLOSE EditAnimatronic window");
                     LinkedMovement.GetController().discardChanges();
                 }
+
+                windowManager.removeWindow(launcher as LMWindow);
             };
         }
     }

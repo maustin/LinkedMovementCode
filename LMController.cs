@@ -33,7 +33,7 @@ namespace LinkedMovement {
 
         public LMAnimation currentAnimation { get; private set; }
         public LMLink currentLink { get; private set; }
-
+        
         private EditMode editMode;
         private PickerMode pickerMode;
 
@@ -59,12 +59,12 @@ namespace LinkedMovement {
 
         private void OnDestroy() {
             LinkedMovement.Log("LMController OnDestroy");
-            // TODO: reset controller
             if (selectionHandler != null) {
-                GameObject.Destroy(selectionHandler.gameObject);
+                GameObject.Destroy(selectionHandler);
                 selectionHandler = null;
             }
             animations.Clear();
+            links.Clear();
             LinkedMovement.ClearLMController();
         }
 
@@ -157,8 +157,10 @@ namespace LinkedMovement {
             clearEditMode();
 
             if (link != null) {
+                LinkedMovement.Log("Edit existing link");
                 currentLink = link;
             } else {
+                LinkedMovement.Log("Create new link");
                 // TODO: set new link name
                 currentLink = new LMLink();
             }

@@ -24,12 +24,16 @@ namespace LinkedMovement.UI.NewContent {
 
                 using (Scope.Horizontal()) {
                     Label("Selection mode");
-                    selectedSelectionMode = Toolbar(selectedSelectionMode, selectionModeNames);
+                    var newSelectionMod = Toolbar(selectedSelectionMode, selectionModeNames);
+                    if (newSelectionMod != selectedSelectionMode) {
+                        selectedSelectionMode = newSelectionMod;
+                        controller.currentLink.stopPicking();
+                    }
                 }
 
                 using (Scope.Horizontal()) {
                     if (Button("Select")) {
-                        controller.enableObjectPicker(LMController.PickerMode.LINK_TARGETS, selectionModes[selectedSelectionMode]);
+                        controller.currentLink.startPickingTargets(selectionModes[selectedSelectionMode]);
                     }
                 }
 

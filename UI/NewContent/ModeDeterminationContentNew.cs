@@ -21,10 +21,12 @@ namespace LinkedMovement.UI.NewContent {
 
                 Space(3f);
 
-                if (Button("Edit Animation")) {
-                    LinkedMovement.Log("Clicked Edit Animation");
-                    windowManager.removeWindow(this.window);
-                    windowManager.createWindow(WindowManager.WindowType.EditAnimationNew, null);
+                using (Scope.GuiEnabled(false)) {
+                    if (Button("Edit Animation")) {
+                        LinkedMovement.Log("Clicked Edit Animation");
+                        windowManager.removeWindow(this.window);
+                        windowManager.createWindow(WindowManager.WindowType.EditAnimationNew, null);
+                    }
                 }
 
                 Space(15f);
@@ -37,10 +39,12 @@ namespace LinkedMovement.UI.NewContent {
 
                 Space(3f);
 
-                if (Button("Edit Link")) {
-                    LinkedMovement.Log("Clicked Edit Link");
-                    windowManager.removeWindow(this.window);
-                    windowManager.createWindow(WindowManager.WindowType.EditLinkNew, null);
+                using (Scope.GuiEnabled(false)) {
+                    if (Button("Edit Link")) {
+                        LinkedMovement.Log("Clicked Edit Link");
+                        windowManager.removeWindow(this.window);
+                        windowManager.createWindow(WindowManager.WindowType.EditLinkNew, null);
+                    }
                 }
 
                 Space(5f);

@@ -32,7 +32,13 @@ namespace LinkedMovement.UI.NewContent {
                 }
 
                 using (Scope.Horizontal()) {
-                    if (Button("Select")) {
+                    string selectButtonText = string.Empty;
+                    if (selectionModes[selectedSelectionMode] == Selection.Mode.Individual)
+                        selectButtonText = "Select Child";
+                    else if (selectionModes[selectedSelectionMode] == Selection.Mode.Box)
+                        selectButtonText = "Select Children";
+
+                    if (Button(selectButtonText)) {
                         controller.currentLink.startPickingTargets(selectionModes[selectedSelectionMode]);
                     }
                 }
@@ -52,8 +58,8 @@ namespace LinkedMovement.UI.NewContent {
                 FlexibleSpace();
                 using (Scope.Horizontal()) {
                     using (Scope.GuiEnabled(targetObjects != null && targetObjects.Count > 0)) {
-                        if (Button("Remove All Targets")) {
-                            // TODO
+                        if (Button("Remove All Children")) {
+                            controller.currentLink.removeAllTargetObjects();
                         }
                     }
                 }

@@ -1,7 +1,6 @@
 ﻿using LinkedMovement.Utils;
 using PrimeTween;
 using System;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace LinkedMovement.Animation {
@@ -75,6 +74,16 @@ namespace LinkedMovement.Animation {
         public void setup() {
             getAnimationParams().setStartingValues(targetGameObject.transform);
             buildSequence();
+        }
+
+        // Remove the animation from the target. Currently assumes sequence is stopped elsewhere.
+        public void removeAnimation() {
+            LinkedMovement.Log("LMAnimation.removeAnimation");
+            removeCustomData();
+
+            animationParams = null;
+            targetBuildableObject = null;
+            targetGameObject = null;
         }
 
         public void generateNewId() {
@@ -181,12 +190,6 @@ namespace LinkedMovement.Animation {
             buildSequence();
 
             setCustomData();
-        }
-
-        // Remove the animation from the target
-        public void removeAnimation() {
-            LinkedMovement.Log("LMAnimation.removeAnimation");
-            // TODO
         }
 
         public void stopSequence() {

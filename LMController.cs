@@ -9,13 +9,10 @@ namespace LinkedMovement {
 
         // TODO: 10-20
         // + Need picker validation
-        // + Deleting an object that's part of anim-link chain deletes all children
         // Test layering
         
-        // + There's some weird 1-frame artifact when linked animations reset where child objects appear incorrectly
-        //   LATEST: Currently can't repro (intermittent?)
-        //   (like the animations aren't all resetting at the same time)
-        //   TEST: Does this happen with Blueprints too (e.g., something created all at once)
+        // Once saw issue with animations, when at end of sequence, having 1 frame of child object mispositioned
+        // Haven't seen since first occurrence.
 
         public LMAnimation currentAnimation { get; private set; }
         public LMLink currentLink { get; private set; }
@@ -128,6 +125,88 @@ namespace LinkedMovement {
             }
         }
 
+        public void handleBuildableObjectDestroyed(BuildableObject buildableObject) {
+            LinkedMovement.Log("LMController.handleBuildableObjectDestroyed");
+            if (buildableObject == null || buildableObject.gameObject == null) {
+                LinkedMovement.Log("Missing object (BO or GO)");
+                return;
+            }
+
+            var gameObject = buildableObject.gameObject;
+            LinkedMovement.Log("Deleted object name: " + gameObject.name);
+
+            var animation = findAnimationByGameObject(gameObject);
+            var linkAsParent = findLinkByParentGameObject(gameObject);
+            var linkAsTarget = findLinkByTargetGameObject(gameObject);
+
+            // If LinkParent, LinkTarget, or Animation target
+            // - stop associated (this will put all associated at starting values)
+            if (animation != null || linkAsParent != null || linkAsTarget != null) {
+                LinkedMovement.Log("Deleted object is associated with an Animation or Links");
+                LMUtils.EditAssociatedAnimations(new List<GameObject>() { gameObject }, LMUtils.AssociatedAnimationEditMode.Stop, false);
+            } else {
+                LinkedMovement.Log("Deleted object not associated with any Animation or Links, exit");
+                return;
+            }
+
+            // Create restart list
+            var restartList = new HashSet<GameObject>();
+
+            // If Animation
+            // - remove from animations
+            // - delete Animation (remove data)
+            if (animation != null) {
+                LinkedMovement.Log("deleted object has animation " + animation.name);
+                animations.Remove(animation);
+                animation.removeAnimation();
+            }
+
+            // If LinkParent
+            // - remove from links
+            // - add children to restart list
+            // - delete link (unparent children, remove data)
+            if (linkAsParent != null) {
+                LinkedMovement.Log($"deleted object is parent for Link name: {linkAsParent.name}, id: {linkAsParent.id}");
+                links.Remove(linkAsParent);
+                var targetGameObjects = linkAsParent.getTargetGameObjects();
+                foreach (var targetGameObject in targetGameObjects) {
+                    restartList.Add(targetGameObject);
+                }
+                linkAsParent.removeLink();
+            }
+
+            // If LinkTarget
+            // - add LinkParent to restart list
+            // - unparent from LinkParent
+            // - if LinkParent has no children
+            // -- remove from links
+            // - delete data
+            if (linkAsTarget != null) {
+                LinkedMovement.Log($"deleted object is target for Link name: {linkAsTarget.name}, id: {linkAsTarget.id}");
+                restartList.Add(linkAsTarget.getParentGameObject());
+                linkAsTarget.deleteTargetObject(gameObject);
+
+                if (!linkAsTarget.isValid()) {
+                    LinkedMovement.Log("Link no longer valid, remove");
+                    links.Remove(linkAsTarget);
+                    linkAsTarget.removeLink();
+                } else {
+                    // Link is still valid, restart parent
+                    restartList.Add(linkAsTarget.getParentGameObject());
+                }
+            }
+
+            // Restart list
+            if (restartList.Count > 0) {
+                LinkedMovement.Log($"Try to restart animations on {restartList.Count} objects");
+                var restartListGameObjects = new List<GameObject>();
+                foreach (var hashObject in restartList) {
+                    restartListGameObjects.Add(hashObject);
+                }
+                LMUtils.EditAssociatedAnimations(restartListGameObjects, LMUtils.AssociatedAnimationEditMode.Start, false);
+            }
+        }
+
         public void clearEditMode() {
             LinkedMovement.Log("LMController.clearEditMode");
             if (currentAnimation != null) {
@@ -168,6 +247,31 @@ namespace LinkedMovement {
             }
 
             animations.Add(animation);
+        }
+
+        public LMLink findLinkByParentGameObject(GameObject gameObject) {
+            LinkedMovement.Log("LMController.findLinkByParentGameObject");
+            foreach (var link in links) {
+                if (link.getParentGameObject() == gameObject) {
+                    LinkedMovement.Log("Found Link from parent");
+                    return link;
+                }
+            }
+            LinkedMovement.Log("No Link found from parent");
+            return null;
+        }
+
+        public LMLink findLinkByTargetGameObject(GameObject gameObject) {
+            LinkedMovement.Log("LMController.findLinkByTargetGameObject");
+            foreach (var link in links) {
+                var targets = link.getTargetGameObjects();
+                if (targets.Contains(gameObject)) {
+                    LinkedMovement.Log("Found Link from target");
+                    return link;
+                }
+            }
+            LinkedMovement.Log("No Link found from target");
+            return null;
         }
 
         public void addLink(LMLink link) {

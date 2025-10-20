@@ -160,9 +160,12 @@ namespace LinkedMovement.Links {
         }
 
         public bool isValid() {
-            // This should only be checked in edit mode
-            //return hasParent() && linkTargets != null && linkTargets.Count > 0;
-            return tempParentGameObject != null && tempTargetGameObjects != null && tempTargetGameObjects.Count > 0;
+            if (IsEditing) {
+                return tempParentGameObject != null && tempTargetGameObjects != null && tempTargetGameObjects.Count > 0;
+            }
+            else {
+                return linkParent != null && linkTargets != null && linkTargets.Count > 0;
+            }
         }
 
         public void addObjectsToUpdateMouseColliders(HashSet<BuildableObject> buildableObjectsToUpdate) {
@@ -176,7 +179,6 @@ namespace LinkedMovement.Links {
             }
         }
 
-        // TODO: Necessary? Just make clearSelectionHandler public?
         public void stopPicking() {
             LinkedMovement.Log("LMLink.stopPicking");
 
@@ -259,6 +261,29 @@ namespace LinkedMovement.Links {
             LMUtils.EditAssociatedAnimations(new List<GameObject>() { tempParentGameObject }, LMUtils.AssociatedAnimationEditMode.Start, true);
         }
 
+        // Called when an object is deleted from the park
+        public void deleteTargetObject(GameObject gameObject) {
+            LinkedMovement.Log("LMLink.deleteTargetObject");
+
+            LMLinkTarget foundLinkTarget = null;
+            foreach (var linkTarget in linkTargets) {
+                if (linkTarget.targetGameObject == gameObject) {
+                    LinkedMovement.Log("Found LinkTarget");
+                    foundLinkTarget = linkTarget;
+                    LMUtils.SetTargetParent(null, foundLinkTarget.targetBuildableObject.transform);
+                    break;
+                }
+            }
+
+            if (foundLinkTarget != null) {
+                linkTargets.Remove(foundLinkTarget);
+            } else {
+                LinkedMovement.Log("Couldn't find LinkTarget from gameObject");
+            }
+
+        }
+
+        // Called via UI action ('X' from UI or right-click deselect)
         public void removeSingleTargetObject(BuildableObject buildableObject) {
             LinkedMovement.Log("LMLink.removeSingleTargetObject");
 
@@ -373,7 +398,15 @@ namespace LinkedMovement.Links {
         public void removeLink() {
             LinkedMovement.Log("LMLink.removeLink");
 
-            // TODO
+            // Unparent targets
+            foreach (var targetLink in linkTargets) {
+                LMUtils.SetTargetParent(null, targetLink.targetGameObject.transform);
+            }
+            // Remove data
+            removeCustomData();
+
+            linkParent = null;
+            linkTargets = null;
         }
 
         public void rebuildLink() {

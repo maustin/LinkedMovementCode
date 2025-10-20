@@ -20,6 +20,9 @@ class SerializedMonoBehaviourOnDestroyPostfix {
         if (bo == null) return;
         if (bo.isPreview) return;
 
+        // OLD
         LinkedMovement.LinkedMovement.GetController().handleBuildableObjectDestroy(bo);
+        // NEW
+        LinkedMovement.LinkedMovement.GetLMController().handleBuildableObjectDestroyed(bo);
     }
 }

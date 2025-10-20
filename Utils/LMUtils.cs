@@ -401,7 +401,7 @@ namespace LinkedMovement.Utils {
                 //LinkedMovement.Log("DO RECALC");
                 animation.getAnimationParams().setStartingValues(gameObject.transform);
 
-                animation.buildSequence(true);
+                animation.buildSequence(isEditing);
 
                 // TODO: Think this should use LMAnimation.buildSequence()
 

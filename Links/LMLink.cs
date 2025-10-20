@@ -7,6 +7,7 @@ namespace LinkedMovement.Links {
     public class LMLink {
         private string _name = string.Empty;
         public string name {
+            // TODO: Link name original vs new temp
             get {
                 if (linkParent != null) {
                     return linkParent.name;
@@ -23,6 +24,7 @@ namespace LinkedMovement.Links {
 
         private string _id = string.Empty;
         public string id {
+            // TODO: Link id original vs new temp
             get {
                 if (linkParent != null) {
                     return linkParent.id;
@@ -421,8 +423,14 @@ namespace LinkedMovement.Links {
         private void handlePickerAddObjectAsParent(BuildableObject buildableObject) {
             LinkedMovement.Log("LMLink.handlePickerAddObjectAsParent");
 
-            // TODO: Validate
-            // Object not this parent and doesn't have LMLinkParent
+            // Validate - ensure target is not already a LinkParent
+            var gameObject = buildableObject.gameObject;
+            var link = LinkedMovement.GetLMController().findLinkByParentGameObject(gameObject);
+            if (link != null) {
+                LinkedMovement.Log("Target already parent to another Link");
+                LinkedMovement.GetController().windowManager.createWindow(UI.WindowManager.WindowType.Error, "Target is already Parent for Link " + link.name);
+                return;
+            }
 
             setParentObject(buildableObject);
             stopPicking();
@@ -431,16 +439,24 @@ namespace LinkedMovement.Links {
         private void handlePickerAddObjectAsTarget(BuildableObject buildableObject) {
             LinkedMovement.Log("LMLink.handlePickerAddObjectAsTarget");
 
-            // TODO: Validate
-            // Object not already target and doesn't have LMLinkTarget
+            // Validate - ensure Target is not already selected (silent fail)
+            if (getTargetBuildableObjects().Contains(buildableObject)) {
+                LinkedMovement.Log("Target is already child of current link");
+                return;
+            }
+            var gameObject = buildableObject.gameObject;
+            var link = LinkedMovement.GetLMController().findLinkByTargetGameObject(gameObject);
+            if (link != null) {
+                LinkedMovement.Log("Target is already child of link " + link.name);
+                LinkedMovement.GetController().windowManager.createWindow(UI.WindowManager.WindowType.Error, "Target is already Child of Link " + link.name);
+                return;
+            }
 
             addTargetObject(buildableObject);
         }
 
         private void handlePickerRemoveObjectAsTarget(BuildableObject buildableObject) {
             LinkedMovement.Log("LMLink.handlePickerRemoveObjectAsTarget");
-
-            // TODO: Validate - maybe not, already validating in removeTargetObject
 
             removeSingleTargetObject(buildableObject);
         }

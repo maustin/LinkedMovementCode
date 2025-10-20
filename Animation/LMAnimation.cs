@@ -12,16 +12,30 @@ namespace LinkedMovement.Animation {
         public Sequence sequence;
 
         public string name {
-            get => animationParams.name;
+            get {
+                if (IsEditing) return tempAnimationParams.name;
+                return animationParams.name;
+            }
             set {
-                animationParams.name = value;
+                if (IsEditing) {
+                    tempAnimationParams.name = value;
+                } else {
+                    animationParams.name = value;
+                }
             }
         }
 
         public string id {
-            get => animationParams.id;
+            get {
+                if (IsEditing) return tempAnimationParams.id;
+                return animationParams.id;
+            }
             set {
-                animationParams.id = value;
+                if (IsEditing) {
+                    tempAnimationParams.id = value;
+                } else {
+                    animationParams.id = value;
+                }
             }
         }
 
@@ -242,8 +256,15 @@ namespace LinkedMovement.Animation {
         private void handlePickerAddObject(BuildableObject buildableObject) {
             LinkedMovement.Log("LMAnimation.handlePickerAddObject");
 
-            // TODO: Validate
-            // Object not already target and doesn't have LMAnimationParams
+            // Validate
+            var gameObject = buildableObject.gameObject;
+            var animation = LinkedMovement.GetLMController().findAnimationByGameObject(gameObject);
+            if (animation != null) {
+                LinkedMovement.Log("Target already has animation " + animation.name);
+                // TODO: This call needs much cleaner access
+                LinkedMovement.GetController().windowManager.createWindow(UI.WindowManager.WindowType.Error, "Target already has Animation " + animation.name);
+                return;
+            }
 
             setTarget(buildableObject, false);
             stopPicking();

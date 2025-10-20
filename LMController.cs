@@ -8,7 +8,6 @@ namespace LinkedMovement {
     public class LMController : MonoBehaviour {
 
         // TODO: 10-20
-        // + Need picker validation
         // Test layering
         
         // Once saw issue with animations, when at end of sequence, having 1 frame of child object mispositioned

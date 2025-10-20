@@ -7,13 +7,9 @@ using UnityEngine;
 namespace LinkedMovement {
     public class LMController : MonoBehaviour {
 
-        // TODO: 10-18
+        // TODO: 10-20
+        // + Need picker validation
         // Test layering
-        // Create animation on obj2
-        // Create link, parent obj1, target obj2
-        // Save link
-        // obj2 position is incorrect
-        // - Think something with LMLink.saveChanges
 
         public LMAnimation currentAnimation { get; private set; }
         public LMLink currentLink { get; private set; }
@@ -70,8 +66,6 @@ namespace LinkedMovement {
                     var link = new LMLink(linkParent, matchingTargets);
                     links.Add(link);
                     link.rebuildLink();
-                } else {
-                    // TODO: Handle this
                 }
             }
         }
@@ -79,12 +73,13 @@ namespace LinkedMovement {
         public void onParkStarted() {
             LinkedMovement.Log("LMController.onParkStarted");
 
-            foreach (var link in links) {
-                link.rebuildLink(true);
-            }
+            // TODO: Does this need to be called? Already calling in setupLinks()
+            //foreach (var link in links) {
+            //    link.rebuildLink();
+            //}
 
             foreach (var animation in animations) {
-                animation.buildSequence();
+                animation.setup();
             }
         }
 
@@ -114,7 +109,7 @@ namespace LinkedMovement {
         public LMAnimation addAnimation(LMAnimationParams animationParams, GameObject target) {
             LinkedMovement.Log("LMController.addAnimation from LMAnimationParams");
             
-            var animation = new LMAnimation(animationParams, target);
+            var animation = new LMAnimation(animationParams, target, true);
             addAnimation(animation);
             return animation;
         }

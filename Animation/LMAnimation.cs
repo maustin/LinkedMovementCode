@@ -62,13 +62,19 @@ namespace LinkedMovement.Animation {
             this.isNewAnimation = true;
         }
 
-        public LMAnimation(LMAnimationParams animationParams, GameObject target) {
+        public LMAnimation(LMAnimationParams animationParams, GameObject target, bool delaySetup = false) {
             LinkedMovement.Log("LMAnimation constructor as EXISTING");
             this.animationParams = animationParams;
 
             var buildableObject = LMUtils.GetBuildableObjectFromGameObject(target);
-            setTarget(buildableObject);
-            UnityEngine.Object.Destroy(targetBuildableObject.GetComponent<ChunkedMesh>());
+            UnityEngine.Object.Destroy(buildableObject.GetComponent<ChunkedMesh>());
+
+            setTarget(buildableObject, delaySetup);
+        }
+
+        public void setup() {
+            getAnimationParams().setStartingValues(targetGameObject.transform);
+            buildSequence();
         }
 
         public void generateNewId() {
@@ -109,21 +115,23 @@ namespace LinkedMovement.Animation {
             selectionHandler.enabled = true;
         }
 
-        public void setTarget(BuildableObject buildableObject) {
+        public void setTarget(BuildableObject buildableObject, bool delaySetup) {
             LinkedMovement.Log("LMAnimation.setTarget");
             removeTarget();
 
             targetBuildableObject = buildableObject;
             targetGameObject = targetBuildableObject.gameObject;
 
-            getAnimationParams().setStartingValues(targetGameObject.transform);
-
             if (IsEditing) {
                 LMUtils.AddObjectHighlight(targetBuildableObject, Color.red);
                 UnityEngine.Object.Destroy(targetBuildableObject.GetComponent<ChunkedMesh>());
             }
 
-            buildSequence();
+            if (!delaySetup) {
+                //getAnimationParams().setStartingValues(targetGameObject.transform);
+                //buildSequence();
+                setup();
+            }
         }
 
         public void removeTarget() {
@@ -188,11 +196,14 @@ namespace LinkedMovement.Animation {
                 LinkedMovement.Log("Sequence is alive, stop!");
                 sequence.progress = 0;
                 sequence.Stop();
+
+                var animationParams = getAnimationParams();
+                LMUtils.ResetTransformLocals(targetGameObject.transform, animationParams.startingLocalPosition, animationParams.startingLocalRotation, animationParams.startingLocalScale);
             }
 
             // TODO: Should this only happen if sequence is alive?
-            var animationParams = getAnimationParams();
-            LMUtils.ResetTransformLocals(targetGameObject.transform, animationParams.startingLocalPosition, animationParams.startingLocalRotation, animationParams.startingLocalScale);
+            //var animationParams = getAnimationParams();
+            //LMUtils.ResetTransformLocals(targetGameObject.transform, animationParams.startingLocalPosition, animationParams.startingLocalRotation, animationParams.startingLocalScale);
         }
 
         public void buildSequence(bool passedIsEditing = false) {
@@ -231,7 +242,7 @@ namespace LinkedMovement.Animation {
             // TODO: Validate
             // Object not already target and doesn't have LMAnimationParams
 
-            setTarget(buildableObject);
+            setTarget(buildableObject, false);
             stopPicking();
         }
 

@@ -103,14 +103,15 @@ namespace LinkedMovement.Utils {
                 var newId = newLinkIds[linkTarget.id];
                 linkTarget.id = newId;
             }
+            // TODO: Delete LMLinkParent and LMLinkTarget data from orphaned
 
             LinkedMovement.Log($"Try to build {createdLinkParents.Count} links");
             LinkedMovement.GetLMController().setupLinks(createdLinkParents, createdLinkTargets);
 
-            LinkedMovement.Log($"Built {createdAnimations.Count} animations from blueprint");
+            LinkedMovement.Log($"Built {createdAnimations.Count} animations from blueprint, starting");
 
             foreach (var animation in createdAnimations) {
-                animation.buildSequence();
+                animation.setup();
             }
         }
 
@@ -177,7 +178,7 @@ namespace LinkedMovement.Utils {
 
             LinkedMovement.Log("LMUtils.TryToBuildAnimationFromBlueprintObject for " + buildableObject.getName());
 
-            LMAnimation animation = new LMAnimation(animationParams, buildableObject.gameObject);
+            LMAnimation animation = new LMAnimation(animationParams, buildableObject.gameObject, true);
             animation.generateNewId();
             animationParams.forward = Quaternion.LookRotation(forward);
 

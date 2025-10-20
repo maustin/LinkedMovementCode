@@ -6,11 +6,11 @@ using UnityEngine;
 
 namespace LinkedMovement {
     public class LinkedMovement : AbstractMod {
-        public const string VERSION_NUMBER = "beta 10-11";
+        public const string VERSION_NUMBER = "beta 10-20";
         public const string HELPER_OBJECT_NAME = "Animation Helper (autohides)";
         public override string getIdentifier() => "com.themeparkitect.LinkedMovementCode";
         public override string getName() => "Linked Movement";
-        public override string getDescription() => "move things";
+        public override string getDescription() => "animate things";
         public override string getVersionNumber() {
             return VERSION_NUMBER;
         }

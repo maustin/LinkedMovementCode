@@ -9,6 +9,14 @@ namespace LinkedMovement {
 
         // TODO: 10-20
         // Test layering
+        // Delays
+
+        // Triggers
+        // non fatal exception
+        // Appears to happen when selecting a triggered animation in the Effects Controller
+        // This happens with OLD system as well. Possibly ignore.
+        // NullReferenceException: Object reference not set to an instance of an object
+        //   at AnimationTriggerEffectEditorPanel.initialize()[0x00011] in <eefe76887ca042e485a07fadc6c705a6>:0 
         
         // Once saw issue with animations, when at end of sequence, having 1 frame of child object mispositioned
         // Haven't seen since first occurrence.

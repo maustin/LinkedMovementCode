@@ -25,10 +25,8 @@ namespace LinkedMovement.UI.NewContent {
                             windowManager.removeWindow(this.window);
                             windowManager.createWindow(WindowManager.WindowType.EditLinkNew, link);
                         }
-                        using (Scope.GuiEnabled(false)) {
-                            if (Button("✕", Width(40f))) {
-                                // TODO delete link
-                            }
+                        if (Button("✕", Width(40f))) {
+                            controller.queueLinkToRemove(link);
                         }
                     }
                 }

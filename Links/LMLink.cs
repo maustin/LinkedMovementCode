@@ -80,7 +80,6 @@ namespace LinkedMovement.Links {
                     _tempName = _name;
                 } else {
                     // clear temps
-                    LMUtils.RemoveObjectHighlight(tempParentBuildableObject);
                     if (tempTargetBuildableObjects != null && tempTargetBuildableObjects.Count > 0) {
                         foreach (var buildableObject in tempTargetBuildableObjects) {
                             LMUtils.RemoveObjectHighlight(buildableObject);
@@ -417,8 +416,8 @@ namespace LinkedMovement.Links {
             LinkedMovement.GetLMController().addLink(this);
         }
 
-        public void removeLink() {
-            LinkedMovement.Log("LMLink.removeLink");
+        public void destroyLink() {
+            LinkedMovement.Log($"LMLink.destroyLink name: {name}, id: {id}");
 
             // Unparent targets
             foreach (var targetLink in linkTargets) {

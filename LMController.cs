@@ -34,6 +34,11 @@ namespace LinkedMovement {
 
         private HashSet<BuildableObject> buildableObjectsToUpdate = new HashSet<BuildableObject>();
 
+        private LMAnimation queuedAnimationToRemove;
+        private LMLink queuedLinkToRemove;
+        private bool queueCommit;
+        private bool queueDiscard;
+
         private void Awake() {
             LinkedMovement.Log("LMController Awake");
         }
@@ -51,6 +56,13 @@ namespace LinkedMovement {
         }
 
         private void Update() {
+            if (queuedAnimationToRemove != null) {
+                doRemoveAnimation(queuedAnimationToRemove);
+            }
+            if (queuedLinkToRemove != null) {
+                doRemoveLink(queuedLinkToRemove);
+            }
+
             if (UIUtility.isInputFieldFocused() || GameController.Instance.isGameInputLocked() || GameController.Instance.isQuittingGame) {
                 return;
             }
@@ -199,7 +211,7 @@ namespace LinkedMovement {
             if (animation != null) {
                 LinkedMovement.Log("deleted object has animation " + animation.name);
                 animations.Remove(animation);
-                animation.removeAnimation();
+                animation.destroyAnimation();
             }
 
             // If LinkParent
@@ -213,7 +225,7 @@ namespace LinkedMovement {
                 foreach (var targetGameObject in targetGameObjects) {
                     restartList.Add(targetGameObject);
                 }
-                linkAsParent.removeLink();
+                linkAsParent.destroyLink();
             }
 
             // If LinkTarget
@@ -230,7 +242,7 @@ namespace LinkedMovement {
                 if (!linkAsTarget.isValid()) {
                     LinkedMovement.Log("Link no longer valid, remove");
                     links.Remove(linkAsTarget);
-                    linkAsTarget.removeLink();
+                    linkAsTarget.destroyLink();
                 } else {
                     // Link is still valid, restart parent
                     restartList.Add(linkAsTarget.getParentGameObject());
@@ -290,31 +302,6 @@ namespace LinkedMovement {
             animations.Add(animation);
         }
 
-        public LMLink findLinkByParentGameObject(GameObject gameObject) {
-            LinkedMovement.Log("LMController.findLinkByParentGameObject");
-            foreach (var link in links) {
-                if (link.getParentGameObject() == gameObject) {
-                    LinkedMovement.Log("Found Link from parent");
-                    return link;
-                }
-            }
-            LinkedMovement.Log("No Link found from parent");
-            return null;
-        }
-
-        public LMLink findLinkByTargetGameObject(GameObject gameObject) {
-            LinkedMovement.Log("LMController.findLinkByTargetGameObject");
-            foreach (var link in links) {
-                var targets = link.getTargetGameObjects();
-                if (targets.Contains(gameObject)) {
-                    LinkedMovement.Log("Found Link from target");
-                    return link;
-                }
-            }
-            LinkedMovement.Log("No Link found from target");
-            return null;
-        }
-
         public void addLink(LMLink link) {
             LinkedMovement.Log("LMController.addLink from LMLink");
 
@@ -359,6 +346,49 @@ namespace LinkedMovement {
             currentLink.IsEditing = true;
         }
 
+        public void queueAnimationToRemove(LMAnimation animation) {
+            LinkedMovement.Log($"LMController.queueAnimationToRemove name: {animation.name}, id: {animation.id}");
+            queuedAnimationToRemove = animation;
+        }
+
+        private void doRemoveAnimation(LMAnimation animation) {
+            LinkedMovement.Log($"LMController.doRemoveAnimation name: {animation.name}, id: {animation.id}");
+
+            var animationGameObject = animation.targetGameObject;
+            var goList = new List<GameObject>() { animationGameObject };
+            LMUtils.EditAssociatedAnimations(goList, LMUtils.AssociatedAnimationEditMode.Stop, false);
+
+            animations.Remove(animation);
+            animation.destroyAnimation();
+
+            LMUtils.EditAssociatedAnimations(goList, LMUtils.AssociatedAnimationEditMode.Start, false);
+            queuedAnimationToRemove = null;
+        }
+
+        public void queueLinkToRemove(LMLink link) {
+            LinkedMovement.Log($"LMController.queueLinkToRemove name: {link.name}, id: {link.id}");
+            queuedLinkToRemove = link;
+        }
+
+        private void doRemoveLink(LMLink link) {
+            LinkedMovement.Log($"LMController.doRemoveList name: {link.name}, id: {link.id}");
+
+            var linkParentGameObject = link.getParentGameObject();
+            var linkTargetGameObjects = link.getTargetGameObjects();
+            var parentGameObjectList = new List<GameObject>() { linkParentGameObject };
+            var allGameObjectList = new List<GameObject>() { linkParentGameObject };
+            allGameObjectList.AddRange(linkTargetGameObjects);
+
+            LMUtils.EditAssociatedAnimations(parentGameObjectList, LMUtils.AssociatedAnimationEditMode.Stop, false);
+
+            links.Remove(link);
+            link.destroyLink();
+
+            LMUtils.EditAssociatedAnimations(allGameObjectList, LMUtils.AssociatedAnimationEditMode.Start, false);
+
+            queuedLinkToRemove = null;
+        }
+
         public void commitEdit() {
             LinkedMovement.Log("LMController.commitEdit");
             
@@ -385,6 +415,31 @@ namespace LinkedMovement {
             LMUtils.EditAssociatedAnimations(new List<GameObject>() { currentAnimation.targetGameObject }, LMUtils.AssociatedAnimationEditMode.Restart, true);
 
             currentAnimation.buildSequence();
+        }
+
+        public LMLink findLinkByParentGameObject(GameObject gameObject) {
+            LinkedMovement.Log("LMController.findLinkByParentGameObject");
+            foreach (var link in links) {
+                if (link.getParentGameObject() == gameObject) {
+                    LinkedMovement.Log("Found Link from parent");
+                    return link;
+                }
+            }
+            LinkedMovement.Log("No Link found from parent");
+            return null;
+        }
+
+        public LMLink findLinkByTargetGameObject(GameObject gameObject) {
+            LinkedMovement.Log("LMController.findLinkByTargetGameObject");
+            foreach (var link in links) {
+                var targets = link.getTargetGameObjects();
+                if (targets.Contains(gameObject)) {
+                    LinkedMovement.Log("Found Link from target");
+                    return link;
+                }
+            }
+            LinkedMovement.Log("No Link found from target");
+            return null;
         }
 
         private List<LMLinkTarget> getLinkTargetsById(string id, List<LMLinkTarget> targets) {

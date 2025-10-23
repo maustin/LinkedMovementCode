@@ -23,12 +23,10 @@ namespace LinkedMovement.UI.NewContent {
                     using (Scope.Horizontal()) {
                         if (Button(animation.name, RGUIStyle.flatButtonLeft)) {
                             windowManager.removeWindow(this.window);
-                            windowManager.createWindow(WindowManager.WindowType.EditLinkNew, animation);
+                            windowManager.createWindow(WindowManager.WindowType.EditAnimationNew, animation);
                         }
-                        using (Scope.GuiEnabled(false)) {
-                            if (Button("✕", Width(40f))) {
-                                // TODO delete animation
-                            }
+                        if (Button("✕", Width(40f))) {
+                            controller.queueAnimationToRemove(animation);
                         }
                     }
                 }

@@ -96,8 +96,9 @@ namespace LinkedMovement.Animation {
         }
 
         // Remove the animation from the target. Currently assumes sequence is stopped elsewhere.
-        public void removeAnimation() {
-            LinkedMovement.Log("LMAnimation.removeAnimation");
+        public void destroyAnimation() {
+            LinkedMovement.Log($"LMAnimation.destroyAnimation name: {name}, id: {id}");
+
             removeCustomData();
 
             animationParams = null;

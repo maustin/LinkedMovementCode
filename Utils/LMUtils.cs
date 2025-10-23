@@ -27,6 +27,10 @@ namespace LinkedMovement.Utils {
             }
         }
 
+        public static string GetNewId() {
+            return Guid.NewGuid().ToString();
+        }
+
         public static void DeleteChunkedMesh(BuildableObject bo) {
             if (bo == null) return;
             LinkedMovement.Log("LMUtils.DeleteChunkedMesh for " + bo.name);
@@ -104,7 +108,7 @@ namespace LinkedMovement.Utils {
             // Generate new Link Ids
             var newLinkIds = new Dictionary<string, string>();
             foreach (var linkParent in createdLinkParents) {
-                var newId = Guid.NewGuid().ToString();
+                var newId = GetNewId();
                 newLinkIds.Add(linkParent.id, newId);
                 linkParent.id = newId;
             }
@@ -150,7 +154,7 @@ namespace LinkedMovement.Utils {
                 pairBase.animParams.forward = Quaternion.LookRotation(forward);
 
                 // create new pairing ID so we don't collide with existing pairings
-                var newPairingId = Guid.NewGuid().ToString();
+                var newPairingId = GetNewId();
                 pairBase.pairId = newPairingId;
                 foreach (var pairTarget in pairTargets) {
                     pairTarget.pairId = newPairingId;

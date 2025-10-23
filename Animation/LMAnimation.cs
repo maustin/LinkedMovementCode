@@ -1,6 +1,5 @@
 ﻿using LinkedMovement.Utils;
 using PrimeTween;
-using System;
 using UnityEngine;
 
 namespace LinkedMovement.Animation {
@@ -101,7 +100,7 @@ namespace LinkedMovement.Animation {
         }
 
         public void generateNewId() {
-            id = Guid.NewGuid().ToString();
+            id = LMUtils.GetNewId();
         }
 
         public LMAnimationParams getAnimationParams() {
@@ -282,7 +281,7 @@ namespace LinkedMovement.Animation {
             }
         }
 
-        private void setCustomData() {
+        public void setCustomData() {
             LinkedMovement.Log("LMAnimation.setCustomData");
             
             removeCustomData();

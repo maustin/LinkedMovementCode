@@ -1,4 +1,5 @@
 ﻿using LinkedMovement.Animation;
+using LinkedMovement.Utils;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -41,7 +42,7 @@ namespace LinkedMovement {
 
             // TODO: Incremental naming
             name = "New Animation";
-            id = Guid.NewGuid().ToString();
+            id = LMUtils.GetNewId();
         }
 
         public void setStartingValues(Transform startingTransform) {
@@ -137,7 +138,7 @@ namespace LinkedMovement {
 
             // TODO: Incremental naming
             newAnimationParams.name = animationParams.name;
-            newAnimationParams.id = Guid.NewGuid().ToString();
+            newAnimationParams.id = LMUtils.GetNewId();
 
             newAnimationParams.isTriggerable = animationParams.isTriggerable;
             newAnimationParams.useInitialStartDelay = animationParams.useInitialStartDelay;

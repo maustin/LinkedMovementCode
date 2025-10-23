@@ -1,5 +1,6 @@
 ﻿using LinkedMovement.UI.Components;
 using LinkedMovement.UI.Utils;
+using LinkedMovement.Utils;
 using UnityEngine;
 using static UnityEngine.GUILayout;
 
@@ -48,6 +49,16 @@ namespace LinkedMovement.UI.NewContent {
                 }
 
                 Space(5f);
+                HorizontalLine.DrawHorizontalLine(Color.grey);
+                Space(10f);
+                using (Scope.GuiEnabled(PairingConverter.HasPairingsToConvert())) {
+                    Label("CONVERSION");
+                    if (Button("CONVERT Old Pairings to Anims & Links")) {
+                        windowManager.removeWindow(this.window);
+                        PairingConverter.ConvertPairings();
+                    }
+                }
+                Space(10f);
                 HorizontalLine.DrawHorizontalLine(Color.grey);
                 Space(5f);
                 Label("OLD target-origin UI");

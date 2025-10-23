@@ -1,5 +1,4 @@
 ﻿using LinkedMovement.Utils;
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -79,23 +78,29 @@ namespace LinkedMovement.Links {
             }
         }
 
-        //private bool isNewLink = false;
-
         public LMLink() {
             LinkedMovement.Log("LMLink base constructor");
             linkTargets = new List<LMLinkTarget>();
             _name = "New Link";
-            _id = Guid.NewGuid().ToString();
+            _id = LMUtils.GetNewId();
         }
 
         public LMLink(LMLinkParent linkParent, List<LMLinkTarget> linkTargets) {
-            LinkedMovement.Log("LMLink constructor with params");
+            LinkedMovement.Log("LMLink constructor with LinkParent and LinkTargets");
 
             this.linkParent = linkParent;
             this.linkTargets = linkTargets;
 
             _name = linkParent.name;
             _id = linkParent.id;
+        }
+
+        public LMLink(string name, string id, BuildableObject parentBuildableObject, List<BuildableObject> targetBuildableObjects) {
+            LinkedMovement.Log("LMLink constructor with id, name, and buildable objects");
+            _name = name;
+            _id = id;
+
+            initializeWith(parentBuildableObject, targetBuildableObjects);
         }
 
         private void initializeWith(BuildableObject parentBuildableObject, List<BuildableObject> targetBuildableObjects) {

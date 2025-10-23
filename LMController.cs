@@ -7,11 +7,16 @@ using UnityEngine;
 namespace LinkedMovement {
     public class LMController : MonoBehaviour {
 
-        // TODO: 10-20
+        // TODO: 10-23
+        //
         // Test layering
         // Delays
+        // UI update
+        // Check # Tweens being created matches expected
 
         // Triggers
+        // - Changing triggered animation not updating the existing trigger in EffectsController
+        //
         // non fatal exception
         // Appears to happen when selecting a triggered animation in the Effects Controller
         // This happens with OLD system as well. Possibly ignore.
@@ -110,7 +115,7 @@ namespace LinkedMovement {
         }
 
         public void setupLinks(List<LMLinkParent> linkParents, List<LMLinkTarget> linkTargets) {
-            LinkedMovement.Log("LMController.setupLinks");
+            LinkedMovement.Log($"LMController.setupLinks from {linkParents.Count} LinkParents and {linkTargets.Count} LinkTargets");
 
             foreach (var linkParent in linkParents) {
                 LinkedMovement.Log($"Find targets for {linkParent.name}, id {linkParent.id}");
@@ -118,14 +123,35 @@ namespace LinkedMovement {
                 LinkedMovement.Log($"Found {matchingTargets.Count} matching targets");
                 if (matchingTargets.Count > 0) {
                     var link = new LMLink(linkParent, matchingTargets);
+                    LinkedMovement.Log("Adding and building Link " + link.name);
                     links.Add(link);
                     link.rebuildLink();
                 }
             }
         }
 
+        public void setupLinks(List<LMLink> newLinks) {
+            LinkedMovement.Log("LMController.setupLinks from Links list, count: " + newLinks.Count);
+
+            foreach (var link in newLinks) {
+                LinkedMovement.Log($"Adding and building Link name: {link.name}, id: {link.id}");
+                links.Add(link);
+                link.rebuildLink();
+            }
+        }
+
+        public void setupAnimations(List<LMAnimation> newAnimations) {
+            LinkedMovement.Log("LMController.setupAnimations from Animations list, count: " + newAnimations.Count);
+
+            foreach (var anim in newAnimations) {
+                LinkedMovement.Log($"Adding and building Animation name: {anim.name}, id: {anim.id}");
+                animations.Add(anim);
+                anim.setup();
+            }
+        }
+
         public void onParkStarted() {
-            LinkedMovement.Log("LMController.onParkStarted");
+            LinkedMovement.Log($"LMController.onParkStarted with {animations.Count} animations");
 
             foreach (var animation in animations) {
                 animation.setup();

@@ -38,7 +38,7 @@ namespace LinkedMovement
                 pairingId = pId;
             }
             else {
-                pairingId = Guid.NewGuid().ToString();
+                pairingId = LMUtils.GetNewId();
             }
             LinkedMovement.Log("Pairing ID: " + pairingId);
 
@@ -130,6 +130,7 @@ namespace LinkedMovement
                 LMUtils.ResetTransformLocals(baseGO.transform, animParams.startingLocalPosition, animParams.startingLocalRotation, animParams.startingLocalScale);
             }
             connected = false;
+            removeCustomData();
         }
 
         public void createSequence() {
@@ -179,6 +180,17 @@ namespace LinkedMovement
                 if (pairTarget == null) {
                     targetBO.addCustomData(CreatePairTarget(pairingId, offset));
                 }
+            }
+        }
+
+        private void removeCustomData() {
+            LinkedMovement.Log("Pairing.removeCustomData");
+            var baseBuildableObject = LMUtils.GetBuildableObjectFromGameObject(baseGO);
+            baseBuildableObject.removeCustomData<PairBase>();
+
+            foreach (GameObject targetGO in targetGOs) {
+                var targetBuildableObject = LMUtils.GetBuildableObjectFromGameObject(targetGO);
+                targetBuildableObject.removeCustomData<PairTarget>();
             }
         }
 

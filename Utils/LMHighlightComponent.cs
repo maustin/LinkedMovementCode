@@ -13,7 +13,7 @@ namespace LinkedMovement.Utils {
         LinkTarget = 1 << 3,
     }
 
-    // TODO: Flag colors?
+    // TODO: Flag colors
 
     public class LMHighlightComponent : MonoBehaviour {
         private HighlightType currentFlags = HighlightType.None;
@@ -49,6 +49,7 @@ namespace LinkedMovement.Utils {
             return (currentFlags & flag) == flag;
         }
 
+        // TODO: This can be simplified. Many of these combinations are not possible with current UI flow.
         private void rebuildHighlight() {
             LinkedMovement.Log("LMHighlightComponent.rebuildHighlight");
             if (highlightHandle != null) {
@@ -58,62 +59,47 @@ namespace LinkedMovement.Utils {
             }
 
             if (hasFlag(HighlightType.MouseOver)) {
-                LinkedMovement.Log("MouseOver");
-                buildHighlightWithColor(Color.grey);
+                //LinkedMovement.Log("MouseOver");
+                //buildHighlightWithColor(Color.grey);
+                buildHighlightWithColor(Color.white);
                 return;
             }
             if (hasFlag(HighlightType.AnimationTarget) && hasFlag(HighlightType.LinkParent) && hasFlag(HighlightType.LinkTarget)) {
-                LinkedMovement.Log("AnimationTarget, LinkParent, LinkTarget");
+                //LinkedMovement.Log("AnimationTarget, LinkParent, LinkTarget");
                 buildHighlightWithColor(Color.white);
                 return;
             }
             if (hasFlag(HighlightType.AnimationTarget) && hasFlag(HighlightType.LinkParent)) {
-                LinkedMovement.Log("AnimationTarget, LinkParent");
+                //LinkedMovement.Log("AnimationTarget, LinkParent");
                 buildHighlightWithColor(Color.magenta);
                 return;
             }
             if (hasFlag(HighlightType.AnimationTarget) && hasFlag(HighlightType.LinkTarget)) {
-                LinkedMovement.Log("AnimationTarget, LinkTarget");
+                //LinkedMovement.Log("AnimationTarget, LinkTarget");
                 buildHighlightWithColor(Color.cyan);
                 return;
             }
             if (hasFlag(HighlightType.LinkParent) && hasFlag(HighlightType.LinkTarget)) {
-                LinkedMovement.Log("LinkParent, LinkTarget");
+                //LinkedMovement.Log("LinkParent, LinkTarget");
                 buildHighlightWithColor(Color.yellow);
                 return;
             }
             if (hasFlag(HighlightType.AnimationTarget)) {
-                LinkedMovement.Log("AnimationTarget");
+                //LinkedMovement.Log("AnimationTarget");
                 buildHighlightWithColor(Color.blue);
                 return;
             }
             if (hasFlag(HighlightType.LinkParent)) {
-                LinkedMovement.Log("LinkParent");
+                //LinkedMovement.Log("LinkParent");
                 buildHighlightWithColor(Color.red);
                 return;
             }
             if (hasFlag(HighlightType.LinkTarget)) {
-                LinkedMovement.Log("LinkTarget");
+                //LinkedMovement.Log("LinkTarget");
                 buildHighlightWithColor(Color.green);
                 return;
             }
-            LinkedMovement.Log("NONE!");
-
-            // TODO
-            // none skip
-            // MouseOver = grey
-            // AnimationTarget = blue
-            // LinkParent = red
-            // LinkTarget = green
-
-            // if MouseOver, grey
-            // if AnimationTarget, blue
-            // if AnimationTarget, linkParent, magenta
-            // if AnimationTarget, linkTarget, cyan
-            // if AnimationTarget, linkParent, linkTarget, white
-            // If LinkParent, red
-            // If LinkTarget, green
-            // If LinkParent, LinkTarget, yellow
+            //LinkedMovement.Log("NONE!");
         }
 
         private void buildHighlightWithColor(Color color) {

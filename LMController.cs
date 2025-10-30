@@ -9,12 +9,9 @@ using UnityEngine;
 namespace LinkedMovement {
     public class LMController : MonoBehaviour {
 
-        // TODO: 10-26
+        // TODO: 10-30
         //
-        // Improve color picker
-        // - Cache & delete Texture2Ds!
-        // - Handle apparently null custom colors (no color boxes appear in ui but can still set colors - and then they appear)
-
+        
         // UI update
         // Check Delays
         // Check # Tweens being created matches expected

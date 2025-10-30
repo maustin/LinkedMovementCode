@@ -13,7 +13,7 @@ namespace LinkedMovement.UI.NewContent {
 
         public void DoGUI() {
             using (Scope.Vertical()) {
-                Label("Select the object that will animate.");
+                Label("Select the object that will animate.", RGUIStyle.popupTextNew);
 
                 Space(10f);
 
@@ -24,7 +24,7 @@ namespace LinkedMovement.UI.NewContent {
                     using (Scope.Horizontal()) {
                         var name = targetBO.getName();
                         Label(name);
-                        if (Button("✕", Width(40f))) {
+                        if (Button("✕", RGUIStyle.roundedFlatButton, Width(40f))) {
                             controller.currentAnimation.removeTarget();
                         }
                     }
@@ -33,7 +33,7 @@ namespace LinkedMovement.UI.NewContent {
                 Space(10f);
 
                 using (Scope.GuiEnabled(!hasTarget)) {
-                    if (Button("Select Target")) {
+                    if (Button("Select Target", RGUIStyle.roundedFlatButton)) {
                         GUI.FocusControl(null);
                         controller.currentAnimation.startPicking();
                     }

@@ -30,7 +30,7 @@ namespace LinkedMovement.UI.NewContent {
                 // Name
                 using (Scope.Horizontal()) {
                     InfoPopper.DoInfoPopper(LMStringKey.CREATE_NEW_ANIM_NAME);
-                    Label("Animation name");
+                    Label("Animation name", RGUIStyle.popupTextNew);
                     var newName = RGUI.Field(controller.currentAnimation.name);
                     if (newName != controller.currentAnimation.name) {
                         controller.currentAnimation.name = newName;
@@ -57,7 +57,7 @@ namespace LinkedMovement.UI.NewContent {
                     var canFinish = controller.currentAnimation.isValid();
                     FlexibleSpace();
                     using (Scope.GuiEnabled(canFinish)) {
-                        if (Button("Save ✓", Width(65))) {
+                        if (Button("Save ✓", RGUIStyle.roundedFlatButton, Width(65))) {
                             controller.commitEdit();
 
                             // TODO: Can this call be moved to LMWindowContent?

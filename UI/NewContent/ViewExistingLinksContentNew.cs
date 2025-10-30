@@ -25,7 +25,7 @@ namespace LinkedMovement.UI.NewContent {
                             windowManager.removeWindow(this.window);
                             windowManager.createWindow(WindowManager.WindowType.EditLinkNew, link);
                         }
-                        if (Button("✕", Width(40f))) {
+                        if (Button("✕", RGUIStyle.roundedFlatButton, Width(40f))) {
                             controller.queueLinkToRemove(link);
                         }
                     }

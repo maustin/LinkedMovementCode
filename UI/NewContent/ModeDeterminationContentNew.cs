@@ -1,4 +1,5 @@
 ﻿using LinkedMovement.UI.Utils;
+using RapidGUI;
 using static UnityEngine.GUILayout;
 
 namespace LinkedMovement.UI.NewContent {
@@ -9,7 +10,7 @@ namespace LinkedMovement.UI.NewContent {
             base.DoGUI();
 
             using (Scope.Vertical()) {
-                if (Button("Create Animation")) {
+                if (Button("Create Animation", RGUIStyle.roundedFlatButton)) {
                     LinkedMovement.Log("Clicked Create Animation");
                     windowManager.removeWindow(this.window);
                     windowManager.createWindow(WindowManager.WindowType.CreateAnimationNew, null);
@@ -17,7 +18,7 @@ namespace LinkedMovement.UI.NewContent {
 
                 Space(3f);
 
-                if (Button("View Animations")) {
+                if (Button("View Animations", RGUIStyle.roundedFlatButton)) {
                     LinkedMovement.Log("Clicked View Animations");
                     windowManager.removeWindow(this.window);
                     windowManager.createWindow(WindowManager.WindowType.ViewAnimationsNew, null);
@@ -25,7 +26,7 @@ namespace LinkedMovement.UI.NewContent {
 
                 Space(15f);
 
-                if (Button("Create Link")) {
+                if (Button("Create Link", RGUIStyle.roundedFlatButton)) {
                     LinkedMovement.Log("Clicked Create Link");
                     windowManager.removeWindow(this.window);
                     windowManager.createWindow(WindowManager.WindowType.CreateLinkNew, null);
@@ -33,7 +34,7 @@ namespace LinkedMovement.UI.NewContent {
 
                 Space(3f);
 
-                if (Button("View Links")) {
+                if (Button("View Links", RGUIStyle.roundedFlatButton)) {
                     LinkedMovement.Log("Clicked View Links");
                     windowManager.removeWindow(this.window);
                     windowManager.createWindow(WindowManager.WindowType.ViewLinksNew, null);

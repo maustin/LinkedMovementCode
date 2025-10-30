@@ -18,12 +18,12 @@ namespace LinkedMovement.UI.NewContent {
 
         public void DoGUI() {
             using (Scope.Vertical()) {
-                Label("Select the objects to attach to the parent.");
+                Label("Select the objects to attach to the parent.", RGUIStyle.popupTextNew);
 
                 Space(10f);
 
                 using (Scope.Horizontal()) {
-                    Label("Selection mode");
+                    Label("Selection mode", RGUIStyle.popupTextNew);
                     var newSelectionMod = Toolbar(selectedSelectionMode, selectionModeNames);
                     if (newSelectionMod != selectedSelectionMode) {
                         selectedSelectionMode = newSelectionMod;
@@ -38,7 +38,7 @@ namespace LinkedMovement.UI.NewContent {
                     else if (selectionModes[selectedSelectionMode] == Selection.Mode.Box)
                         selectButtonText = "Select Children";
 
-                    if (Button(selectButtonText)) {
+                    if (Button(selectButtonText, RGUIStyle.roundedFlatButton)) {
                         GUI.FocusControl(null);
                         controller.currentLink.startPickingTargets(selectionModes[selectedSelectionMode]);
                     }
@@ -48,8 +48,8 @@ namespace LinkedMovement.UI.NewContent {
                 targetsScrollPosition = BeginScrollView(targetsScrollPosition, Height(300f));
                 foreach (var targetObject in targetObjects) {
                     using (Scope.Horizontal()) {
-                        Label(targetObject.getName());
-                        if (Button("✕", Width(40))) {
+                        Label(targetObject.getName(), RGUIStyle.popupTextNew);
+                        if (Button("✕", RGUIStyle.roundedFlatButton, Width(40))) {
                             controller.currentLink.removeSingleTargetObject(targetObject);
                         }
                     }
@@ -59,7 +59,7 @@ namespace LinkedMovement.UI.NewContent {
                 FlexibleSpace();
                 using (Scope.Horizontal()) {
                     using (Scope.GuiEnabled(targetObjects != null && targetObjects.Count > 0)) {
-                        if (Button("Remove All Children")) {
+                        if (Button("Remove All Children", RGUIStyle.roundedFlatButton)) {
                             controller.currentLink.removeAllTargetObjects();
                         }
                     }

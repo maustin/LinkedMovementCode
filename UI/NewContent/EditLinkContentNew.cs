@@ -1,5 +1,4 @@
-﻿using LinkedMovement.Animation;
-using LinkedMovement.Links;
+﻿using LinkedMovement.Links;
 using LinkedMovement.UI.Components;
 using LinkedMovement.UI.Utils;
 using RapidGUI;
@@ -30,9 +29,8 @@ namespace LinkedMovement.UI.NewContent {
             using (Scope.Vertical()) {
                 // Name
                 using (Scope.Horizontal()) {
-                    //InfoPopper.DoInfoPopper(LMStringKey.CREATE_NEW_ANIM_NAME);
-                    // TODO: Info i
-                    Label("Link name");
+                    InfoPopper.DoInfoPopper(LMStringKey.TODO);
+                    Label("Link name", RGUIStyle.popupTextNew);
                     var newName = RGUI.Field(controller.currentLink.name);
                     if (newName != controller.currentLink.name) {
                         controller.currentLink.name = newName;
@@ -53,7 +51,7 @@ namespace LinkedMovement.UI.NewContent {
                     var canFinish = controller.currentLink.isValid();
                     FlexibleSpace();
                     using (Scope.GuiEnabled(canFinish)) {
-                        if (Button("Save ✓", Width(65))) {
+                        if (Button("Save ✓", RGUIStyle.roundedFlatButton, Width(65))) {
                             controller.commitEdit();
 
                             // TODO: Can this call be moved to LMWindowContent?

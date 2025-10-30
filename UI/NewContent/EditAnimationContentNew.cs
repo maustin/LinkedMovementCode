@@ -49,7 +49,7 @@ namespace LinkedMovement.UI.NewContent {
                     var canFinish = controller.currentAnimation.isValid();
                     FlexibleSpace();
                     using (Scope.GuiEnabled(canFinish)) {
-                        if (Button("Save ✓", Width(65))) {
+                        if (Button("Save ✓", RGUIStyle.roundedFlatButton, Width(65))) {
                             controller.commitEdit();
 
                             // TODO: Can this call be moved to LMWindowContent?

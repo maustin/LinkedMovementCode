@@ -37,7 +37,7 @@ namespace LinkedMovement.UI.NewContent {
                 }
 
                 using (Scope.Horizontal()) {
-                    // TODO: Info
+                    InfoPopper.DoInfoPopper(LMStringKey.TODO);
                     Label("Delay animation on park load", RGUIStyle.popupTextNew);
                     var newUseInitialStartDelay = RGUI.Field(animationParams.useInitialStartDelay);
                     if (animationParams.useInitialStartDelay != newUseInitialStartDelay) {
@@ -47,6 +47,7 @@ namespace LinkedMovement.UI.NewContent {
                 }
 
                 using (Scope.Horizontal()) {
+                    InfoPopper.DoInfoPopper(LMStringKey.TODO);
                     var newInitialDelayMin = RGUI.Field(animationParams.initialStartDelayMin, "Delay time min");
                     var newInitialDelayMax = RGUI.Field(animationParams.initialStartDelayMax, "Delay time max");
                     if (!animationParams.initialStartDelayMin.Equals(newInitialDelayMin) || !animationParams.initialStartDelayMax.Equals(newInitialDelayMax)) {

@@ -81,8 +81,8 @@
     <Compile Include="UI\LMWindowContent.cs" />
     <Compile Include="UI\LMWindowFactory.cs" />
     <Compile Include="UI\NewContent\CreateAnimationContentNew.cs" />
-    <Compile Include="UI\NewContent\CreateAnimationStepSubContentNew.cs" />
-    <Compile Include="UI\NewContent\CreateAnimationSubContentNew.cs" />
+    <Compile Include="UI\NewContent\AnimationStepSubContentNew.cs" />
+    <Compile Include="UI\NewContent\AnimationSubContentNew.cs" />
     <Compile Include="UI\NewContent\CreateLinkContentNew.cs" />
     <Compile Include="UI\NewContent\EditAnimationContentNew.cs" />
     <Compile Include="UI\NewContent\EditLinkContentNew.cs" />
@@ -99,6 +99,7 @@
     <Compile Include="UI\Utils\LMStringSystem.cs" />
     <Compile Include="UI\Utils\Scope.cs" />
     <Compile Include="UI\Utils\LMStyles.cs" />
+    <Compile Include="UI\Utils\Texture2DPool.cs" />
     <Compile Include="UI\Utils\Tooltip.cs" />
     <Compile Include="InParkHarmonyInjector.cs" />
     <Compile Include="Options.cs" />

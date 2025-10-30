@@ -15,7 +15,7 @@ namespace LinkedMovement.UI.NewContent {
             controller = LinkedMovement.GetLMController();
 
             controller.editAnimation(animation);
-            animateSubContent = new CreateAnimationSubContentNew();
+            animateSubContent = new AnimationSubContentNew();
         }
 
         public override void DoGUI() {

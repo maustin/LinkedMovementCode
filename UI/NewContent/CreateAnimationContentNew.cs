@@ -16,7 +16,7 @@ namespace LinkedMovement.UI.NewContent {
             controller.editAnimation();
 
             selectSubContent = new SelectAnimationTargetSubContentNew();
-            animateSubContent = new CreateAnimationSubContentNew();
+            animateSubContent = new AnimationSubContentNew();
         }
 
         public override void DoGUI() {

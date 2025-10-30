@@ -189,8 +189,9 @@ namespace LinkedMovement.UI {
             return new Vector2(position.x + offsetAmount,position.y + offsetAmount);
         }
 
-        private static float getUIScaledValue(float value) {
-            return value / Settings.Instance.uiScale;
-        }
+        //private static float getUIScaledValue(float value) {
+        //    // Shouldn't this be *?
+        //    return value / Settings.Instance.uiScale;
+        //}
     }
 }

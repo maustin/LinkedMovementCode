@@ -86,7 +86,7 @@ namespace RapidGUI
                         var buttonSize = new Vector2(40f, 20f);
                         var buttonPos = new Vector2(rect.size.x - buttonSize.x, 2f);
                         var buttonRect = new Rect(buttonPos, buttonSize);
-                        if (GUI.Button(buttonRect, "✕", RGUIStyle.flatButton)) {
+                        if (GUI.Button(buttonRect, "✕", RGUIStyle.closeWindowButton)) {
                             CloseWindow();
                         }
 

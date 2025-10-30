@@ -10,6 +10,10 @@ namespace LinkedMovement {
 
         // TODO: 10-26
         //
+        // Improve color picker
+        // - Cache & delete Texture2Ds!
+        // - Handle apparently null custom colors (no color boxes appear in ui but can still set colors - and then they appear)
+
         // UI update
         // Check Delays
         // Check # Tweens being created matches expected

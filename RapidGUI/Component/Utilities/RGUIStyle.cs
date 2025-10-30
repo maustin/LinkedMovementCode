@@ -13,16 +13,21 @@ namespace RapidGUI
         public static GUIStyle darkWindow;
         public static GUIStyle alignLeftBox;
 
-        public static GUIStyle popupWindowNew;
-        public static GUIStyle popupWindowTitleNew;
-        public static GUIStyle popupWindowContentNew;
-
         public static GUIStyle warningLabel;
         public static GUIStyle warningLabelNoStyle;
 
         public static GUIStyle animationStep;
         public static GUIStyle dimText;
         public static GUIStyle infoText;
+
+        // NEW
+        public static GUIStyle popupWindowNew;
+        public static GUIStyle popupWindowTitleNew;
+        public static GUIStyle popupWindowContentNew;
+        public static GUIStyle popupTextNew;
+        public static GUIStyle closeWindowButton;
+        public static GUIStyle flatButtonNew;
+        public static GUIStyle infoPopperButtonNew;
 
         // GUIStyleState.background will be null 
         // if it set after secound scene load and don't use a few frame
@@ -35,8 +40,13 @@ namespace RapidGUI
         private static Texture2D darkWindowTexOnNormal;
         private static Texture2D animationStepTex;
 
-        private static Texture2D popupTexNew;
-        private static Texture2D popupWindowContentTexNew;
+        // NEW
+        private static Texture2D popupTextureNew;
+        private static Texture2D popupWindowContentTextureNew;
+        private static Texture2D closeWindowButtonTexture;
+        private static Texture2D flatButtonNormalTextureNew;
+        private static Texture2D flatButtonHoverTextureNew;
+
 
         static RGUIStyle()
         {
@@ -59,9 +69,14 @@ namespace RapidGUI
             CreateDimText();
             CreateInfoText();
 
+            // NEW
             CreatePopupWindowNew();
             CreatePopupWindowTitleNew();
             CreatePopupWindowContentNew();
+            CreatePopupTextNew();
+            CreateCloseWindowButton();
+            CreateFlatButtonNew();
+            CreateInfoPopperNew();
         }
 
         static void CreateFlatButton()
@@ -77,7 +92,7 @@ namespace RapidGUI
             style.hover.textColor = toggle.hover.textColor;
 
             flatButtonTex = new Texture2D(1, 1);
-            flatButtonTex.SetPixels(new[] { new Color(0.5f, 0.5f, 0.5f, 0.5f) });
+            flatButtonTex.SetPixel(0, 0, new Color(0.5f, 0.5f, 0.5f));
             flatButtonTex.Apply();
             style.hover.background = flatButtonTex;
 
@@ -85,14 +100,83 @@ namespace RapidGUI
             flatButton = style;
         }
 
+        static void CreateFlatButtonNew() {
+            var style = new GUIStyle(GUI.skin.label) {
+                wordWrap = false,
+                alignment = TextAnchor.MiddleCenter,
+            };
+
+            style.normal.textColor = style.hover.textColor = new Color(0.32f, 0.32f, 0.32f);
+
+            flatButtonNormalTextureNew = new Texture2D(1, 1);
+            flatButtonNormalTextureNew.SetPixel(0, 0, new Color(0.87f, 0.87f, 0.87f));
+            flatButtonNormalTextureNew.Apply();
+            flatButtonHoverTextureNew = new Texture2D(1, 1);
+            flatButtonHoverTextureNew.SetPixel(0, 0, new Color(0.82f, 0.82f, 0.82f));
+            flatButtonHoverTextureNew.Apply();
+
+            style.normal.background = flatButtonNormalTextureNew;
+            style.hover.background = flatButtonHoverTextureNew;
+
+            style.name = nameof(flatButtonNew);
+            flatButtonNew = style;
+        }
+
+        static void CreateCloseWindowButton() {
+            var style = new GUIStyle(GUI.skin.label) {
+                wordWrap = false,
+                alignment = TextAnchor.MiddleCenter,
+            };
+
+            style.normal.textColor = new Color(0.95f, 0.95f, 0.95f);
+            style.hover.textColor = new Color(1f, 1f, 1f);
+
+            closeWindowButtonTexture = new Texture2D(1, 1);
+            closeWindowButtonTexture.SetPixel(0, 0, new Color(0.79f, 0.21f, 0.15f));
+            closeWindowButtonTexture.Apply();
+            style.normal.background = style.hover.background = closeWindowButtonTexture;
+
+            style.name = nameof(closeWindowButton);
+            closeWindowButton = style;
+        }
+
+        static void CreateInfoPopperNew() {
+            var style = new GUIStyle(GUI.skin.label) {
+                wordWrap = false,
+                alignment = TextAnchor.MiddleCenter,
+            };
+
+            //style.normal.textColor = new Color(0.95f, 0.95f, 0.95f);
+            //style.hover.textColor = new Color(1f, 1f, 1f);
+            style.normal.textColor = new Color(0.32f, 0.32f, 0.32f);
+            style.hover.textColor = new Color(0.27f, 0.27f, 0.27f);
+
+            style.name = nameof(infoPopperButtonNew);
+            infoPopperButtonNew = style;
+        }
+
         static void CreateDimText() {
-            var style = new GUIStyle(GUI.skin.label);
+            var style = new GUIStyle(GUI.skin.label) {
+                wordWrap = false,
+                alignment = TextAnchor.MiddleCenter,
+            };
 
             style.normal.textColor = new Color(0.3f, 0.3f, 0.3f);
             style.hover.textColor = new Color(0.3f, 0.3f, 0.3f);
 
             style.name = nameof(dimText);
             dimText = style;
+        }
+
+        static void CreatePopupTextNew() {
+            var style = new GUIStyle(GUI.skin.label);
+            style.wordWrap = false;
+
+            style.alignment = TextAnchor.MiddleLeft;
+            style.normal.textColor = style.hover.textColor = new Color(0.32f, 0.32f, 0.32f);
+
+            style.name = nameof(popupTextNew);
+            popupTextNew = style;
         }
 
         static void CreateInfoText() {
@@ -119,7 +203,8 @@ namespace RapidGUI
             style.hover.textColor = toggle.hover.textColor;
 
             flatButtonLeftTex = new Texture2D(1, 1);
-            flatButtonLeftTex.SetPixels(new[] { new Color(0.5f, 0.5f, 0.5f, 0.5f) });
+            //flatButtonLeftTex.SetPixels(new[] { new Color(0.5f, 0.5f, 0.5f, 0.5f) });
+            flatButtonLeftTex.SetPixel(0, 0, new Color(0.5f, 0.5f, 0.5f));
             flatButtonLeftTex.Apply();
             style.hover.background = flatButtonLeftTex;
 
@@ -152,14 +237,10 @@ namespace RapidGUI
         }
 
         static void CreateAnimationStep() {
-            var style = new GUIStyle(GUI.skin.box) {
-                //margin = new RectOffset(0, 0, -10, 0),
-                border = new RectOffset(0, 0, -15, 0),
-                //padding = new RectOffset(0, 0, -10, 0),
-            };
-
+            var style = new GUIStyle(GUI.skin.box);
+            
             animationStepTex = new Texture2D(1, 1);
-            animationStepTex.SetPixels(new[] { new Color(0.2f, 0.2f, 0.25f, 0.9f)});
+            animationStepTex.SetPixel(0, 0, new Color(0.75f, 0.75f, 0.75f));
             animationStepTex.Apply();
 
             style.normal.background = style.hover.background = animationStepTex;
@@ -210,13 +291,13 @@ namespace RapidGUI
         static void CreatePopupWindowNew() {
             var style = new GUIStyle(GUI.skin.window);
 
-            popupTexNew = new Texture2D(1, 1);
+            popupTextureNew = new Texture2D(1, 1);
             var colorValue = 0.63f;
-            popupTexNew.SetPixel(0, 0, new Color(colorValue, colorValue, colorValue));
-            popupTexNew.Apply();
+            popupTextureNew.SetPixel(0, 0, new Color(colorValue, colorValue, colorValue));
+            popupTextureNew.Apply();
 
-            style.normal.background = popupTexNew;
-            style.onNormal.background = popupTexNew;
+            style.normal.background = popupTextureNew;
+            style.onNormal.background = popupTextureNew;
 
             style.name = nameof(popupWindowNew);
             popupWindowNew = style;
@@ -259,14 +340,14 @@ namespace RapidGUI
 
             var bgValue = 0.54f;
             //var bgValue = 0.11f;
-            popupWindowContentTexNew = new Texture2D(1, 1);
-            popupWindowContentTexNew.SetPixel(0, 0, new Color(bgValue, bgValue, bgValue));
+            popupWindowContentTextureNew = new Texture2D(1, 1);
+            popupWindowContentTextureNew.SetPixel(0, 0, new Color(bgValue, bgValue, bgValue));
             //popupWindowContentTexNew.SetPixel(0, 0, new Color(0f, 0f, 0.5f));
-            popupWindowContentTexNew.Apply();
+            popupWindowContentTextureNew.Apply();
 
-            style.normal.background = style.hover.background = popupWindowContentTexNew;
+            style.normal.background = style.hover.background = popupWindowContentTextureNew;
 
-            style.name = nameof(popupWindowContentTexNew);
+            style.name = nameof(popupWindowContentTextureNew);
             popupWindowContentNew = style;
         }
 

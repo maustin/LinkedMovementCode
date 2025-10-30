@@ -2,6 +2,7 @@
 
 namespace LinkedMovement.UI.Utils {
     public enum LMStringKey {
+        TODO,
         CREATE_NEW_ANIM_NAME,
         SELECT_TARGET_INTRO,
         SELECT_ORIGIN_INTRO,
@@ -23,6 +24,7 @@ namespace LinkedMovement.UI.Utils {
 
     public class LMStringSystem {
         private static readonly Dictionary<LMStringKey, string> texts = new() {
+            { LMStringKey.TODO, "To Do" },
             { LMStringKey.CREATE_NEW_ANIM_NAME, "Give the new animation a name to help distinguish it from other animations you create." },
             { LMStringKey.SELECT_TARGET_INTRO, "Select the objects that will be 'attached' to a parent object." },
             { LMStringKey.SELECT_ORIGIN_INTRO, "Select or Generate the object that will animate. The attached Targets will move along with this object." },

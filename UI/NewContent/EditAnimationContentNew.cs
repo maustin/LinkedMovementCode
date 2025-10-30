@@ -19,17 +19,17 @@ namespace LinkedMovement.UI.NewContent {
         }
 
         public override void DoGUI() {
-            base.DoGUI();
-
             if (controller.currentAnimation == null) {
                 return;
             }
+
+            base.DoGUI();
 
             using (Scope.Vertical()) {
                 // Name
                 using (Scope.Horizontal()) {
                     InfoPopper.DoInfoPopper(LMStringKey.CREATE_NEW_ANIM_NAME);
-                    Label("Animation name");
+                    Label("Animation name", RGUIStyle.popupTextNew);
                     var newName = RGUI.Field(controller.currentAnimation.name);
                     if (newName != controller.currentAnimation.name) {
                         controller.currentAnimation.name = newName;

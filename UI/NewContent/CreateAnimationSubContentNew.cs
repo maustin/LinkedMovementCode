@@ -27,7 +27,7 @@ namespace LinkedMovement.UI.NewContent {
             using (Scope.Vertical()) {
                 using (Scope.Horizontal()) {
                     InfoPopper.DoInfoPopper(LMStringKey.ANIMATE_IS_TRIGGERABLE);
-                    GUILayout.Label("Is Triggerable");
+                    Label("Is Triggerable", RGUIStyle.popupTextNew);
                     var newIsTriggerable = RGUI.Field(animationParams.isTriggerable);
                     if (newIsTriggerable != animationParams.isTriggerable) {
                         LinkedMovement.Log("SET isTriggerable");
@@ -38,7 +38,7 @@ namespace LinkedMovement.UI.NewContent {
 
                 using (Scope.Horizontal()) {
                     // TODO: Info
-                    GUILayout.Label("Delay animation on park load");
+                    Label("Delay animation on park load", RGUIStyle.popupTextNew);
                     var newUseInitialStartDelay = RGUI.Field(animationParams.useInitialStartDelay);
                     if (animationParams.useInitialStartDelay != newUseInitialStartDelay) {
                         LinkedMovement.Log("SET use initial start delay");
@@ -60,10 +60,10 @@ namespace LinkedMovement.UI.NewContent {
 
                 using (Scope.Horizontal()) {
                     InfoPopper.DoInfoPopper(LMStringKey.ANIMATE_STEPS_INTRO);
-                    GUILayout.Label("Animation Steps");
+                    Label("Animation Steps", RGUIStyle.popupTextNew);
                 }
 
-                if (Button("Add Step")) {
+                if (Button("Add Step", RGUIStyle.flatButtonNew)) {
                     animationParams.addNewAnimationStep();
                     controller.currentAnimationUpdated();
                 }

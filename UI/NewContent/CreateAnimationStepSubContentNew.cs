@@ -65,45 +65,47 @@ namespace LinkedMovement.UI.NewContent {
                     if (Button($"{(animationStep.uiIsOpen ? "▼" : "►")} {(stepIndex + 1).ToString()} : {(animationStep.name == "" ? "Step" : animationStep.name)} ", RGUIStyle.flatButtonLeft)) {
                         animationStep.uiIsOpen = !animationStep.uiIsOpen;
                     }
-                    if (Button("↑", Width(26f))) {
+                    
+                    if (Button("↑", RGUIStyle.flatButtonNew, Width(26f))) {
                         LinkedMovement.Log("Move AnimationStep UP");
                         var didChange = animationParams.moveAnimationStepUp(animationStep);
                         if (didChange)
                             controller.currentAnimationUpdated();
                     }
-                    if (Button("↓", Width(26f))) {
+                    if (Button("↓", RGUIStyle.flatButtonNew, Width(26f))) {
                         LinkedMovement.Log("Move AnimationStep DOWN");
                         var didChange = animationParams.moveAnimationStepDown(animationStep);
                         if (didChange)
                             controller.currentAnimationUpdated();
                     }
                     Label("|", RGUIStyle.dimText, Width(3f));
-                    if (Button("+Dup", Width(42f))) {
+                    if (Button("+Dup", RGUIStyle.flatButtonNew, Width(42f))) {
                         LinkedMovement.Log("Add duplicate step");
                         animationParams.addDuplicateAnimationStep(animationStep);
                         controller.currentAnimationUpdated();
                     }
-                    if (Button("+Inv", Width(40f))) {
+                    if (Button("+Inv", RGUIStyle.flatButtonNew, Width(40f))) {
                         LinkedMovement.Log("Add inverse step");
                         animationParams.addInverseAnimationStep(animationStep);
                         controller.currentAnimationUpdated();
                     }
                     Label("|", RGUIStyle.dimText, Width(3f));
-                    if (Button("✕", Width(25f))) {
+                    if (Button("✕", RGUIStyle.flatButtonNew, Width(25f))) {
                         LinkedMovement.Log("Delete AnimationStep");
                         animationParams.deleteAnimationStep(animationStep);
                         controller.currentAnimationUpdated();
                     }
                 }
 
+                // THIS IS 100% A HACK AND AT THIS POINT I DON'T CARE
+                //if (Settings.Instance.uiScale > 1.13f) {
+                //    Space(-13f);
+                //}
+
                 if (animationStep.uiIsOpen) {
                     using (new GUILayout.VerticalScope(RGUIStyle.animationStep)) {
-                        Space(-17f);
                         renderStepDetails();
                     }
-                    Space(5f);
-                } else {
-                    Space(-10f);
                 }
             }
         }
@@ -111,13 +113,13 @@ namespace LinkedMovement.UI.NewContent {
         private void renderStepDetails() {
             using (Scope.Horizontal()) {
                 InfoPopper.DoInfoPopper(LMStringKey.ANIMATE_STEP_NAME);
-                Label("Step name");
+                Label("Step name", RGUIStyle.popupTextNew);
                 animationStep.name = RGUI.Field(animationStep.name);
             }
 
             using (Scope.Horizontal()) {
                 InfoPopper.DoInfoPopper(LMStringKey.ANIMATE_START_DELAY);
-                GUILayout.Label("Start delay");
+                Label("Start delay", RGUIStyle.popupTextNew);
                 var newStartDelay = RGUI.Field(animationStep.startDelay);
                 if (animationStep.startDelay != newStartDelay) {
                     animationStep.startDelay = newStartDelay;
@@ -127,7 +129,7 @@ namespace LinkedMovement.UI.NewContent {
 
             using (Scope.Horizontal()) {
                 InfoPopper.DoInfoPopper(LMStringKey.ANIMATE_DURATION);
-                GUILayout.Label("Duration");
+                Label("Duration", RGUIStyle.popupTextNew);
                 var newDuration = RGUI.Field(animationStep.duration);
                 if (animationStep.duration != newDuration) {
                     animationStep.duration = newDuration;
@@ -137,7 +139,7 @@ namespace LinkedMovement.UI.NewContent {
 
             using (Scope.Horizontal()) {
                 InfoPopper.DoInfoPopper(LMStringKey.ANIMATE_EASE);
-                GUILayout.Label("Ease");
+                Label("Ease", RGUIStyle.popupTextNew);
                 var newEase = RGUI.SelectionPopup(animationStep.ease, LMEase.Names);
                 if (animationStep.ease != newEase) {
                     animationStep.ease = newEase;
@@ -147,7 +149,7 @@ namespace LinkedMovement.UI.NewContent {
 
             using (Scope.Horizontal()) {
                 InfoPopper.DoInfoPopper(LMStringKey.ANIMATE_CHANGE_POSITION);
-                GUILayout.Label("Position");
+                Label("Position", RGUIStyle.popupTextNew);
                 FlexibleSpace();
                 var newPosition = RGUI.Field(animationStep.targetPosition);
                 if (!animationStep.targetPosition.Equals(newPosition)) {
@@ -158,7 +160,7 @@ namespace LinkedMovement.UI.NewContent {
 
             using (Scope.Horizontal()) {
                 InfoPopper.DoInfoPopper(LMStringKey.ANIMATE_CHANGE_ROTATION);
-                GUILayout.Label("Rotation");
+                Label("Rotation", RGUIStyle.popupTextNew);
                 FlexibleSpace();
                 var newRotation = RGUI.Field(animationStep.targetRotation);
                 if (!animationStep.targetRotation.Equals(newRotation)) {
@@ -169,7 +171,7 @@ namespace LinkedMovement.UI.NewContent {
 
             using (Scope.Horizontal()) {
                 InfoPopper.DoInfoPopper(LMStringKey.ANIMATE_CHANGE_SCALE);
-                GUILayout.Label("Scale");
+                Label("Scale", RGUIStyle.popupTextNew);
                 FlexibleSpace();
                 var newScale = RGUI.Field(animationStep.targetScale);
                 if (!animationStep.targetScale.Equals(newScale)) {
@@ -179,8 +181,8 @@ namespace LinkedMovement.UI.NewContent {
             }
 
             using (Scope.Horizontal()) {
-                // TODO: Info
-                Label("Color");
+                InfoPopper.DoInfoPopper(LMStringKey.TODO);
+                Label("Color", RGUIStyle.popupTextNew);
                 FlexibleSpace();
                 if (colors != null) {
                     for (int i = 0; i < colors.Length; i++) {
@@ -203,7 +205,7 @@ namespace LinkedMovement.UI.NewContent {
 
             using (Scope.Horizontal()) {
                 InfoPopper.DoInfoPopper(LMStringKey.ANIMATE_END_DELAY);
-                GUILayout.Label("End delay");
+                Label("End delay", RGUIStyle.popupTextNew);
                 var newEndDelay = RGUI.Field(animationStep.endDelay);
                 if (animationStep.endDelay != newEndDelay) {
                     animationStep.endDelay = newEndDelay;

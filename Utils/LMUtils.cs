@@ -15,7 +15,6 @@ namespace LinkedMovement.Utils {
             Restart,
         }
 
-        private static Dictionary<BuildableObject, HighlightOverlayController.HighlightHandle> HighlightHandles;
         private static HashSet<GameObject> AssociatedGameObjects;
 
         public static void LogComponents(BuildableObject bo) {
@@ -506,7 +505,6 @@ namespace LinkedMovement.Utils {
             return sequence;
         }
         
-        // TODO: Swap to flag highlights system
         public static void AddObjectHighlight(BuildableObject buildableObject, HighlightType highlightType) {
             if (buildableObject == null) return;
             LinkedMovement.Log($"LMUtils.AddObjectHighlight to {buildableObject.getName()} type {highlightType.ToString()}");
@@ -527,40 +525,6 @@ namespace LinkedMovement.Utils {
             } else {
                 highlightComponent.removeHighlightFlag(highlightType);
             }
-        }
-
-        public static void AddObjectHighlight(BuildableObject bo, Color color) {
-            EnsureHighlightHandlesReady();
-            // Remove target if already present
-            RemoveObjectHighlight(bo);
-
-            List<Renderer> renderers = new List<Renderer>();
-            bo.retrieveRenderersToHighlight(renderers);
-            var highlightHandle = HighlightOverlayController.Instance.add(renderers, -1, color);
-            HighlightHandles.Add(bo, highlightHandle);
-        }
-
-        public static void RemoveObjectHighlight(BuildableObject bo) {
-            EnsureHighlightHandlesReady();
-            if (HighlightHandles.ContainsKey(bo)) {
-                HighlightHandles[bo].remove();
-                HighlightHandles.Remove(bo);
-            }
-        }
-
-        public static void ResetObjectHighlights() {
-            if (HighlightHandles != null) {
-                foreach (var handle in HighlightHandles.Values) {
-                    handle.remove();
-                }
-                HighlightHandles.Clear();
-            }
-            HighlightHandles = null;
-        }
-
-        private static void EnsureHighlightHandlesReady() {
-            if (HighlightHandles == null)
-                HighlightHandles = new Dictionary<BuildableObject, HighlightOverlayController.HighlightHandle>();
         }
 
         public static float GetSequenceDuration(LMAnimationParams animationParams) {

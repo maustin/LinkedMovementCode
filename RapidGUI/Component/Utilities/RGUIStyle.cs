@@ -217,14 +217,11 @@ namespace RapidGUI
         }
 
         static void CreateInfoText() {
-            var style = new GUIStyle(GUI.skin.label) {
-                richText = true,
-                name = nameof(infoText),
-            };
+            var style = new GUIStyle(GUI.skin.label);
+            style.richText = true;
 
-            style.normal.textColor = new Color(0.9f, 0.9f, 0.9f);
-            style.hover.textColor = new Color(0.9f, 0.9f, 0.9f);
-
+            style.normal.textColor = new Color(0.2f, 0.2f, 0.2f);
+            
             style.name = nameof(infoText);
             infoText = style;
         }

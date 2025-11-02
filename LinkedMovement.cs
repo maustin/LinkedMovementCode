@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace LinkedMovement {
     public class LinkedMovement : AbstractMod {
-        public const string VERSION_NUMBER = "beta 10-30";
+        public const string VERSION_NUMBER = "beta 11-02";
         public const string HELPER_OBJECT_NAME = "Animation Helper (autohides)";
         public override string getIdentifier() => "com.themeparkitect.LinkedMovementCode";
         public override string getName() => "Animate Things";
@@ -156,7 +156,7 @@ namespace LinkedMovement {
             Log("Attempt to load loose asset: " + filename);
 
             try {
-                var filePath = System.IO.Path.Combine(currentModDirectory, "assets\\" + filename);
+                var filePath = System.IO.Path.Combine(currentModDirectory, "assets/" + filename);
                 Log("file path: " + filePath);
                 byte[] fileData;
                 if (File.Exists(filePath)) {
@@ -180,7 +180,7 @@ namespace LinkedMovement {
         private void loadAssetpack(string currentModDirectory) {
             // TODO: try/catch
             Log("Attempt to load assetpack");
-            var assetProjectPath = System.IO.Path.Combine(currentModDirectory, "assets\\LinkedMovement.assetProject");
+            var assetProjectPath = System.IO.Path.Combine(currentModDirectory, "assets/LinkedMovement.assetProject");
             Log("assetProject: " + assetProjectPath);
 
             var assembly = Assembly.Load("Parkitect");

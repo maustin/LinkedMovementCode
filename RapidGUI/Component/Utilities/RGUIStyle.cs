@@ -170,12 +170,6 @@ namespace RapidGUI
                 alignment = TextAnchor.MiddleCenter,
             };
 
-            //style.normal.textColor = new Color(0.95f, 0.95f, 0.95f);
-            //style.hover.textColor = new Color(1f, 1f, 1f);
-
-            //style.normal.textColor = new Color(0.32f, 0.32f, 0.32f);
-            //style.hover.textColor = new Color(0.27f, 0.27f, 0.27f);
-
             style.normal.textColor = new Color(0.2f, 0.2f, 0.2f);
             style.hover.textColor = new Color(0.27f, 0.27f, 0.27f);
 
@@ -189,8 +183,7 @@ namespace RapidGUI
                 alignment = TextAnchor.MiddleCenter,
             };
 
-            style.normal.textColor = new Color(0.3f, 0.3f, 0.3f);
-            style.hover.textColor = new Color(0.3f, 0.3f, 0.3f);
+            style.normal.textColor = new Color(0.5f, 0.5f, 0.5f);
 
             style.name = nameof(dimText);
             dimText = style;
@@ -253,7 +246,7 @@ namespace RapidGUI
             style.normal.textColor = style.hover.textColor = new Color(0.2f, 0.2f, 0.2f);
 
             flatButtonLeftTextureNew = new Texture2D(1, 1);
-            flatButtonLeftTextureNew.SetPixel(0, 0, new Color(0.8f, 0.8f, 0.8f));
+            flatButtonLeftTextureNew.SetPixel(0, 0, new Color(0.83f, 0.83f, 0.83f));
             flatButtonLeftTextureNew.Apply();
             style.hover.background = flatButtonLeftTextureNew;
 
@@ -289,7 +282,7 @@ namespace RapidGUI
             var style = new GUIStyle(GUI.skin.box);
             
             animationStepTex = new Texture2D(1, 1);
-            animationStepTex.SetPixel(0, 0, new Color(0.87f, 0.87f, 0.87f));
+            animationStepTex.SetPixel(0, 0, new Color(0.9f, 0.9f, 0.9f));
             animationStepTex.Apply();
 
             style.normal.background = animationStepTex;

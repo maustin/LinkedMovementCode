@@ -23,7 +23,7 @@ namespace LinkedMovement.UI.NewContent {
                 if (hasTarget) {
                     using (Scope.Horizontal()) {
                         var name = targetBO.getName();
-                        Label(name);
+                        Label(name, RGUIStyle.popupTextNew);
                         if (Button("✕", RGUIStyle.roundedFlatButton, Width(40f))) {
                             controller.currentAnimation.removeTarget();
                         }

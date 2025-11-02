@@ -23,7 +23,7 @@ namespace LinkedMovement.UI.NewContent {
                 if (hasParent) {
                     using (Scope.Horizontal()) {
                         var name = parentBO.getName();
-                        Label(name);
+                        Label(name, RGUIStyle.popupTextNew);
                         if (Button("✕", RGUIStyle.roundedFlatButton, Width(40f))) {
                             controller.currentLink.removeParentObject();
                         }

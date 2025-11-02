@@ -193,6 +193,11 @@ namespace LinkedMovement {
             } else {
                 Log("got type");
 
+                //var isCampaign = GameController.Instance.isCampaignScenario;
+                //GameController.Instance.isCampaignScenario = false;
+                //var modsBlocked = GameController.Instance.modsBlocked;
+                //GameController.Instance.modsBlocked = false;
+
                 Type[] parameterTypes = new Type[] { typeof(string) };
                 var ctor = type.GetConstructor(BindingFlags.Instance | BindingFlags.Public, null, parameterTypes, null);
                 if (ctor == null) {
@@ -214,6 +219,7 @@ namespace LinkedMovement {
                             var existingModEntry = ScriptableSingleton<AssetManager>.Instance.modContext;
 
                             modEntry.setActive(true);
+                            //modEntry.enableMod();
 
                             ScriptableSingleton<AssetManager>.Instance.modContext = existingModEntry;
                             ScriptableSingleton<InputManager>.Instance.modContext = existingModEntry;
@@ -222,6 +228,9 @@ namespace LinkedMovement {
                         }
                     }
                 }
+
+                //GameController.Instance.isCampaignScenario = isCampaign;
+                //GameController.Instance.modsBlocked = modsBlocked;
             }
             Log("Finished loading assetpack");
         }

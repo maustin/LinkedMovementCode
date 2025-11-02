@@ -255,6 +255,8 @@ namespace LinkedMovement.Utils {
                     }
             }
 
+            // TODO: Paths have unexpected parent/child relationships. Need to exclude or we reach into all tiles in the park.
+
             LinkedMovement.Log("Check children for " + gameObject.name);
             for (int i = 0; i < gameObject.transform.childCount; i++) {
                 var childTransform = gameObject.transform.GetChild(i);

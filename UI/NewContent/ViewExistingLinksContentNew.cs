@@ -21,10 +21,23 @@ namespace LinkedMovement.UI.NewContent {
 
                 foreach (var link in links) {
                     using (Scope.Horizontal()) {
+                        var forceShowHighlight = link.ForceShowHighlight;
+                        if (forceShowHighlight) {
+                            if (LMStyles.GetIconEyeButton()) {
+                                link.ForceShowHighlight = false;
+                            }
+                        } else {
+                            if (LMStyles.GetIconEyeStrikeButton()) {
+                                link.ForceShowHighlight = true;
+                            }
+                        }
+                        Space(2f);
+
                         if (Button(link.name, RGUIStyle.roundedFlatButtonLeft)) {
                             windowManager.removeWindow(this.window);
                             windowManager.createWindow(WindowManager.WindowType.EditLinkNew, link);
                         }
+                        Space(3f);
                         if (Button("✕", RGUIStyle.roundedFlatButton, Width(40f))) {
                             controller.queueLinkToRemove(link);
                         }

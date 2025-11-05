@@ -62,7 +62,6 @@ namespace LinkedMovement.Utils {
                 LinkedMovement.Log("Remove existing");
                 highlightHandle.remove();
                 highlightHandle = null;
-                return;
             }
 
             if (hasFlag(HighlightType.MouseOver)) {
@@ -106,7 +105,7 @@ namespace LinkedMovement.Utils {
                 buildHighlightWithColor(Color.green);
                 return;
             }
-            //LinkedMovement.Log("NONE!");
+            //LinkedMovement.Log("NONE! " + currentFlags.ToString());
         }
 
         private void buildHighlightWithColor(Color color) {

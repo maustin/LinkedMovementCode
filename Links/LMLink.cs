@@ -72,27 +72,65 @@ namespace LinkedMovement.Links {
 
                     tempTargetGameObjects = new List<GameObject>();
                     tempTargetBuildableObjects = new List<BuildableObject>();
-                    foreach (var target in linkTargets) {
-                        tempTargetGameObjects.Add(target.targetGameObject);
-                        tempTargetBuildableObjects.Add(target.targetBuildableObject);
-                        LMUtils.AddObjectHighlight(target.targetBuildableObject, HighlightType.LinkTarget);
+                    foreach (var linkTarget in linkTargets) {
+                        tempTargetGameObjects.Add(linkTarget.targetGameObject);
+                        tempTargetBuildableObjects.Add(linkTarget.targetBuildableObject);
+                        LMUtils.AddObjectHighlight(linkTarget.targetBuildableObject, HighlightType.LinkTarget);
                     }
                     _tempName = _name;
                 } else {
                     // clear temps
-                    if (tempParentBuildableObject != null) {
-                        LMUtils.RemoveObjectHighlight(tempParentBuildableObject, HighlightType.LinkParent);
+                    if (linkParent != null && linkParent.targetBuildableObject != null && !ForceShowHighlight) {
+                        LMUtils.RemoveObjectHighlight(linkParent.targetBuildableObject, HighlightType.LinkParent);
                     }
-                    if (tempTargetBuildableObjects != null && tempTargetBuildableObjects.Count > 0) {
-                        foreach (var buildableObject in tempTargetBuildableObjects) {
-                            LMUtils.RemoveObjectHighlight(buildableObject, HighlightType.LinkTarget);
+
+                    // Here linkTargets are the final target selections
+                    var linkTargetBuildableObjects = new HashSet<BuildableObject>();
+                    foreach (var linkTarget in linkTargets) {
+                        linkTargetBuildableObjects.Add(linkTarget.targetBuildableObject);
+                    }
+
+                    // Objects in tempTargets that are not in linkTargets need to clear their highlights
+                    foreach (var tempTargetBuildableObject in tempTargetBuildableObjects) {
+                        if (!linkTargetBuildableObjects.Contains(tempTargetBuildableObject)) {
+                            LMUtils.RemoveObjectHighlight(tempTargetBuildableObject, HighlightType.LinkTarget);
                         }
                     }
+
+                    // Reset highlights on linkTargets
+                    foreach (var linkTargetBuildableObject in linkTargetBuildableObjects) {
+                        if (ForceShowHighlight) {
+                            LMUtils.AddObjectHighlight(linkTargetBuildableObject, HighlightType.LinkTarget);
+                        } else {
+                            LMUtils.RemoveObjectHighlight(linkTargetBuildableObject, HighlightType.LinkTarget);
+                        }
+                    }
+
                     tempParentGameObject = null;
                     tempParentBuildableObject = null;
                     tempTargetGameObjects = null;
                     tempTargetBuildableObjects = null;
                     _tempName = null;
+                }
+            }
+        }
+
+        private bool _forceShowHighlight;
+        public bool ForceShowHighlight {
+            get => _forceShowHighlight;
+            set {
+                _forceShowHighlight = value;
+
+                if (_forceShowHighlight) {
+                    LMUtils.AddObjectHighlight(linkParent.targetBuildableObject, HighlightType.LinkParent);
+                    foreach (var linkTarget in linkTargets) {
+                        LMUtils.AddObjectHighlight(linkTarget.targetBuildableObject, HighlightType.LinkTarget);
+                    }
+                } else {
+                    LMUtils.RemoveObjectHighlight(linkParent.targetBuildableObject, HighlightType.LinkParent);
+                    foreach (var linkTarget in linkTargets) {
+                        LMUtils.RemoveObjectHighlight(linkTarget.targetBuildableObject, HighlightType.LinkTarget);
+                    }
                 }
             }
         }
@@ -242,8 +280,6 @@ namespace LinkedMovement.Links {
         public void setParentObject(BuildableObject buildableObject) {
             LinkedMovement.Log("LMLink.setParentObject");
 
-            // TODO: Remove parenting from targets if present
-
             if (IsEditing) {
                 tempParentBuildableObject = buildableObject;
                 tempParentGameObject = buildableObject.gameObject;
@@ -274,10 +310,6 @@ namespace LinkedMovement.Links {
         public void addTargetObject(BuildableObject buildableObject) {
             LinkedMovement.Log("LMLink.addTargetObject");
 
-            // TODO: Needed?
-            // Possibly cache target original parent
-            // Actually think this should be fine. If changes are discarded, reset temp targets parent to null
-            // then rebuild original linkage.
             tempTargetBuildableObjects.Add(buildableObject);
             tempTargetGameObjects.Add(buildableObject.gameObject);
 
@@ -379,13 +411,14 @@ namespace LinkedMovement.Links {
 
             var restartList = new List<GameObject>() { tempParentGameObject };
 
-            // Temp targets that are *not* an original should have be added to the restartList
+            // Temp targets that are *not* an original should be added to the restartList
             // This ensures any that had their own animations are rebuilt now without the parent
             if (linkTargets != null && linkTargets.Count > 0 && tempTargetGameObjects.Count > 0) {
                 var originalTargetGameObjects = new List<GameObject>();
                 foreach (var target in linkTargets) {
                     originalTargetGameObjects.Add(target.targetGameObject);
                 }
+                
                 foreach (var tempTargetGameObject in tempTargetGameObjects) {
                     if (!originalTargetGameObjects.Contains(tempTargetGameObject)) {
                         restartList.Add(tempTargetGameObject);
@@ -423,13 +456,17 @@ namespace LinkedMovement.Links {
         public void destroyLink() {
             LinkedMovement.Log($"LMLink.destroyLink name: {name}, id: {id}");
 
-            // Unparent targets
+            LMUtils.RemoveObjectHighlight(linkParent.targetBuildableObject, HighlightType.LinkParent);
+
             foreach (var targetLink in linkTargets) {
                 LinkedMovement.Log("Unparent target: " + targetLink.targetGameObject.name);
                 //LMUtils.LogComponents(targetLink.targetBuildableObject);
                 LMUtils.SetTargetParent(null, targetLink.targetGameObject.transform);
                 LMUtils.UpdateMouseColliders(targetLink.targetBuildableObject);
+
+                LMUtils.RemoveObjectHighlight(targetLink.targetBuildableObject, HighlightType.LinkTarget);
             }
+
             // Remove data
             removeCustomData();
 

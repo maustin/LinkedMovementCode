@@ -62,6 +62,7 @@ namespace LinkedMovement.Utils {
                 LinkedMovement.Log("Remove existing");
                 highlightHandle.remove();
                 highlightHandle = null;
+                return;
             }
 
             if (hasFlag(HighlightType.MouseOver)) {
@@ -109,6 +110,7 @@ namespace LinkedMovement.Utils {
         }
 
         private void buildHighlightWithColor(Color color) {
+            LinkedMovement.Log("LMHighlightComponent.buildHighlightWithColor " + color.ToString());
             var buildableObject = LMUtils.GetBuildableObjectFromGameObject(this.gameObject);
             List<Renderer> renderers = new List<Renderer>();
             buildableObject.retrieveRenderersToHighlight(renderers);

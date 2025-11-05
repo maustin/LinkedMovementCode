@@ -11,7 +11,6 @@ namespace LinkedMovement {
 
         // TODO: 11-05
         //
-        // Deleting link parent object breaks children
         // Check # Tweens being created matches expected
 
         // Triggers

@@ -37,6 +37,8 @@ namespace LinkedMovement {
             SCROLL_BACKGROUND,
             SCROLL_THUMB_NORMAL,
             SCROLL_THUMB_DOWN,
+            ICON_EYE,
+            ICON_EYE_STRIKE,
         };
         private static Dictionary<LOOSE_TEXTURES, string> looseTextureFilenames = new Dictionary<LOOSE_TEXTURES, string>() {
             { LOOSE_TEXTURES.BUTTON_NORMAL, "roundedRect12-white.png" },
@@ -46,6 +48,8 @@ namespace LinkedMovement {
             { LOOSE_TEXTURES.SCROLL_BACKGROUND, "roundedRect12-scrollbackground.png" },
             { LOOSE_TEXTURES.SCROLL_THUMB_NORMAL, "roundedRect12-scrollthumb.png" },
             { LOOSE_TEXTURES.SCROLL_THUMB_DOWN, "roundedRect12-scrollthumbdown.png" },
+            { LOOSE_TEXTURES.ICON_EYE, "ui_icon_eye.png" },
+            { LOOSE_TEXTURES.ICON_EYE_STRIKE, "ui_icon_eye_strike.png" },
         };
         private static Dictionary<LOOSE_TEXTURES, Color> looseTextureDefaultColors = new Dictionary<LOOSE_TEXTURES, Color>() {
             { LOOSE_TEXTURES.BUTTON_NORMAL, new Color(1f, 1f, 1f) },

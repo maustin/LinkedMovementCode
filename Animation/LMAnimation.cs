@@ -53,9 +53,24 @@ namespace LinkedMovement.Animation {
                 } else {
                     // clear temp
                     tempAnimationParams = null;
-                    if (targetBuildableObject != null) {
+                    if (targetBuildableObject != null && !ForceShowHighlight) {
                         LMUtils.RemoveObjectHighlight(targetBuildableObject, HighlightType.AnimationTarget);
                     }
+                }
+            }
+        }
+
+        private bool _forceShowHighlight;
+        public bool ForceShowHighlight {
+            get => _forceShowHighlight;
+            set {
+                _forceShowHighlight = value;
+                LinkedMovement.Log("TEST LMAnimation.ForceShowHighlight: " + value);
+
+                if (_forceShowHighlight) {
+                    LMUtils.AddObjectHighlight(targetBuildableObject, HighlightType.AnimationTarget);
+                } else {
+                    LMUtils.RemoveObjectHighlight(targetBuildableObject, HighlightType.AnimationTarget);
                 }
             }
         }
@@ -98,6 +113,8 @@ namespace LinkedMovement.Animation {
         // Remove the animation from the target. Currently assumes sequence is stopped elsewhere.
         public void destroyAnimation() {
             LinkedMovement.Log($"LMAnimation.destroyAnimation name: {name}, id: {id}");
+
+            LMUtils.RemoveObjectHighlight(targetBuildableObject, HighlightType.AnimationTarget);
 
             removeCustomData();
 

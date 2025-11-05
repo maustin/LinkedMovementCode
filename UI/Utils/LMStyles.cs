@@ -1,8 +1,17 @@
 ﻿using RapidGUI;
 using UnityEngine;
+using static UnityEngine.GUILayout;
 
 namespace LinkedMovement.UI.Utils {
     public static class LMStyles {
+        // TODO: Find a home for these 2
+        public static bool GetIconEyeButton() {
+            return GUILayout.Button(RGUIStyle.iconEyeContent, RGUIStyle.iconEyeButton, Width(24f), Height(20f));
+        }
+        public static bool GetIconEyeStrikeButton() {
+            return GUILayout.Button(RGUIStyle.iconEyeStrikeContent, RGUIStyle.iconEyeButton, Width(24f), Height(20f));
+        }
+
         public static GUIStyle DarkWindowTitleBarStyle;
         //private static void InitializeDarkWindowTitleBarStyle() {
         //    var style = new GUIStyle(GUI.skin.box);

@@ -34,6 +34,11 @@ namespace RapidGUI
         public static GUIStyle scrollThumb;
         public static GUIStyle fieldLabel;
         public static GUIStyle flatButtonLeftNew;
+        public static GUIStyle iconEyeButton;
+        public static GUIStyle iconEyeStrikeButton;
+
+        public static GUIContent iconEyeContent;
+        public static GUIContent iconEyeStrikeContent;
 
         // GUIStyleState.background will be null 
         // if it set after secound scene load and don't use a few frame
@@ -57,6 +62,8 @@ namespace RapidGUI
         private static Texture2D scrollThumbNormalTexture;
         private static Texture2D scrollThumbDownTexture;
         private static Texture2D flatButtonLeftTextureNew;
+        private static Texture2D iconEyeTexture;
+        private static Texture2D iconEyeStrikeTexture;
 
 
         static RGUIStyle()
@@ -94,6 +101,7 @@ namespace RapidGUI
             CreateScrollThumb();
             CreateFieldLabel();
             CreateFlatButtonLeftNew();
+            CreateIconEyeButton();
         }
 
         static void CreateFlatButton()
@@ -119,8 +127,7 @@ namespace RapidGUI
 
         static void CreateRoundedFlatButton() {
             var style = new GUIStyle(GUI.skin.button);
-            //var style = new GUIStyle(GUI.skin.label);
-
+            
             style.wordWrap = false;
             style.alignment = TextAnchor.MiddleCenter;
             style.normal.textColor = style.hover.textColor = style.active.textColor = new Color(0.2f, 0.2f, 0.2f);
@@ -490,6 +497,24 @@ namespace RapidGUI
 
             style.name = nameof(scrollThumb);
             scrollThumb = style;
+        }
+
+        static void CreateIconEyeButton() {
+            iconEyeTexture = LinkedMovement.LinkedMovement.GetLooseTexture(LinkedMovement.LinkedMovement.LOOSE_TEXTURES.ICON_EYE);
+            iconEyeStrikeTexture = LinkedMovement.LinkedMovement.GetLooseTexture(LinkedMovement.LinkedMovement.LOOSE_TEXTURES.ICON_EYE_STRIKE);
+            
+            iconEyeContent = new GUIContent(iconEyeTexture);
+            iconEyeStrikeContent = new GUIContent(iconEyeStrikeTexture);
+
+            var style = new GUIStyle(GUI.skin.button);
+
+            style.normal.background = style.hover.background = roundedFlatButtonWhiteTexture;
+            style.active.background = roundedFlatButtonOffWhiteTexture;
+            
+            style.padding = new RectOffset(3, 3, 3, 3);
+
+            style.name = nameof(iconEyeButton);
+            iconEyeButton = style;
         }
 
         static Texture2D GetRoundedRectTexture(LinkedMovement.LinkedMovement.LOOSE_TEXTURES looseTextureType) {

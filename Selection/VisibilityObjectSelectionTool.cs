@@ -631,15 +631,16 @@ namespace LinkedMovement.Selection {
             var boxHits = MouseCollisions.Instance.boxcastAll(bounds);
             LinkedMovement.Log("Box tool hit #: " + boxHits.Length.ToString());
             foreach (MouseCollider.HitInfo hitInfo in boxHits) {
-                var o = hitInfo.hitObject.GetComponentInParent<BuildableObject>();
+                //var o = hitInfo.hitObject.GetComponentInParent<BuildableObject>();
+                var o = LMUtils.GetBuildableObjectFromBoxSelectGameObject(hitInfo.hitObject);
                 if (o != null) {
-                    //if (LMUtils.HitTargetIsDisqualified(o)) { continue; }
-
                     if (Input.GetMouseButtonUp(0)) {
-                        OnSelectedObject(SelectionOperation.Add, bounds, o);
+                        OnAdd(o);
+                        //OnSelectedObject(SelectionOperation.Add, bounds, o);
                     }
                     else if (Input.GetMouseButtonUp(1)) {
-                        OnSelectedObject(SelectionOperation.Remove, bounds, o);
+                        OnRemove(o);
+                        //OnSelectedObject(SelectionOperation.Remove, bounds, o);
                     }
                 }
             }
@@ -675,15 +676,22 @@ namespace LinkedMovement.Selection {
             return mousePositionInfo;
         }
 
-        private void OnSelectedObject(SelectionOperation op, Bounds bounds, BuildableObject o) {
-            switch (CalcAction(op, bounds, o)) {
-                case SelectionAction.Add:
-                    OnAdd(o);
-                    break;
-                case SelectionAction.Remove:
-                    OnRemove(o);
-                    break;
-            }
-        }
+        // TODO: Is this needed? It's breaking LOD object selection. Trying elim for now.
+        //private void OnSelectedObject(SelectionOperation op, Bounds bounds, BuildableObject o) {
+        //    LinkedMovement.Log("BOX OnSelectedObject");
+        //    var action = CalcAction(op, bounds, o);
+        //    switch (action) {
+        //        //switch (CalcAction(op, bounds, o)) {
+        //        case SelectionAction.Add:
+        //            OnAdd(o);
+        //            break;
+        //        case SelectionAction.Remove:
+        //            OnRemove(o);
+        //            break;
+        //        default:
+        //            LinkedMovement.Log("!!!ACTION IS NOT ADD OR REMOVE!!!");
+        //            break;
+        //    }
+        //}
     }
 }

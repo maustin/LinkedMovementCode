@@ -17,8 +17,21 @@ namespace LinkedMovement.Utils {
 
         private static HashSet<GameObject> AssociatedGameObjects;
 
+        public static void LogComponents(GameObject go) {
+            LinkedMovement.Log("LMUtils.LogComponents for GameObject: " + go.name);
+            Component[] components = go.GetComponents<Component>();
+            foreach (var component in components) {
+                LinkedMovement.Log($"Component type: {component.GetType().Name}, name: {component.name}");
+            }
+
+            if (go.transform.parent != null) {
+                LinkedMovement.Log("Has parent");
+                LogComponents(go.transform.parent.gameObject);
+            }
+        }
+
         public static void LogComponents(BuildableObject bo) {
-            LinkedMovement.Log("LMUtils.LogComponents for " + bo.getName());
+            LinkedMovement.Log("LMUtils.LogComponents for BuildableObject: " + bo.getName());
             Component[] components = bo.gameObject.GetComponents<Component>();
             foreach (var component in components) {
                 LinkedMovement.Log($"Component type: {component.GetType().Name}, name: {component.name}");
@@ -170,6 +183,43 @@ namespace LinkedMovement.Utils {
 
         public static BuildableObject GetBuildableObjectFromGameObject(GameObject go) {
             var buildableObject = go.GetComponent<BuildableObject>();
+            return buildableObject;
+        }
+
+        public static BuildableObject GetBuildableObjectFromBoxSelectGameObject(GameObject gameObject) {
+            LinkedMovement.Log("LMUtils.GetBuildableObjectFromBoxSelectGameObject for: " + gameObject.name);
+            var buildableObject = GetBuildableObjectFromGameObject(gameObject);
+            if (buildableObject != null) {
+                LinkedMovement.Log("Has BuildableObject, return it");
+                return buildableObject;
+            }
+
+            // Here we'll check if the gameObject is part of an LODGroup.
+            // In this case we'll need to traverse up two levels.
+            // The first parent is the LOD object with just a transform.
+            // The second parent will have the LODGroup component.
+            // TODO: I don't like blindly reaching up two levels. Is there a better way?
+
+            var lodParentGameObject = gameObject.transform?.parent?.parent?.gameObject;
+            if (lodParentGameObject == null) {
+                LinkedMovement.Log("No LOD parent, return null");
+                return null;
+            }
+
+            //LogComponents(lodParentGameObject);
+
+            var lodGroup = lodParentGameObject.GetComponent<LODGroup>();
+            if (lodGroup == null) {
+                LinkedMovement.Log("No LODGroup, return null");
+                return null;
+            }
+
+            buildableObject = lodParentGameObject.GetComponent<BuildableObject>();
+            if (buildableObject != null) {
+                LinkedMovement.Log("LOD parent HAS BuildableObject");
+            } else {
+                LinkedMovement.Log("LOD parent HAS NO BuildableObject");
+            }
             return buildableObject;
         }
 

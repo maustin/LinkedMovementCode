@@ -495,7 +495,7 @@ namespace LinkedMovement.Links {
             var link = LinkedMovement.GetLMController().findLinkByParentGameObject(gameObject);
             if (link != null) {
                 //string rejectMessage = $"Selection is already the Parent object of Link '{link.name}'";
-                string rejectMessage = LMStringSystem.GetText(LMStringKey.SELECT_LINK_PARENT_EXISTS, link.name);
+                string rejectMessage = LMStringSystem.GetText(LMStringKey.SELECT_LINK_PARENT_EXISTS, buildableObject.getName(), link.name);
                 LinkedMovement.Log(rejectMessage);
                 LinkedMovement.GetLMController().windowManager.createWindow(UI.WindowManager.WindowType.Error, rejectMessage);
                 return;
@@ -507,28 +507,28 @@ namespace LinkedMovement.Links {
 
         private void handlePickerAddObjectAsTarget(BuildableObject buildableObject) {
             LinkedMovement.Log("LMLink.handlePickerAddObjectAsTarget");
+            var targetName = buildableObject.getName();
 
             // Validate
             // Ensure target is not already selected as parent
             if (getParentBuildableObject() == buildableObject) {
-                LinkedMovement.Log("Target is already the parent of current link");
-                string rejectMessage = LMStringSystem.GetText(LMStringKey.SELECT_LINK_TARGET_IS_PARENT);
+                string rejectMessage = LMStringSystem.GetText(LMStringKey.SELECT_LINK_TARGET_IS_PARENT, targetName);
+                LinkedMovement.Log(rejectMessage);
                 LinkedMovement.GetLMController().windowManager.createWindow(UI.WindowManager.WindowType.Error, rejectMessage);
                 return;
             }
             // Ensure Target is not already selected as target (silent fail)
             if (getTargetBuildableObjects().Contains(buildableObject)) {
-                LinkedMovement.Log("Target is already child of current link");
-                string rejectMessage = LMStringSystem.GetText(LMStringKey.SELECT_LINK_TARGET_IS_TARGET);
-                LinkedMovement.GetLMController().windowManager.createWindow(UI.WindowManager.WindowType.Error, rejectMessage);
+                string rejectMessage = LMStringSystem.GetText(LMStringKey.SELECT_LINK_TARGET_IS_TARGET, targetName);
+                LinkedMovement.Log(rejectMessage);
+                //LinkedMovement.GetLMController().windowManager.createWindow(UI.WindowManager.WindowType.Error, rejectMessage);
                 return;
             }
             // Ensure Target is not already child of another link
             var gameObject = buildableObject.gameObject;
             var otherLink = LinkedMovement.GetLMController().findLinkByTargetGameObject(gameObject);
             if (otherLink != null) {
-                //string rejectMessage = $"Selection is already a child of Link '{otherLink.name}'";
-                string rejectMessage = LMStringSystem.GetText(LMStringKey.SELECT_ANIM_TARGET_EXISTS, otherLink.name);
+                string rejectMessage = LMStringSystem.GetText(LMStringKey.SELECT_LINK_TARGET_EXISTS, targetName, otherLink.name);
                 LinkedMovement.Log(rejectMessage);
                 // TODO: This call needs much cleaner access
                 LinkedMovement.GetLMController().windowManager.createWindow(UI.WindowManager.WindowType.Error, rejectMessage);
@@ -539,8 +539,7 @@ namespace LinkedMovement.Links {
             if (parentLink != null) {
                 var parentTargets = parentLink.getTargetGameObjects();
                 if (parentTargets.Contains(getParentGameObject())) {
-                    //string rejectMessage = "Circular link! Selection is already the parent of this link.";
-                    string rejectMessage = LMStringSystem.GetText(LMStringKey.SELECT_LINK_CIRCULAR);
+                    string rejectMessage = LMStringSystem.GetText(LMStringKey.SELECT_LINK_CIRCULAR, targetName);
                     LinkedMovement.Log(rejectMessage);
                     // TODO: This call needs much cleaner access
                     LinkedMovement.GetLMController().windowManager.createWindow(UI.WindowManager.WindowType.Error, rejectMessage);

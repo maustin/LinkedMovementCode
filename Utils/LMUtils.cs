@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 namespace LinkedMovement.Utils {
-    // TODO: Lots of UI stuff. Consider splitting UI stuff out to, like, UI.Utils
+    // TODO: This needs to be split up
     static class LMUtils {
         public enum AssociatedAnimationEditMode {
             Stop,

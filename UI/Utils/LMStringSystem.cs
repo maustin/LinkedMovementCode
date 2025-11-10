@@ -55,11 +55,11 @@ namespace LinkedMovement.UI.Utils {
             { LMStringKey.ANIM_STEP_END_DELAY, "The amount of time (in seconds) to pause the animation after completing this step." },
             { LMStringKey.CREATE_LINK_PARENT_INTRO, "Select the parent object that targets will attach to." },
             { LMStringKey.CREATE_LINK_TARGETS_INTRO, "Select the target objects that will attach to the parent object." },
-            { LMStringKey.SELECT_LINK_TARGET_IS_PARENT, "Selection is already the Link parent object." },
-            { LMStringKey.SELECT_LINK_TARGET_IS_TARGET, "Selection is already a Link target object." },
-            { LMStringKey.SELECT_LINK_PARENT_EXISTS, "Selection is already the parent of Link '{0}'." },
-            { LMStringKey.SELECT_LINK_TARGET_EXISTS, "Selection is already the target of Link '{0}'." },
-            { LMStringKey.SELECT_LINK_CIRCULAR, "Circular link! Selection is already the parent of this link." },
+            { LMStringKey.SELECT_LINK_TARGET_IS_PARENT, "Selection {0} is already the Link parent object." },
+            { LMStringKey.SELECT_LINK_TARGET_IS_TARGET, "Selection {0} is already a Link target object." },
+            { LMStringKey.SELECT_LINK_PARENT_EXISTS, "Selection {0} is already the parent of Link '{1}'." },
+            { LMStringKey.SELECT_LINK_TARGET_EXISTS, "Selection {0} is already the target of Link '{1}'." },
+            { LMStringKey.SELECT_LINK_CIRCULAR, "Circular link! Selection {0} is already the parent of this link." },
             { LMStringKey.LINK_NAME, "Give the link a unique name to distinguish it from other links." },
         };
 

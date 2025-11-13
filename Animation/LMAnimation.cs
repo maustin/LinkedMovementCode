@@ -242,7 +242,7 @@ namespace LinkedMovement.Animation {
             LMLogger.Debug("LMAnimation.buildSequence");
 
             if (targetGameObject == null) {
-                LMLogger.Debug("ERROR: LMAnimation.buildSequence targetGameObject is null!");
+                LMLogger.Error("LMAnimation.buildSequence targetGameObject is null!");
                 return;
             }
 

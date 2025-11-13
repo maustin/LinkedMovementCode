@@ -224,7 +224,7 @@ namespace LinkedMovement {
                     looseTextures.Add(looseTextureType, newTexture);
                     LMLogger.Info("Loaded texture");
                 } else {
-                    LMLogger.Info("ERROR: Couldn't find texture path");
+                    LMLogger.Error("Couldn't find texture path");
                 }
             }
             catch (Exception e) {

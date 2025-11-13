@@ -282,7 +282,7 @@ namespace LinkedMovement.Utils {
                 // SHOULD NEVER GET HERE
                 //throw new Exception("LMUtils.PrepAssociatedGameObjects ALREADY RUNNING!");
                 // For now, just handle gracefully
-                LMLogger.Debug("ERROR: LMUtils AssociatedGameObjects was not reset!");
+                LMLogger.Error("LMUtils AssociatedGameObjects was not reset!");
                 CleanupAssociateGameObjects();
             }
             AssociatedGameObjects = new HashSet<GameObject>();

@@ -9,7 +9,7 @@ using UnityEngine;
 namespace LinkedMovement {
     public class LMController : MonoBehaviour {
 
-        // TODO: 11-05
+        // TODO: 11-10
         //
         // Check # Tweens being created matches expected
 
@@ -87,9 +87,9 @@ namespace LinkedMovement {
                 windowManager.createWindow(WindowManager.WindowType.ModeDeterminationNew, null);
             }
 
-            // If there is no mouse tool active, we don't need to update mouse colliders
+            // If there is no mouse tool active & not in builder mode (Deco, Blueprints), we don't need to update mouse colliders
             var mouseTool = GameController.Instance.getActiveMouseTool();
-            if (mouseTool == null) {
+            if (mouseTool == null && !GameController.Instance.hasActiveBuilderWindow()) {
                 return;
             }
 

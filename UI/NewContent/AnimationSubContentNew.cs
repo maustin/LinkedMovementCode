@@ -59,17 +59,28 @@ namespace LinkedMovement.UI.NewContent {
 
                 Space(5f);
 
+                var animationLength = animationParams.getAnimationLength();
                 using (Scope.Horizontal()) {
                     InfoPopper.DoInfoPopper(LMStringKey.ANIM_STEPS);
-                    Label($"Animation Steps (Current animation length {animationParams.getAnimationLength().ToString("F2")} sec)", RGUIStyle.popupTextNew);
+                    Label($"Animation Steps (Current animation length {animationLength.ToString("F2")} sec)", RGUIStyle.popupTextNew);
                 }
+
+                //var currentAnimation = controller.currentAnimation;
+                //var currentAnimationProgress = currentAnimation.sequence.progress;
+                //using (Scope.GuiEnabled(false)) {
+                //    RGUI.Slider(currentAnimationProgress, 0, 1, "Animation progress");
+                //}
+                //using (Scope.Horizontal()) {
+                //    Label("Animation Progress: ", RGUIStyle.popupTextNew);
+                //    GUILayout.HorizontalSlider(currentAnimationProgress, 0f, 1f);
+                //}
 
                 if (Button("Add Step", RGUIStyle.roundedFlatButton)) {
                     animationParams.addNewAnimationStep();
                     controller.currentAnimationUpdated();
                 }
 
-                targetsScrollPosition = BeginScrollView(targetsScrollPosition, Height(400f));
+                targetsScrollPosition = BeginScrollView(targetsScrollPosition, Height(600));
                 foreach (var animationStepContent in animationStepContents) {
                     animationStepContent.DoGUI();
                 }

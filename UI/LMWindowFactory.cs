@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace LinkedMovement.UI {
     internal static class LMWindowFactory {
-        private const int VERTICAL_PADDING = 75;
+        private const int VERTICAL_PADDING = 25;
         private const int HORIZONTAL_PADDING = 100;
         private const int EXISTING_WINDOW_OFFSET = 15;
 

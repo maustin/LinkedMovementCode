@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace LinkedMovement {
     public class LinkedMovement : AbstractMod, IModSettings {
-        public const string VERSION_NUMBER = "RC 3 (11-13)";
+        public const string VERSION_NUMBER = "RC 5 (11-19)";
         public const string HELPER_OBJECT_NAME = "Animation Helper (autohides)";
         public override string getIdentifier() => "com.themeparkitect.LinkedMovementCode";
         public override string getName() => "Animate Things";
